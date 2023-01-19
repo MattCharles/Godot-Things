@@ -7,8 +7,6 @@
 [node name="MainGame" type="Node"]
 script = ExtResource("1_n31dg")
 
-[node name="TestMap" parent="." instance=ExtResource("3_uwrpn")]
-
 [node name="Players" type="Node2D" parent="."]
 position = Vector2(325, 0)
 
@@ -23,10 +21,15 @@ script = ExtResource("4_kv3lk")
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 26.0
+grow_horizontal = 2
 
 [node name="Label" type="Label" parent="UI/CenterContainer"]
-offset_left = 221.0
-offset_right = 802.0
+layout_mode = 2
+offset_left = 669.0
+offset_right = 1250.0
 offset_bottom = 42.0
 theme_type_variation = &"HeaderLarge"
 text = "Button pressed X times since server restart"
+
+[node name="TestMap" parent="." instance=ExtResource("3_uwrpn")]
+position = Vector2(-198, -595)
