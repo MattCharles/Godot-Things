@@ -13,3 +13,53 @@ grow_vertical = 2
 [node name="CharacterSelectBg" type="Sprite2D" parent="."]
 position = Vector2(956, 538)
 texture = ExtResource("1_need5")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 481.0
+offset_bottom = 1079.0
+
+[node name="RoomCodeLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+offset_right = 481.0
+offset_bottom = 72.0
+theme_override_font_sizes/font_size = 50
+text = "Room Code: XXXXX
+"
+horizontal_alignment = 1
+
+[node name="PlayerNameLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+offset_top = 76.0
+offset_right = 481.0
+offset_bottom = 148.0
+theme_override_font_sizes/font_size = 50
+text = "Player Name:"
+
+[node name="PlayerNameLineEdit" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+offset_top = 152.0
+offset_right = 481.0
+offset_bottom = 229.0
+theme_override_font_sizes/font_size = 50
+placeholder_text = "Poochy"
+
+[node name="CheckButton" type="CheckButton" parent="VBoxContainer"]
+layout_mode = 2
+offset_top = 233.0
+offset_right = 481.0
+offset_bottom = 310.0
+theme_override_font_sizes/font_size = 50
+text = "Ready"
+
+[node name="Button" type="Button" parent="."]
+custom_minimum_size = Vector2i(400, 0)
+layout_mode = 0
+offset_left = 41.0
+offset_top = 966.0
+offset_right = 441.0
+offset_bottom = 1043.0
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 50
+text = "Start Game"
