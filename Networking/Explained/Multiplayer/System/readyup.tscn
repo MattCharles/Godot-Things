@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://cb7ldofgws1ui"]
+
+[ext_resource type="Texture2D" uid="uid://d1pplg6o0yeon" path="res://Assets/Backgrounds/CharacterSelectBG.png" id="1_need5"]
+
+[node name="readyup" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CharacterSelectBg" type="Sprite2D" parent="."]
+position = Vector2(956, 538)
+texture = ExtResource("1_need5")

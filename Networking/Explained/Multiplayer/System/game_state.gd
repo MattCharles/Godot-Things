@@ -12,6 +12,35 @@ signal p2_rename(newName: String)
 signal p3_rename(newName: String)
 signal p4_rename(newName: String)
 
+signal p1_animation_changed(newAnim: String)
+signal p2_animation_changed(newAnim: String)
+signal p3_animation_changed(newAnim: String)
+signal p4_animation_changed(newAnim: String)
+
+var p1_animation := "default":
+	set(value):
+		print('p1 began animation ', value)
+		p1_animation = value
+		emit_signal(StringName("p1_animation_changed"), value)
+		
+var p2_animation := "default":
+	set(value):
+		print('p2 began animation ', value)
+		p2_animation = value
+		emit_signal(StringName("p2_animation_changed"), value)
+
+var p3_animation := "default":
+	set(value):
+		print('p3 began animation ', value)
+		p3_animation = value
+		emit_signal(StringName("p3_animation_changed"), value)
+		
+var p4_animation := "default":
+	set(value):
+		print('p4 began animation ', value)
+		p4_animation = value
+		emit_signal(StringName("p4_animation_changed"), value)
+
 var button_press_count := 0:
 	set(value):
 		print('button press updated: ', value)

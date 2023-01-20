@@ -1,24 +1,46 @@
-[gd_resource type="SpriteFrames" load_steps=5 format=3 uid="uid://yro4ypo6sek5"]
+[gd_resource type="SpriteFrames" load_steps=9 format=3 uid="uid://yro4ypo6sek5"]
 
-[ext_resource type="Texture2D" uid="uid://xjnyqosqdmw1" path="res://Characters/Aliens/Blue/alienBlue_walk1.png" id="1_vxe2r"]
-[ext_resource type="Texture2D" uid="uid://dqvapuxsemele" path="res://Characters/Aliens/Blue/alienBlue_walk2.png" id="2_rr0el"]
+[ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="2_4sssd"]
 [ext_resource type="Texture2D" uid="uid://5h3y5ya1ow8t" path="res://Characters/Aliens/Blue/alienBlue_jump.png" id="3_3nfgu"]
-[ext_resource type="Texture2D" uid="uid://cqkcjr0xlr7g" path="res://Characters/Aliens/Blue/alienBlue_stand.png" id="4_3uof1"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lk124"]
+atlas = ExtResource("2_4sssd")
+region = Rect2(0, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1avcs"]
+atlas = ExtResource("2_4sssd")
+region = Rect2(17, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dxl8r"]
+atlas = ExtResource("2_4sssd")
+region = Rect2(34, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kp3c5"]
+atlas = ExtResource("2_4sssd")
+region = Rect2(51, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e36eb"]
+atlas = ExtResource("2_4sssd")
+region = Rect2(68, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w7kh8"]
+atlas = ExtResource("2_4sssd")
+region = Rect2(0, 0, 17, 23)
 
 [resource]
 animations = [{
-"frames": [ExtResource( "4_3uof1" )],
+"frames": [ExtResource("3_3nfgu")],
 "loop": true,
-"name": &"default",
+"name": &"Jump",
 "speed": 5.0
 }, {
-"frames": [ExtResource( "1_vxe2r" ), ExtResource( "2_rr0el" )],
+"frames": [SubResource("AtlasTexture_lk124"), SubResource("AtlasTexture_1avcs"), SubResource("AtlasTexture_dxl8r"), SubResource("AtlasTexture_kp3c5"), SubResource("AtlasTexture_e36eb")],
 "loop": true,
 "name": &"Walk",
 "speed": 5.0
 }, {
-"frames": [ExtResource( "3_3nfgu" )],
+"frames": [SubResource("AtlasTexture_w7kh8")],
 "loop": true,
-"name": &"Jump",
+"name": &"default",
 "speed": 5.0
 }]

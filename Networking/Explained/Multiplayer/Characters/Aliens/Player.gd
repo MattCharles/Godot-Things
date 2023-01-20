@@ -5,6 +5,8 @@ const DEFAULT_SPEED = 300.0
 const DEFAULT_HEALTH = 100.0
 const CAMERA_MAX_ZOOM := Vector2(0.5, 0.5)
 
+@onready var _animated_sprite = $AnimatedSprite2D
+
 # Get the gravity from the project settings to be synced with RigidDynamicBody nodes.
 #var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
@@ -30,7 +32,7 @@ func _process(_delta):
 	$UI/TextureProgressBar.visible = health < maxHealth
 
 func _physics_process(delta):
-	if !is_local_authority():
+	if !is_local_authority(): # this is somebody else's player character
 		if not $Networking.processed_position:
 			position = $Networking.sync_position
 			$Networking.processed_position = true
@@ -39,7 +41,6 @@ func _physics_process(delta):
 		move_and_slide()
 		return
 	else:
-		$JetpackParticles.emitting = false
 		var zoom = $Camera2D.zoom.length()
 		if zoom < 1:
 			$Camera2D.zoom = $Camera2D.zoom.lerp(Vector2(1, 1), zoom * 0.005)
@@ -51,12 +52,16 @@ func _physics_process(delta):
 	
 	if x_direction:
 		velocity.x = x_direction * speed
+		_animated_sprite.play("Walk")
 	else:
+		_animated_sprite.play("default")
 		velocity.x = move_toward(velocity.x, 0, speed)
 
 	if y_direction:
 		velocity.y = y_direction * speed
+		_animated_sprite.play("Walk")
 	else:
+		_animated_sprite.play("default")
 		velocity.y = move_toward(velocity.y, 0, speed)
 		
 	# Move locally
