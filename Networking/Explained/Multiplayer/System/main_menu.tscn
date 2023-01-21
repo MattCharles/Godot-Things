@@ -72,7 +72,7 @@ size_flags_vertical = 4
 theme_override_font_sizes/font_size = 50
 placeholder_text = "Poochy"
 
-[node name="HostLobbyButton" type="Button" parent="VBoxContainer"]
+[node name="CreateLobbyButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2i(400, 0)
 layout_mode = 2
 offset_left = 449.0
@@ -81,7 +81,7 @@ offset_right = 849.0
 offset_bottom = 348.0
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
-text = "Host Lobby
+text = "Create Lobby
 "
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
