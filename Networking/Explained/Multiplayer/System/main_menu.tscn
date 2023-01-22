@@ -1,4 +1,7 @@
-[gd_scene format=3 uid="uid://cvrwwd6i35ldv"]
+[gd_scene load_steps=3 format=3 uid="uid://cvrwwd6i35ldv"]
+
+[ext_resource type="Script" path="res://addons/Holepunch/holepunch_node.gd" id="1_aw5gd"]
+[ext_resource type="Script" path="res://System/main_menu.gd" id="1_qh1ql"]
 
 [node name="main_menu" type="Control"]
 layout_mode = 3
@@ -7,6 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_qh1ql")
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
@@ -44,7 +48,7 @@ grow_vertical = 2
 theme_override_constants/separation = 40
 alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="PlayerNameContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 offset_top = 154.0
 offset_right = 1298.0
@@ -52,7 +56,7 @@ offset_bottom = 231.0
 theme_override_constants/separation = 30
 alignment = 1
 
-[node name="PlayerNameLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/PlayerNameContainer"]
 layout_mode = 2
 offset_left = 172.0
 offset_top = 2.0
@@ -63,7 +67,7 @@ theme_override_font_sizes/font_size = 50
 text = "Player Name:
 "
 
-[node name="LineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/PlayerNameContainer"]
 custom_minimum_size = Vector2i(600, 0)
 layout_mode = 2
 offset_left = 526.0
@@ -86,7 +90,7 @@ theme_override_font_sizes/font_size = 50
 text = "Create Lobby
 "
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+[node name="RoomCodeContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 offset_top = 388.0
 offset_right = 1298.0
@@ -94,7 +98,7 @@ offset_bottom = 465.0
 theme_override_constants/separation = 30
 alignment = 1
 
-[node name="PlayerNameLabel" type="Label" parent="VBoxContainer/HBoxContainer2"]
+[node name="Label" type="Label" parent="VBoxContainer/RoomCodeContainer"]
 layout_mode = 2
 offset_left = 188.0
 offset_top = 2.0
@@ -104,7 +108,7 @@ size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "Room Code:"
 
-[node name="LineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer2"]
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/RoomCodeContainer"]
 custom_minimum_size = Vector2i(600, 0)
 layout_mode = 2
 offset_left = 510.0
@@ -125,3 +129,21 @@ offset_bottom = 582.0
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "Join Lobby"
+
+[node name="HolePunch" type="Node" parent="."]
+script = ExtResource("1_aw5gd")
+rendevouz_address = "20.163.99.165"
+rendevouz_port = 12939
+
+[node name="FailTimer" type="Timer" parent="."]
+wait_time = 60.0
+one_shot = true
+
+[connection signal="pressed" from="VBoxContainer/CreateLobbyButton" to="." method="_on_create_lobby_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/JoinLobbyButton" to="." method="_on_join_lobby_button_pressed"]
+[connection signal="hole_punched" from="HolePunch" to="." method="_on_HolePunch_hole_punched"]
+[connection signal="return_unsuccessful" from="HolePunch" to="." method="_on_HolePunch_return_unsuccessful"]
+[connection signal="session_registered" from="HolePunch" to="." method="_on_HolePunch_session_registered"]
+[connection signal="update_lobby" from="HolePunch" to="." method="_on_HolePunch_update_lobby"]
+[connection signal="timeout" from="FailTimer" to="." method="_on_fail_timer_timeout"]
+[connection signal="timeout" from="FailTimer" to="." method="_on_timer_timeout"]

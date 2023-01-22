@@ -111,6 +111,7 @@ func _process(delta):
 			handle_failure("Disconnected: "+m[1])
 			return
 		if packet_string.begins_with(SERVER_OK):
+			print(packet_string)
 			var m = packet_string.split(":")
 			own_port = m[1].to_int()
 			print("Listening on port: ",own_port)
@@ -226,9 +227,9 @@ func start_peer_contact():
 	print("starting peer contact")
 	server_udp.put_packet("goodbye".to_utf8_buffer()) #this might not always get called because the server_udp is already closed before this. seems to be true from testing.
 	server_udp.close()
-	if peer_udp.is_listening():
+	if peer_udp.is_socket_connected():
 		peer_udp.close()
-	var err = peer_udp.listen(own_port, "*")
+	var err = peer_udp.bind(own_port, "*")
 	if err != OK:
 		handle_failure("Error listening on port: " + str(own_port) +", " + str(err))
 		return
@@ -244,16 +245,16 @@ func finalize_peers():
 #removes a client from the server
 func checkout():
 	var buffer = PackedByteArray()
-	buffer.append_array((CHECKOUT_CLIENT+client_name).to_utf8())
+	buffer.append_array((CHECKOUT_CLIENT+client_name).to_utf8_buffer())
 	server_udp.set_dest_address(rendevouz_address, rendevouz_port)
 	server_udp.put_packet(buffer)
 
 #call this function when you want to start the holepunch process
 func start_traversal(id, is_player_host, player_name, player_nickname):
-	if server_udp.is_listening():
+	if server_udp.is_socket_connected():
 		server_udp.close()
 
-	var err = server_udp.listen(rendevouz_port, "*")
+	var err = server_udp.bind(rendevouz_port, "*")
 	if err != OK:
 		handle_failure("Error listening on port: " + str(rendevouz_port) + " to server: " + rendevouz_address)
 		return
@@ -275,7 +276,7 @@ func start_traversal(id, is_player_host, player_name, player_nickname):
 	
 	if (is_host):
 		var buffer = PackedByteArray()
-		buffer.append_array((REGISTER_SESSION+session_id+":"+str(MAX_PLAYER_COUNT)).to_utf8())
+		buffer.append_array((REGISTER_SESSION+session_id+":"+str(MAX_PLAYER_COUNT)).to_utf8_buffer())
 		server_udp.set_dest_address(rendevouz_address, rendevouz_port)
 		server_udp.put_packet(buffer)
 		#host gets added to session after an ok, in _process
@@ -284,9 +285,9 @@ func start_traversal(id, is_player_host, player_name, player_nickname):
 
 #register a client with the server
 func _send_client_to_server():
-	await get_tree().create_timer(2.0) #resume upon timeout of 2 second timer; aka wait 2s
+	await get_tree().create_timer(2.0).timeout #resume upon timeout of 2 second timer; aka wait 2s
 	var buffer = PackedByteArray()
-	buffer.append_array((REGISTER_CLIENT+client_name+":"+session_id+":"+nickname).to_utf8())
+	buffer.append_array((REGISTER_CLIENT+client_name+":"+session_id+":"+nickname).to_utf8_buffer())
 	server_udp.close()
 	server_udp.set_dest_address(rendevouz_address, rendevouz_port)
 	server_udp.put_packet(buffer)
@@ -298,7 +299,7 @@ func _exit_tree():
 #reports connection failure, and stops all connections
 func handle_failure(message):
 	print("Holepunch unsuccessful, stopping processes!")
-	if is_host and server_udp.is_listening() and found_server: #shutdown session if possible
+	if is_host and server_udp.is_socket_connected() and found_server: #shutdown session if possible
 		var buffer = PackedByteArray()
 		buffer.append_array((CLOSE_SESSION+str(session_id)+":"+message).to_utf8())
 		server_udp.put_packet(buffer)
@@ -321,5 +322,5 @@ func close_session():
 func _ready():
 	p_timer = Timer.new()
 	get_node("/root/").call_deferred("add_child", p_timer)
-	p_timer.connect("timeout", self, "_ping_peer")
+	p_timer.timeout.connect(self._ping_peer)
 	p_timer.wait_time = 0.1

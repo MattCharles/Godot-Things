@@ -73,7 +73,6 @@ offset_right = -16.0
 offset_bottom = 11.0
 
 [node name="TextureProgressBar" type="TextureProgressBar" parent="UI"]
-layout_mode = 0
 offset_right = 15.0
 offset_bottom = 66.0
 value = 100.0
