@@ -40,6 +40,10 @@ window/stretch/aspect="ignore"
 
 project/assembly_name="Multiplayer"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/Holepunch/plugin.cfg")
+
 [input]
 
 move_left={
