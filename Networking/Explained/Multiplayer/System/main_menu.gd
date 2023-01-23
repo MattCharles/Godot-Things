@@ -9,29 +9,31 @@ var host_address
 var host_port
 var players_joined = 0
 var num_players = 100
+var player_name_field
 
 const consonants = ["B","C","D","F","G","H","J","K","L","M","N","P","Q","R","S","T","V","W","X","Y","Z"]
 const ROOM_CODE_LENGTH = 5
 
+
 func _ready():
 	multiplayer.peer_connected.connect(self._player_connected)
+	player_name_field = $VBoxContainer/PlayerNameContainer/LineEdit
 
 #Handle player input
 
 func _on_create_lobby_button_pressed():
 	is_host=true
-	room_code = generate_room_code(ROOM_CODE_LENGTH)
-	print(room_code)
 	connection_setup()
-	$HolePunch.start_traversal(room_code, true, $VBoxContainer/PlayerNameContainer/LineEdit.get_text() + str(randi()), $VBoxContainer/PlayerNameContainer/LineEdit.text) #Attempt to connect to server as host
+	$HolePunch.start_traversal("", true, player_name_field.get_text() + str(randi()), player_name_field.text) #Attempt to connect to server as host
 	print("Status: Connecting to server...")
 
 func _on_join_lobby_button_pressed():
 	var room_code = $VBoxContainer/RoomCodeContainer/LineEdit.text.to_upper()
+	print(room_code)
 	if room_code.length() == ROOM_CODE_LENGTH:
 		is_host = false
 		connection_setup()
-		$HolePunch.start_traversal(room_code, false, $VBoxContainer/PlayerNameContainer/LineEdit.get_text() + str(randi()), $VBoxContainer/PlayerNameContainer/LineEdit.text) #Attempt to connect to server as client
+		$HolePunch.start_traversal(room_code, false, player_name_field.get_text() + str(randi()), player_name_field.text) #Attempt to connect to server as client
 		print("Status: Connecting to session...")
 	else:
 		print("Status: Invalid roomcode!")
@@ -75,6 +77,10 @@ func _on_HolePunch_session_registered():
 func _on_HolePunch_return_unsuccessful(message):
 	print(message)
 	reinit()
+	
+func _on_HolePunch_return_room_code(_room_code):
+	print("Room code received! " + _room_code)
+	room_code = _room_code
 
 #Finalize connection
 
@@ -118,7 +124,7 @@ func connection_setup():
 	#$ConnectingUI/Playerlist.text = "Lobby 1/1"
 	#$ConnectingUI/CodeDisplay.text = "Room Code: "+room_code
 	$FailTimer.start(max_connect_time)
-	nickname = $VBoxContainer/PlayerNameContainer/LineEdit.text
+	nickname = player_name_field.text
 	if nickname == "":
 		nickname = "Player"
 

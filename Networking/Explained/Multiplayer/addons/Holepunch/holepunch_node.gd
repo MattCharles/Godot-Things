@@ -26,6 +26,9 @@ signal update_lobby(nicknames,max_players)
 #Setup your game to return to initial connection UI, and report fail reason for user feedback. 
 signal return_unsuccessful(message) 
 
+#Get the room code from the server
+signal return_room_code(room_code)
+
 var server_udp = PacketPeerUDP.new()
 var peer_udp = PacketPeerUDP.new()
 
@@ -61,7 +64,7 @@ var host_port = 0
 var client_name
 var nickname #appearance only
 var p_timer #ping timer, for communicating with peers
-var session_id
+var room_code
 
 var ping_cycles = 0 #how many times peers have pinged eachother
 
@@ -114,12 +117,16 @@ func _process(delta):
 			print(packet_string)
 			var m = packet_string.split(":")
 			own_port = m[1].to_int()
-			print("Listening on port: ",own_port)
+			room_code = m[2]
+			print("Server listening on port: ",own_port)
+			print("Room Code: ", room_code)
 			emit_signal('session_registered')
+			emit_signal('return_room_code', room_code)
 			if is_host:
 				if !found_server:
 					_send_client_to_server() #register host to session (other peers are done in start_traversal)
 			found_server=true
+			
 
 		if not recieved_peer_info:
 			if packet_string.begins_with(SERVER_INFO):
@@ -238,7 +245,7 @@ func start_peer_contact():
 #this function can be called to the server if you want to end the holepunch before the server closes the session
 func finalize_peers():
 	var buffer = PackedByteArray()
-	buffer.append_array((EXCHANGE_PEERS+str(session_id)).to_utf8_buffer())
+	buffer.append_array((EXCHANGE_PEERS+str(room_code)).to_utf8_buffer())
 	server_udp.set_dest_address(rendevouz_address, rendevouz_port)
 	server_udp.put_packet(buffer)
 
@@ -272,22 +279,23 @@ func start_traversal(id, is_player_host, player_name, player_nickname):
 	peer_stages = {}
 
 	ping_cycles = 0
-	session_id = id
+	room_code = id
 	
 	if (is_host):
 		var buffer = PackedByteArray()
-		buffer.append_array((REGISTER_SESSION+session_id+":"+str(MAX_PLAYER_COUNT)).to_utf8_buffer())
+		buffer.append_array((REGISTER_SESSION+":"+str(MAX_PLAYER_COUNT)).to_utf8_buffer())
 		server_udp.set_dest_address(rendevouz_address, rendevouz_port)
 		server_udp.put_packet(buffer)
 		#host gets added to session after an ok, in _process
 	else:
+		print("sessionID: " + room_code)
 		_send_client_to_server()
 
 #register a client with the server
 func _send_client_to_server():
 	await get_tree().create_timer(2.0).timeout #resume upon timeout of 2 second timer; aka wait 2s
 	var buffer = PackedByteArray()
-	buffer.append_array((REGISTER_CLIENT+client_name+":"+session_id+":"+nickname).to_utf8_buffer())
+	buffer.append_array((REGISTER_CLIENT+client_name+":"+room_code+":"+nickname).to_utf8_buffer())
 	server_udp.close()
 	server_udp.set_dest_address(rendevouz_address, rendevouz_port)
 	server_udp.put_packet(buffer)
@@ -301,7 +309,7 @@ func handle_failure(message):
 	print("Holepunch unsuccessful, stopping processes!")
 	if is_host and server_udp.is_socket_connected() and found_server: #shutdown session if possible
 		var buffer = PackedByteArray()
-		buffer.append_array((CLOSE_SESSION+str(session_id)+":"+message).to_utf8())
+		buffer.append_array((CLOSE_SESSION+str(room_code)+":"+message).to_utf8())
 		server_udp.put_packet(buffer)
 	else:
 		checkout() #remove client from session if not

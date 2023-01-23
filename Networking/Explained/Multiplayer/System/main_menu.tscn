@@ -50,41 +50,27 @@ alignment = 1
 
 [node name="PlayerNameContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
-offset_top = 154.0
-offset_right = 1298.0
-offset_bottom = 231.0
 theme_override_constants/separation = 30
 alignment = 1
 
 [node name="Label" type="Label" parent="VBoxContainer/PlayerNameContainer"]
 layout_mode = 2
-offset_left = 172.0
-offset_top = 2.0
-offset_right = 496.0
-offset_bottom = 74.0
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "Player Name:
 "
 
 [node name="LineEdit" type="LineEdit" parent="VBoxContainer/PlayerNameContainer"]
-custom_minimum_size = Vector2i(600, 0)
+custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
-offset_left = 526.0
-offset_right = 1126.0
-offset_bottom = 77.0
 size_flags_horizontal = 8
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 50
 placeholder_text = "Poochy"
 
 [node name="CreateLobbyButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2i(400, 0)
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
-offset_left = 449.0
-offset_top = 271.0
-offset_right = 849.0
-offset_bottom = 348.0
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "Create Lobby
@@ -92,40 +78,26 @@ text = "Create Lobby
 
 [node name="RoomCodeContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
-offset_top = 388.0
-offset_right = 1298.0
-offset_bottom = 465.0
 theme_override_constants/separation = 30
 alignment = 1
 
 [node name="Label" type="Label" parent="VBoxContainer/RoomCodeContainer"]
 layout_mode = 2
-offset_left = 188.0
-offset_top = 2.0
-offset_right = 480.0
-offset_bottom = 74.0
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "Room Code:"
 
 [node name="LineEdit" type="LineEdit" parent="VBoxContainer/RoomCodeContainer"]
-custom_minimum_size = Vector2i(600, 0)
+custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
-offset_left = 510.0
-offset_right = 1110.0
-offset_bottom = 77.0
 size_flags_horizontal = 8
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 50
 placeholder_text = "CHNDS"
 
 [node name="JoinLobbyButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2i(400, 0)
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
-offset_left = 449.0
-offset_top = 505.0
-offset_right = 849.0
-offset_bottom = 582.0
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "Join Lobby"
@@ -134,6 +106,7 @@ text = "Join Lobby"
 script = ExtResource("1_aw5gd")
 rendevouz_address = "20.163.99.165"
 rendevouz_port = 12939
+local_testing = true
 
 [node name="FailTimer" type="Timer" parent="."]
 wait_time = 60.0
@@ -142,8 +115,9 @@ one_shot = true
 [connection signal="pressed" from="VBoxContainer/CreateLobbyButton" to="." method="_on_create_lobby_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/JoinLobbyButton" to="." method="_on_join_lobby_button_pressed"]
 [connection signal="hole_punched" from="HolePunch" to="." method="_on_HolePunch_hole_punched"]
+[connection signal="return_room_code" from="HolePunch" to="." method="_on_HolePunch_return_room_code"]
 [connection signal="return_unsuccessful" from="HolePunch" to="." method="_on_HolePunch_return_unsuccessful"]
 [connection signal="session_registered" from="HolePunch" to="." method="_on_HolePunch_session_registered"]
 [connection signal="update_lobby" from="HolePunch" to="." method="_on_HolePunch_update_lobby"]
-[connection signal="timeout" from="FailTimer" to="." method="_on_fail_timer_timeout"]
 [connection signal="timeout" from="FailTimer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="FailTimer" to="." method="_on_fail_timer_timeout"]
