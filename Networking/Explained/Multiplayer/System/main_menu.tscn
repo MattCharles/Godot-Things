@@ -1,7 +1,51 @@
-[gd_scene load_steps=3 format=3 uid="uid://cvrwwd6i35ldv"]
+[gd_scene load_steps=10 format=3 uid="uid://cvrwwd6i35ldv"]
 
 [ext_resource type="Script" path="res://addons/Holepunch/holepunch_node.gd" id="1_aw5gd"]
 [ext_resource type="Script" path="res://System/main_menu.gd" id="1_qh1ql"]
+[ext_resource type="Texture2D" uid="uid://11pswvtjxkmy" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_c2gt4"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o65ua"]
+atlas = ExtResource("3_c2gt4")
+region = Rect2(0, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cec7m"]
+atlas = ExtResource("3_c2gt4")
+region = Rect2(17, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sg8oq"]
+atlas = ExtResource("3_c2gt4")
+region = Rect2(34, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cnvvl"]
+atlas = ExtResource("3_c2gt4")
+region = Rect2(51, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hn4p3"]
+atlas = ExtResource("3_c2gt4")
+region = Rect2(68, 0, 17, 23)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_n5y0o"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o65ua")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cec7m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sg8oq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cnvvl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hn4p3")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="main_menu" type="Control"]
 layout_mode = 3
@@ -25,14 +69,15 @@ color = Color(0.235294, 0.235294, 0.235294, 1)
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 331.0
+offset_top = 253.0
+offset_bottom = 380.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 90
 text = "Shooter's"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="Controls" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -48,19 +93,19 @@ grow_vertical = 2
 theme_override_constants/separation = 40
 alignment = 1
 
-[node name="PlayerNameContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="PlayerNameContainer" type="HBoxContainer" parent="Controls"]
 layout_mode = 2
 theme_override_constants/separation = 30
 alignment = 1
 
-[node name="Label" type="Label" parent="VBoxContainer/PlayerNameContainer"]
+[node name="Label" type="Label" parent="Controls/PlayerNameContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "Player Name:
 "
 
-[node name="LineEdit" type="LineEdit" parent="VBoxContainer/PlayerNameContainer"]
+[node name="LineEdit" type="LineEdit" parent="Controls/PlayerNameContainer"]
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -68,26 +113,18 @@ size_flags_vertical = 4
 theme_override_font_sizes/font_size = 50
 placeholder_text = "Poochy"
 
-[node name="CreateLobbyButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 50
-text = "Create Lobby
-"
-
-[node name="RoomCodeContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="RoomCodeContainer" type="HBoxContainer" parent="Controls"]
 layout_mode = 2
 theme_override_constants/separation = 30
 alignment = 1
 
-[node name="Label" type="Label" parent="VBoxContainer/RoomCodeContainer"]
+[node name="Label" type="Label" parent="Controls/RoomCodeContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "Room Code:"
 
-[node name="LineEdit" type="LineEdit" parent="VBoxContainer/RoomCodeContainer"]
+[node name="LineEdit" type="LineEdit" parent="Controls/RoomCodeContainer"]
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -95,7 +132,20 @@ size_flags_vertical = 4
 theme_override_font_sizes/font_size = 50
 placeholder_text = "CHNDS"
 
-[node name="JoinLobbyButton" type="Button" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Controls"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="CreateLobbyButton" type="Button" parent="Controls/HBoxContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 50
+text = "Create Lobby
+"
+
+[node name="JoinLobbyButton" type="Button" parent="Controls/HBoxContainer"]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -112,12 +162,42 @@ local_testing = true
 wait_time = 60.0
 one_shot = true
 
-[connection signal="pressed" from="VBoxContainer/CreateLobbyButton" to="." method="_on_create_lobby_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/JoinLobbyButton" to="." method="_on_join_lobby_button_pressed"]
+[node name="Connecting" type="HBoxContainer" parent="."]
+visible = false
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -232.0
+offset_top = -108.0
+offset_right = 360.0
+offset_bottom = 92.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="ConnectingText" type="Label" parent="Connecting"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_font_sizes/font_size = 55
+text = "Connecting to the server..."
+
+[node name="LoadingPoochy" type="AnimatedSprite2D" parent="Connecting"]
+texture_filter = 1
+position = Vector2(-48, 88)
+scale = Vector2(5, 5)
+frames = SubResource("SpriteFrames_n5y0o")
+playing = true
+
+[connection signal="pressed" from="Controls/HBoxContainer/CreateLobbyButton" to="." method="_on_create_lobby_button_pressed"]
+[connection signal="pressed" from="Controls/HBoxContainer/JoinLobbyButton" to="." method="_on_join_lobby_button_pressed"]
 [connection signal="hole_punched" from="HolePunch" to="." method="_on_HolePunch_hole_punched"]
 [connection signal="return_room_code" from="HolePunch" to="." method="_on_HolePunch_return_room_code"]
 [connection signal="return_unsuccessful" from="HolePunch" to="." method="_on_HolePunch_return_unsuccessful"]
 [connection signal="session_registered" from="HolePunch" to="." method="_on_HolePunch_session_registered"]
 [connection signal="update_lobby" from="HolePunch" to="." method="_on_HolePunch_update_lobby"]
-[connection signal="timeout" from="FailTimer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="FailTimer" to="." method="_on_fail_timer_timeout"]
+[connection signal="timeout" from="FailTimer" to="." method="_on_timer_timeout"]

@@ -17,7 +17,7 @@ const ROOM_CODE_LENGTH = 5
 
 func _ready():
 	multiplayer.peer_connected.connect(self._player_connected)
-	player_name_field = $VBoxContainer/PlayerNameContainer/LineEdit
+	player_name_field = $Controls/PlayerNameContainer/LineEdit
 
 #Handle player input
 
@@ -25,10 +25,11 @@ func _on_create_lobby_button_pressed():
 	is_host=true
 	connection_setup()
 	$HolePunch.start_traversal("", true, player_name_field.get_text() + str(randi()), player_name_field.text) #Attempt to connect to server as host
-	print("Status: Connecting to server...")
+	$Controls.visible = false
+	$Connecting.visible = true
 
 func _on_join_lobby_button_pressed():
-	var room_code = $VBoxContainer/RoomCodeContainer/LineEdit.text.to_upper()
+	var room_code = $Controls/RoomCodeContainer/LineEdit.text.to_upper()
 	print(room_code)
 	if room_code.length() == ROOM_CODE_LENGTH:
 		is_host = false
