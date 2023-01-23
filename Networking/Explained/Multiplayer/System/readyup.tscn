@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://cb7ldofgws1ui"]
+[gd_scene load_steps=5 format=3 uid="uid://cb7ldofgws1ui"]
 
 [ext_resource type="Texture2D" uid="uid://c0u2avgp13i8g" path="res://Assets/Backgrounds/CharacterSelectBG.png" id="1_need5"]
 [ext_resource type="Script" path="res://System/RoomCodeListener.gd" id="2_paqod"]
+[ext_resource type="Texture2D" uid="uid://dfgias4hy1q8o" path="res://Characters/Poochys/poochy_good.png" id="3_yqdf6"]
+[ext_resource type="Texture2D" uid="uid://chwphign38f78" path="res://Characters/Poochys/poochy_sleep.png" id="4_2sll4"]
 
 [node name="readyup" type="Control"]
 layout_mode = 3
@@ -38,10 +40,12 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 50
 placeholder_text = "Poochy"
 
-[node name="CheckButton" type="CheckButton" parent="Controls"]
+[node name="ReadyButton" type="CheckButton" parent="Controls"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
-text = "Ready"
+theme_override_icons/checked = ExtResource("3_yqdf6")
+theme_override_icons/unchecked = ExtResource("4_2sll4")
+text = "Ready:"
 
 [node name="Button" type="Button" parent="."]
 custom_minimum_size = Vector2(400, 0)
