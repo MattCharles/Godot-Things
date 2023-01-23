@@ -17,6 +17,8 @@ signal p2_animation_changed(newAnim: String)
 signal p3_animation_changed(newAnim: String)
 signal p4_animation_changed(newAnim: String)
 
+signal room_code_changed(new_code: String)
+
 var p1_animation := "default":
 	set(value):
 		print('p1 began animation ', value)
@@ -87,11 +89,17 @@ var p2_name: String:
 var p3_name: String:
 	set(newName):
 		p3_name = newName
-		print('p3 renamed to ' + str(p2_name))
+		print('p3 renamed to ' + str(p3_name))
 		emit_signal(StringName("p3_rename"), newName)
 		
 var p4_name: String:
 	set(newName):
 		p4_name = newName
-		print('p4 renamed to ' + str(p2_name))
+		print('p4 renamed to ' + str(p4_name))
 		emit_signal(StringName("p4_rename"), newName)
+
+var room_code: String = "XXXXX":
+	set(new_code):
+		room_code = new_code
+		print('room code is ' + str(room_code))
+		emit_signal(StringName("room_code_changed"), room_code)

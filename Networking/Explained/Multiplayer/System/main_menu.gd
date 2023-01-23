@@ -81,7 +81,8 @@ func _on_HolePunch_return_unsuccessful(message):
 	
 func _on_HolePunch_return_room_code(_room_code):
 	print("Room code received! " + _room_code)
-	room_code = _room_code
+	get_tree().change_scene_to_file("res://System/readyup.tscn")
+	GameState.room_code = _room_code
 
 #Finalize connection
 
