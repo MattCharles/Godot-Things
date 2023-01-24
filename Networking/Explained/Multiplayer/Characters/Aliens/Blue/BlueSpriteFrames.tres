@@ -2,22 +2,22 @@
 
 [ext_resource type="Texture2D" uid="uid://5h3y5ya1ow8t" path="res://Characters/Aliens/Blue/alienBlue_jump.png" id="3_3nfgu"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_txf30"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_vmerx"]
 region = Rect2(0, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_m2scb"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_g523b"]
 region = Rect2(17, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_olnn7"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_gjmda"]
 region = Rect2(34, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_urmi8"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_pf3ta"]
 region = Rect2(51, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_j3urx"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_fh0t0"]
 region = Rect2(68, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_exgan"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_27ko2"]
 region = Rect2(0, 0, 17, 23)
 
 [resource]
@@ -32,19 +32,19 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_txf30")
+"texture": SubResource("AtlasTexture_vmerx")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_m2scb")
+"texture": SubResource("AtlasTexture_g523b")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_olnn7")
+"texture": SubResource("AtlasTexture_gjmda")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_urmi8")
+"texture": SubResource("AtlasTexture_pf3ta")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_j3urx")
+"texture": SubResource("AtlasTexture_fh0t0")
 }],
 "loop": true,
 "name": &"Walk",
@@ -52,7 +52,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_exgan")
+"texture": SubResource("AtlasTexture_27ko2")
 }],
 "loop": true,
 "name": &"default",

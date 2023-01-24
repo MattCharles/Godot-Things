@@ -1,7 +1,7 @@
 extends Node
 
 var room_code
-var max_connect_time = 60 #if this time is exceeded when joining a game, a fail message is displayed
+var max_connect_time = 20 #if this time is exceeded when joining a game, a fail message is displayed
 var is_host = false
 var nickname
 var own_port
@@ -11,13 +11,13 @@ var players_joined = 0
 var num_players = 100
 var player_name_field
 
-const consonants = ["B","C","D","F","G","H","J","K","L","M","N","P","Q","R","S","T","V","W","X","Y","Z"]
 const ROOM_CODE_LENGTH = 5
 
+const PlayerScene = preload("res://Characters/Aliens/Player.tscn")
 
 func _ready():
 	multiplayer.peer_connected.connect(self._player_connected)
-	player_name_field = $Controls/PlayerNameContainer/LineEdit
+	player_name_field = $menu/Controls/PlayerNameContainer/LineEdit
 
 #Handle player input
 
@@ -25,11 +25,11 @@ func _on_create_lobby_button_pressed():
 	is_host=true
 	connection_setup()
 	$HolePunch.start_traversal("", true, player_name_field.get_text() + str(randi()), player_name_field.text) #Attempt to connect to server as host
-	$Controls.visible = false
-	$Connecting.visible = true
+	$menu/Controls.visible = false
+	$menu/Connecting.visible = true
 
 func _on_join_lobby_button_pressed():
-	var room_code = $Controls/RoomCodeContainer/LineEdit.text.to_upper()
+	var room_code = $menu/Controls/RoomCodeContainer/LineEdit.text.to_upper()
 	print(room_code)
 	if room_code.length() == ROOM_CODE_LENGTH:
 		is_host = false
@@ -50,16 +50,15 @@ func _on_ButtonStart_pressed():
 
 #Handle holepunch messages
 
-func _on_HolePunch_hole_punched(my_port, hosts_port, hosts_address,num_plyrs):
+func _on_HolePunch_hole_punched(my_port, hosts_port, hosts_address, num_plyrs):
 	print("ready to join: "+str(hosts_address)+":"+str(hosts_port)+" / "+str(my_port))
 	own_port = my_port
 	host_address = hosts_address
 	host_port = hosts_port
 	num_players = num_plyrs
-	$FailTimer.stop()
+	$menu/FailTimer.stop()
 	print("Status: Connection successful, starting game!")
 	players_joined = 0
-	await get_tree().idle_frame
 
 func _on_HolePunch_update_lobby(nicknames,max_players):
 	var lobby_message = "Lobby "+str(nicknames.size())+"/"+str(max_players)+"\n"
@@ -73,7 +72,7 @@ func _on_HolePunch_update_lobby(nicknames,max_players):
 
 func _on_HolePunch_session_registered():
 	print("Status: Room open!")
-	$FailTimer.stop() #server responded!
+	$menu/FailTimer.stop() #server responded!
 
 func _on_HolePunch_return_unsuccessful(message):
 	print(message)
@@ -81,7 +80,9 @@ func _on_HolePunch_return_unsuccessful(message):
 	
 func _on_HolePunch_return_room_code(_room_code):
 	print("Room code received! " + _room_code)
-	get_tree().change_scene_to_file("res://System/readyup.tscn")
+	$menu.visible = false
+	$readyup.visible = true
+	
 	GameState.room_code = _room_code
 
 #Finalize connection
@@ -89,48 +90,44 @@ func _on_HolePunch_return_room_code(_room_code):
 func _player_connected(id): #When player connects, load game scene
 	players_joined += 1
 	print(str(players_joined)+" out of "+str(num_players)+" joined.")
-	#if players_joined >= num_players:
-	#	var game = preload("res://Scenes/GameScene.tscn").instance()
-	#	get_tree().get_root().add_child(game)
-	#	queue_free()
 
 func _on_ConnectTimer_timeout():
 	print("connection timer timeout")
-	#if $HolePunch.is_host:
-		#var net = NetworkedMultiplayerENet.new() #Create regular godot peer to peer server
-		#net.create_server(own_port, 2) #You can follow regular godot networking tutorials to extend this
-		#get_tree().set_network_peer(net)
-	#else:
-		#var net = NetworkedMultiplayerENet.new() #Connect to host
-		#net.create_client(host_address, host_port, 0, 0, own_port)
-		#get_tree().set_network_peer(net)
-	$FailTimer.start(max_connect_time)
+	$menu/FailTimer.start(max_connect_time)
 
 func _on_fail_timer_timeout():
-	#print("Status: Connection timed out!")
-	#reinit()
+	print("Status: Connection timed out!")
+	reinit()
 	pass
 
 #Utility/UI
 
 func reinit():
-	$FailTimer.stop()
-	#$ConnectingUI.visible=false
-	#$MainUI.visible=true
-	#$MainUI/Nickname.text = ""
+	$menu/FailTimer.stop()
+	$menu/Controls.visible = true
+	$menu/Connecting.visible = false
+	$menu/Title.text = "Failed to Connect"
 
 func connection_setup():
-	#$ConnectingUI.visible = true
-	#$MainUI.visible = false
-	#$ConnectingUI/ButtonStart.visible = is_host
-	#$ConnectingUI/Playerlist.text = "Lobby 1/1"
-	#$ConnectingUI/CodeDisplay.text = "Room Code: "+room_code
-	$FailTimer.start(max_connect_time)
+	$menu/FailTimer.start(max_connect_time)
 	nickname = player_name_field.text
 	if nickname == "":
 		nickname = "Player"
 
-func generate_room_code(length): #TODO: handle collisions
-	if length <= 0:
-		return ''
-	return Helpers.get_random_entry(consonants) + generate_room_code(length - 1)
+
+func create_player(id : int) -> void:
+	# Instantiate a new player for this client.
+	var p = PlayerScene.instantiate()
+
+	# Set the name, so players can figure out their local authority
+	p.name = str(id)
+	
+	$menu/Players.add_child(p)
+
+func destroy_player(id : int) -> void:
+	# Delete this peer's node.
+	$menu/Players.get_node(str(id)).queue_free()
+		
+func _on_button_start_pressed():
+	$HolePunch.finalize_peers()
+	
