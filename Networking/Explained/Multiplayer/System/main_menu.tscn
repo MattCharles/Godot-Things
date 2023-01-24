@@ -1,12 +1,33 @@
-[gd_scene load_steps=5 format=3 uid="uid://cvrwwd6i35ldv"]
+[gd_scene load_steps=11 format=3 uid="uid://cvrwwd6i35ldv"]
 
 [ext_resource type="Script" path="res://addons/Holepunch/holepunch_node.gd" id="1_aw5gd"]
 [ext_resource type="Script" path="res://System/main_menu.gd" id="1_qh1ql"]
+[ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_mp7sg"]
 [ext_resource type="PackedScene" uid="uid://cb7ldofgws1ui" path="res://System/readyup.tscn" id="4_ca60h"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dld31"]
+atlas = ExtResource("3_mp7sg")
+region = Rect2(0, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aa45t"]
+atlas = ExtResource("3_mp7sg")
+region = Rect2(17, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vdboh"]
+atlas = ExtResource("3_mp7sg")
+region = Rect2(34, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b2ryf"]
+atlas = ExtResource("3_mp7sg")
+region = Rect2(51, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bq4gj"]
+atlas = ExtResource("3_mp7sg")
+region = Rect2(68, 0, 17, 23)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_n5y0o"]
 animations = [{
-"frames": [null, null, null, null, null],
+"frames": [SubResource("AtlasTexture_dld31"), SubResource("AtlasTexture_aa45t"), SubResource("AtlasTexture_vdboh"), SubResource("AtlasTexture_b2ryf"), SubResource("AtlasTexture_bq4gj")],
 "loop": true,
 "name": &"default",
 "speed": 5.0
@@ -184,6 +205,9 @@ alignment = 1
 
 [node name="ConnectingText" type="Label" parent="menu/Connecting"]
 layout_mode = 2
+offset_top = 60.0
+offset_right = 701.0
+offset_bottom = 139.0
 size_flags_horizontal = 8
 theme_override_font_sizes/font_size = 55
 text = "Connecting to the server..."
