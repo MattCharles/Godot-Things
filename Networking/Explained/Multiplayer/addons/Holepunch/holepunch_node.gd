@@ -149,7 +149,7 @@ func _handle_greet_message(peer_name, peer_port):
 	if not peer_name in peer_stages:
 		peer_stages[peer_name] = 0
 	if peer_stages[peer_name] == 0: peer_stages[peer_name] = 1
-	peers[peer_name].port = peer_port
+	peers[peer_name].port = peer_port if typeof(peer_port) == TYPE_INT else peer_port.to_int()
 	if peers[peer_name].hosting:
 		host_port=peer_port
 		host_address=peers[peer_name].address
@@ -198,13 +198,13 @@ func _ping_peer():
 				_cascade_peer(peer.address,peer.port)
 			else:
 				print("> send greet!")
-				peer_udp.set_dest_address(peer.address, int(peer.port))
+				peer_udp.set_dest_address(peer.address, peer.port if typeof(peer.port) == TYPE_INT else peer.port.to_int())
 				var buffer = PackedByteArray()
 				buffer.append_array((PEER_GREET+client_name+":"+str(own_port)).to_utf8_buffer())
 				peer_udp.put_packet(buffer)
 		if stage == 1 and recieved_peer_greets:
 			print("> send confirm!")
-			peer_udp.set_dest_address(peer.address, int(peer.port))
+			peer_udp.set_dest_address(peer.address, peer.port)
 			var buffer = PackedByteArray()
 			buffer.append_array((PEER_CONFIRM+client_name+":"+str(own_port)).to_utf8_buffer())
 			peer_udp.put_packet(buffer)
@@ -220,11 +220,11 @@ func _ping_peer():
 			for p in peers.keys():
 				var peer = peers[p]
 				print("> send go!")
-				peer_udp.set_dest_address(peer.address, int(peer.port))
+				peer_udp.set_dest_address(peer.address, peer.port if typeof(peer.port) == TYPE_INT else peer.port.to_int())
 				var buffer = PackedByteArray()
 				buffer.append_array((HOST_GO+client_name+":"+str(own_port)).to_utf8_buffer())
 				peer_udp.put_packet(buffer)
-			emit_signal("hole_punched", int(own_port), host_port, host_address, peers.size())
+			emit_signal("hole_punched", own_port if typeof(own_port) == TYPE_INT else own_port.to_int(), host_port, host_address, peers.size())
 			peer_udp.close()
 			p_timer.stop()
 			set_process(false)

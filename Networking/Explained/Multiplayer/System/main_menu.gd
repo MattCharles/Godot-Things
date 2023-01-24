@@ -57,8 +57,13 @@ func _on_HolePunch_hole_punched(my_port, hosts_port, hosts_address, num_plyrs):
 	host_port = hosts_port
 	num_players = num_plyrs
 	$menu/FailTimer.stop()
-	print("Status: Connection successful, starting game!")
+	print("Status: Connection successful")
 	players_joined = 0
+	await get_tree().process_frame
+	if $HolePunch.is_host:
+		$ConnectTimer.start(1) #Waiting for port to become unused to start game
+	else:
+		$ConnectTimer.start(3) #Waiting for host to start game
 
 func _on_HolePunch_update_lobby(nicknames,max_players):
 	var lobby_message = "Lobby "+str(nicknames.size())+"/"+str(max_players)+"\n"
@@ -69,6 +74,27 @@ func _on_HolePunch_update_lobby(nicknames,max_players):
 		print(lobby_message)
 	else:
 		print("Status: Room open!")
+		
+func _player_connected(id): #When player connects, load game scene
+	players_joined += 1
+	print(str(players_joined)+" out of "+str(num_players)+" joined.")
+	if players_joined >= num_players:
+		var game = preload("res://System/game.tscn").instance()
+		get_tree().get_root().add_child(game)
+		queue_free()
+		
+func _on_ConnectTimer_timeout(): 
+	print("connection timer timeout")
+	if $HolePunch.is_host:
+		var net = ENetMultiplayerPeer.new() #Create regular godot peer to peer server
+		net.create_server(own_port, 2) #You can follow regular godot networking tutorials to extend this
+		multiplayer.set_multiplayer_peer(net)
+		
+	else:
+		var net = ENetMultiplayerPeer.new() #Connect to host
+		net.create_client(host_address, host_port, 0, 0, own_port)
+		multiplayer.set_multiplayer_peer(net)
+	$FailTimer.start(max_connect_time)
 
 func _on_HolePunch_session_registered():
 	print("Status: Room open!")
@@ -84,14 +110,10 @@ func _on_HolePunch_return_room_code(_room_code):
 	$readyup.visible = true
 	
 	GameState.room_code = _room_code
+	$readyup/Controls/RoomCodeLabel.text = "Room Code: " + GameState.room_code
 
 #Finalize connection
-
-func _player_connected(id): #When player connects, load game scene
-	players_joined += 1
-	print(str(players_joined)+" out of "+str(num_players)+" joined.")
-
-func _on_ConnectTimer_timeout():
+func _on_connect_timer_timeout():
 	print("connection timer timeout")
 	$menu/FailTimer.start(max_connect_time)
 
