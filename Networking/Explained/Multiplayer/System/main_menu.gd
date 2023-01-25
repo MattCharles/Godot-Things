@@ -16,6 +16,8 @@ const ROOM_CODE_LENGTH = 5
 const PlayerScene = preload("res://Characters/Aliens/Player.tscn")
 @onready var PlaceholderScene = preload("res://Characters/Poochys/Stander.tscn")
 
+var playerPositions = [$readyup.get_node("P1Position"), $readyup.get_node("P2Position"), $readyup.get_node("P3Position"), $readyup.get_node("P4Position")]
+
 func _ready():
 	multiplayer.peer_connected.connect(self._player_connected)
 	player_name_field = $menu/Controls/PlayerNameContainer/LineEdit

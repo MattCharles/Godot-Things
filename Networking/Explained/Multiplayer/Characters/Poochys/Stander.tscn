@@ -1,10 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://kcsaekv0kv05"]
+[gd_scene load_steps=5 format=3 uid="uid://kcsaekv0kv05"]
 
 [ext_resource type="Texture2D" uid="uid://cqcbn0ytw0ot7" path="res://Characters/Poochys/Poochy-Stander.png" id="1_niq5l"]
+[ext_resource type="Script" path="res://Characters/Poochys/Stander.gd" id="1_pl7dj"]
 [ext_resource type="Script" path="res://Characters/Poochys/ReadySprite.gd" id="2_gayvs"]
 [ext_resource type="Texture2D" uid="uid://c4nwkkcgw7ye2" path="res://Assets/Images/check.png" id="2_ovoi4"]
 
 [node name="LobbyPlaceholder" type="Node2D"]
+script = ExtResource("1_pl7dj")
 
 [node name="Poochy-stander" type="Sprite2D" parent="."]
 texture_filter = 1
