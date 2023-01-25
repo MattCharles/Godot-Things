@@ -24,9 +24,7 @@ offset_bottom = 26.0
 grow_horizontal = 2
 
 [node name="Label" type="Label" parent="UI/CenterContainer"]
-offset_left = 669.0
-offset_right = 1250.0
-offset_bottom = 42.0
+layout_mode = 2
 theme_type_variation = &"HeaderLarge"
 text = "Button pressed X times since server restart"
 

@@ -14,6 +14,7 @@ var player_name_field
 const ROOM_CODE_LENGTH = 5
 
 const PlayerScene = preload("res://Characters/Aliens/Player.tscn")
+@onready var PlaceholderScene = preload("res://Characters/Poochys/Stander.tscn")
 
 func _ready():
 	multiplayer.peer_connected.connect(self._player_connected)
@@ -67,6 +68,10 @@ func _on_HolePunch_hole_punched(my_port, hosts_port, hosts_address, num_plyrs):
 
 func _on_HolePunch_update_lobby(nicknames,max_players):
 	var lobby_message = "Lobby "+str(nicknames.size())+"/"+str(max_players)+"\n"
+	var placeholder = PlaceholderScene.instantiate()
+	placeholder.get_node("Details/Name").text = nicknames[0]
+	placeholder.set_position($readyup/P1Position.position)
+	add_child(placeholder)
 	for n in nicknames:
 		lobby_message+=n+"\n"
 	if nicknames.size()>1: #you're not alone!
