@@ -54,10 +54,10 @@ func process_move(delta) -> void:
 			$Networking.processed_position = true
 		velocity = $Networking.sync_velocity
 		_animated_sprite.flip_h = $Networking.sync_flip_sprite
-		if velocity.x > 0 or velocity.y > 0:
+		if velocity.x != 0 or velocity.y != 0:
 			_animated_sprite.play(walk)
 		else:
-			_animated_sprite.play("defalut")
+			_animated_sprite.play(default)
 		move_and_slide()
 		return
 	else:
@@ -77,15 +77,16 @@ func process_move(delta) -> void:
 		_animated_sprite.flip_h = sync_flip_sprite
 		$Networking.sync_flip_sprite = sync_flip_sprite
 	else:
-		_animated_sprite.play(default)
 		velocity.x = move_toward(velocity.x, 0, speed)
 
 	if y_direction:
 		velocity.y = y_direction * speed
 		_animated_sprite.play(walk)
 	else:
-		_animated_sprite.play(default)
 		velocity.y = move_toward(velocity.y, 0, speed)
+		
+	if not x_direction and not y_direction:
+		_animated_sprite.play(default)
 		
 	# Move locally
 	move_and_slide()
