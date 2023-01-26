@@ -9,12 +9,18 @@
 config_version=5
 
 _global_script_classes=[{
+"base": "RefCounted",
+"class": &"Movement",
+"language": &"GDScript",
+"path": "res://Characters/move_states.gd"
+}, {
 "base": "CharacterBody2D",
 "class": &"Player",
 "language": &"GDScript",
 "path": "res://Characters/Aliens/Player.gd"
 }]
 _global_script_class_icons={
+"Movement": "",
 "Player": ""
 }
 
@@ -64,5 +70,10 @@ move_up={
 move_down={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"unicode":0,"echo":false,"script":null)
+]
+}
+roll={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"unicode":0,"echo":false,"script":null)
 ]
 }

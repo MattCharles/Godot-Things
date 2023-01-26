@@ -1,19 +1,21 @@
 extends CharacterBody2D
 class_name Player
 
-const DEFAULT_SPEED = 300.0
-const DEFAULT_HEALTH = 100.0
+const DEFAULT_SPEED = 80
+const DEFAULT_ROLL_SPEED = 120
+const DEFAULT_HEALTH = 100
 const CAMERA_MAX_ZOOM := Vector2(0.5, 0.5)
+const DISTANCE_FROM_CENTER_TO_HAND = 1
 
 @onready var _animated_sprite = $AnimatedSprite2D
-
-# Get the gravity from the project settings to be synced with RigidDynamicBody nodes.
-#var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 var health := DEFAULT_HEALTH
 var maxHealth := DEFAULT_HEALTH
 var speed := DEFAULT_SPEED
 var maxSpeed := DEFAULT_SPEED
+var roll_speed := DEFAULT_ROLL_SPEED
+var move_state := Movement.states.MOVE
+var roll_vector := Vector2.DOWN
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -32,6 +34,13 @@ func _process(_delta):
 	$UI/TextureProgressBar.visible = health < maxHealth
 
 func _physics_process(delta):
+	match move_state:
+		Movement.states.MOVE:
+			process_move(delta)
+		Movement.states.ROLL:
+			process_roll(delta)
+			
+func process_move(delta) -> void:
 	if !is_local_authority(): # this is somebody else's player character
 		if not $Networking.processed_position:
 			position = $Networking.sync_position
@@ -67,6 +76,27 @@ func _physics_process(delta):
 	# Move locally
 	move_and_slide()
 	
+	if Input.is_action_just_pressed("roll"):
+		move_state = Movement.states.ROLL
+		
 	# Update sync variables, which will be replicated to everyone else
 	$Networking.sync_position = position
 	$Networking.sync_velocity = velocity
+	
+
+func process_roll(delta) -> void:
+	velocity = roll_vector * roll_speed
+	_animated_sprite.play("Roll")
+
+func roll_animation_finished() -> void:
+	move_state = Movement.states.ROLL
+	
+func get_hand_position() -> Vector2:
+	var target = get_viewport().get_mouse_position()
+	var source = self.position
+	return DISTANCE_FROM_CENTER_TO_HAND * ( target - source ).normalized()
+	
+func get_hand_rotation() -> float:
+	var target = get_viewport().get_mouse_position()
+	var source = self.position
+	return source.angle_to(target)

@@ -93,7 +93,7 @@ func _player_connected(id): #When player connects, load game scene
 	players_joined += 1
 	print(str(players_joined)+" out of "+str(num_players)+" joined.")
 	if players_joined >= num_players:
-		var game = preload("res://System/game.tscn").instance()
+		var game = preload("res://System/game.tscn").instantiate()
 		get_tree().get_root().add_child(game)
 		queue_free()
 		
