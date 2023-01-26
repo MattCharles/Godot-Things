@@ -39,6 +39,7 @@ func _on_join_lobby_button_pressed():
 	var room_code = $menu/Controls/RoomCodeContainer/LineEdit.text.to_upper()
 	var player_name = player_name_field.get_text() if player_name_field.get_text() != "" else "Poochy"
 	print(room_code)
+	$readyup/Controls/PlayerNameValueLabel.text = player_name
 	if room_code.length() == ROOM_CODE_LENGTH:
 		is_host = false
 		connection_setup()

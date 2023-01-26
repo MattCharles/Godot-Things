@@ -10,6 +10,10 @@ func _ready():
 	for peer in peers:
 		print("peer found: " + peer)
 		create_player(peer)
+	# Listen to peer connections, and create new player for them
+	multiplayer.peer_connected.connect(self.create_player)
+	# Listen to peer disconnections, and destroy their players
+	multiplayer.peer_disconnected.connect(self.destroy_player)
 
 func create_player(id):
 	print("spawning: " + id)
@@ -21,3 +25,7 @@ func create_player(id):
 	player.position = Vector2(randf_range(0,100),randf_range(0,100))
 	add_child(player)
 	return player
+
+func destroy_player(id : int) -> void:
+	# Delete this peer's node.
+	$Players.get_node(str(id)).queue_free()

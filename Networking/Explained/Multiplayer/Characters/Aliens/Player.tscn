@@ -29,7 +29,7 @@ properties/0/path = NodePath(":sync_position")
 properties/0/spawn = true
 properties/0/sync = true
 properties/1/path = NodePath(":sync_velocity")
-properties/1/spawn = true
+properties/1/spawn = false
 properties/1/sync = true
 properties/2/path = NodePath(".:sync_hand_position")
 properties/2/spawn = true
@@ -38,8 +38,11 @@ properties/3/path = NodePath(".:player_name")
 properties/3/spawn = true
 properties/3/sync = true
 properties/4/path = NodePath(".:sync_move_state")
-properties/4/spawn = true
+properties/4/spawn = false
 properties/4/sync = true
+properties/5/path = NodePath(".:sync_flip_sprite")
+properties/5/spawn = false
+properties/5/sync = true
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 3

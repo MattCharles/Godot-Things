@@ -8,6 +8,7 @@ const CAMERA_MAX_ZOOM := Vector2(0.5, 0.5)
 const DISTANCE_FROM_CENTER_TO_HAND = 1
 
 @onready var _animated_sprite = $AnimatedSprite2D
+var sync_flip_sprite:bool = false
 
 var health := DEFAULT_HEALTH
 var maxHealth := DEFAULT_HEALTH
@@ -62,6 +63,8 @@ func process_move(delta) -> void:
 	if x_direction:
 		velocity.x = x_direction * speed
 		_animated_sprite.play("Walk")
+		sync_flip_sprite = x_direction < 0
+		_animated_sprite.flip_h = sync_flip_sprite
 	else:
 		_animated_sprite.play("default")
 		velocity.x = move_toward(velocity.x, 0, speed)
