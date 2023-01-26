@@ -1,48 +1,12 @@
-[gd_scene load_steps=11 format=3 uid="uid://cvrwwd6i35ldv"]
+[gd_scene load_steps=5 format=3 uid="uid://cvrwwd6i35ldv"]
 
 [ext_resource type="Script" path="res://addons/Holepunch/holepunch_node.gd" id="1_aw5gd"]
 [ext_resource type="Script" path="res://System/main_menu.gd" id="1_qh1ql"]
-[ext_resource type="Texture2D" uid="uid://11pswvtjxkmy" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_mp7sg"]
 [ext_resource type="PackedScene" uid="uid://cb7ldofgws1ui" path="res://System/readyup.tscn" id="4_ca60h"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_dld31"]
-atlas = ExtResource("3_mp7sg")
-region = Rect2(0, 0, 17, 23)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_aa45t"]
-atlas = ExtResource("3_mp7sg")
-region = Rect2(17, 0, 17, 23)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_vdboh"]
-atlas = ExtResource("3_mp7sg")
-region = Rect2(34, 0, 17, 23)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_b2ryf"]
-atlas = ExtResource("3_mp7sg")
-region = Rect2(51, 0, 17, 23)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_bq4gj"]
-atlas = ExtResource("3_mp7sg")
-region = Rect2(68, 0, 17, 23)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_n5y0o"]
 animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_dld31")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_aa45t")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_vdboh")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_b2ryf")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_bq4gj")
-}],
+"frames": [null, null, null, null, null],
 "loop": true,
 "name": &"default",
 "speed": 5.0
@@ -111,19 +75,29 @@ alignment = 1
 
 [node name="PlayerNameContainer" type="HBoxContainer" parent="menu/Controls"]
 layout_mode = 2
+offset_top = 212.0
+offset_right = 1298.0
+offset_bottom = 289.0
 theme_override_constants/separation = 30
 alignment = 1
 
 [node name="Label" type="Label" parent="menu/Controls/PlayerNameContainer"]
 layout_mode = 2
+offset_left = 172.0
+offset_top = 2.0
+offset_right = 496.0
+offset_bottom = 74.0
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "Player Name:
 "
 
 [node name="LineEdit" type="LineEdit" parent="menu/Controls/PlayerNameContainer"]
-custom_minimum_size = Vector2(600, 0)
+custom_minimum_size = Vector2i(600, 0)
 layout_mode = 2
+offset_left = 526.0
+offset_right = 1126.0
+offset_bottom = 77.0
 size_flags_horizontal = 8
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 50
@@ -131,18 +105,28 @@ placeholder_text = "Poochy"
 
 [node name="RoomCodeContainer" type="HBoxContainer" parent="menu/Controls"]
 layout_mode = 2
+offset_top = 329.0
+offset_right = 1298.0
+offset_bottom = 406.0
 theme_override_constants/separation = 30
 alignment = 1
 
 [node name="Label" type="Label" parent="menu/Controls/RoomCodeContainer"]
 layout_mode = 2
+offset_left = 188.0
+offset_top = 2.0
+offset_right = 480.0
+offset_bottom = 74.0
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "Room Code:"
 
 [node name="LineEdit" type="LineEdit" parent="menu/Controls/RoomCodeContainer"]
-custom_minimum_size = Vector2(600, 0)
+custom_minimum_size = Vector2i(600, 0)
 layout_mode = 2
+offset_left = 510.0
+offset_right = 1110.0
+offset_bottom = 77.0
 size_flags_horizontal = 8
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 50
@@ -150,20 +134,29 @@ placeholder_text = "CHNDS"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="menu/Controls"]
 layout_mode = 2
+offset_top = 446.0
+offset_right = 1298.0
+offset_bottom = 523.0
 theme_override_constants/separation = 20
 alignment = 1
 
 [node name="CreateLobbyButton" type="Button" parent="menu/Controls/HBoxContainer"]
-custom_minimum_size = Vector2(400, 0)
+custom_minimum_size = Vector2i(400, 0)
 layout_mode = 2
+offset_left = 239.0
+offset_right = 639.0
+offset_bottom = 77.0
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "Create Lobby
 "
 
 [node name="JoinLobbyButton" type="Button" parent="menu/Controls/HBoxContainer"]
-custom_minimum_size = Vector2(400, 0)
+custom_minimum_size = Vector2i(400, 0)
 layout_mode = 2
+offset_left = 659.0
+offset_right = 1059.0
+offset_bottom = 77.0
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "Join Lobby"
@@ -174,7 +167,7 @@ one_shot = true
 
 [node name="Connecting" type="HBoxContainer" parent="menu"]
 visible = false
-custom_minimum_size = Vector2(300, 200)
+custom_minimum_size = Vector2i(300, 200)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5

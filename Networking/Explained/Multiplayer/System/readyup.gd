@@ -18,6 +18,9 @@ func _on_start_game_button_pressed():
 
 func _on_cancel_button_pressed():
 	get_tree().change_scene_to_file("res://System/main_menu.tscn")
+	
+func _on_ready_button_pressed():
+	print("ready pressed")
 
 func _player_connected(id):
 	print("Player " + id + " connected!")

@@ -1,5 +1,9 @@
 extends Node2D
 
+var nickname = "": 
+	set(value):
+		nickname = value
+		$Details/Name.set_text(value)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

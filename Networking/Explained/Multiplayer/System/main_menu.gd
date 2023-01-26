@@ -16,10 +16,11 @@ const ROOM_CODE_LENGTH = 5
 const PlayerScene = preload("res://Characters/Aliens/Player.tscn")
 @onready var PlaceholderScene = preload("res://Characters/Poochys/Stander.tscn")
 
-var playerPositions = [$readyup.get_node("P1Position"), $readyup.get_node("P2Position"), $readyup.get_node("P3Position"), $readyup.get_node("P4Position")]
+var player_positions
 
 func _ready():
 	multiplayer.peer_connected.connect(self._player_connected)
+	player_positions = [$readyup.get_node("P1Position"), $readyup.get_node("P2Position"), $readyup.get_node("P3Position"), $readyup.get_node("P4Position")]
 	player_name_field = $menu/Controls/PlayerNameContainer/LineEdit
 
 #Handle player input
@@ -27,17 +28,20 @@ func _ready():
 func _on_create_lobby_button_pressed():
 	is_host=true
 	connection_setup()
-	$HolePunch.start_traversal("", true, player_name_field.get_text() + str(randi()), player_name_field.text) #Attempt to connect to server as host
+	var player_name = player_name_field.get_text() if player_name_field.get_text() != "" else "Poochy"
+	$HolePunch.start_traversal("", true, player_name + str(randi()), player_name) #Attempt to connect to server as host
 	$menu/Controls.visible = false
 	$menu/Connecting.visible = true
+	$readyup/Controls/PlayerNameValueLabel.text = player_name
 
 func _on_join_lobby_button_pressed():
 	var room_code = $menu/Controls/RoomCodeContainer/LineEdit.text.to_upper()
+	var player_name = player_name_field.get_text() if player_name_field.get_text() != "" else "Poochy"
 	print(room_code)
 	if room_code.length() == ROOM_CODE_LENGTH:
 		is_host = false
 		connection_setup()
-		$HolePunch.start_traversal(room_code, false, player_name_field.get_text() + str(randi()), player_name_field.text) #Attempt to connect to server as client
+		$HolePunch.start_traversal(room_code, false, player_name + str(randi()), player_name) #Attempt to connect to server as client
 		print("Status: Connecting to session...")
 	else:
 		print("Status: Invalid roomcode!")
@@ -68,14 +72,16 @@ func _on_HolePunch_hole_punched(my_port, hosts_port, hosts_address, num_plyrs):
 	else:
 		$ConnectTimer.start(3) #Waiting for host to start game
 
-func _on_HolePunch_update_lobby(nicknames,max_players):
+func _on_HolePunch_update_lobby(nicknames, max_players): #TODO redraw entire lobby based on info
 	var lobby_message = "Lobby "+str(nicknames.size())+"/"+str(max_players)+"\n"
-	var placeholder = PlaceholderScene.instantiate()
-	placeholder.get_node("Details/Name").text = nicknames[0]
-	placeholder.set_position($readyup/P1Position.position)
-	add_child(placeholder)
-	for n in nicknames:
-		lobby_message+=n+"\n"
+	var i = 0
+	for nickname in nicknames:
+		var placeholder = PlaceholderScene.instantiate()
+		placeholder.nickname = nickname
+		placeholder.set_position(player_positions[i].position)
+		i += 1
+		add_child(placeholder)
+		lobby_message+=nickname+"\n"
 	if nicknames.size()>1: #you're not alone!
 		print("Status: Ready to play!")
 		print(lobby_message)

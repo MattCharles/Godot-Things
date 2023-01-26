@@ -13,6 +13,6 @@ func _ready():
 func _process(delta):
 	pass
 
-func setReady(state):
+func set_ready(state):
 	player_ready = state
 	self.set_texture(yes if player_ready else no)
