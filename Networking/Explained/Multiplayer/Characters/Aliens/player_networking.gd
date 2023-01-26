@@ -16,10 +16,6 @@ var processed_hand_position: bool
 
 var sync_velocity : Vector2
 
-var sync_move_state: Movement.states:
-	set(value):
-		sync_move_state = value
-		processed_move_state = false
-var processed_move_state: bool
+var sync_move_state: Movement.states
 
-var sync_flip_sprite: bool = false
+var sync_flip_sprite: bool

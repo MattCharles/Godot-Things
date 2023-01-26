@@ -9,6 +9,10 @@ const DISTANCE_FROM_CENTER_TO_HAND = 1
 
 @onready var _animated_sprite = $AnimatedSprite2D
 var sync_flip_sprite:bool = false
+# animation names
+var walk = "Walk" 
+var default = "default"
+var roll = "Roll"
 
 var health := DEFAULT_HEALTH
 var maxHealth := DEFAULT_HEALTH
@@ -17,6 +21,8 @@ var maxSpeed := DEFAULT_SPEED
 var roll_speed := DEFAULT_ROLL_SPEED
 var move_state := Movement.states.MOVE
 var roll_vector := Vector2.DOWN
+
+
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -47,7 +53,11 @@ func process_move(delta) -> void:
 			position = $Networking.sync_position
 			$Networking.processed_position = true
 		velocity = $Networking.sync_velocity
-		
+		_animated_sprite.flip_h = $Networking.sync_flip_sprite
+		if velocity.x > 0 or velocity.y > 0:
+			_animated_sprite.play(walk)
+		else:
+			_animated_sprite.play("defalut")
 		move_and_slide()
 		return
 	else:
@@ -62,18 +72,19 @@ func process_move(delta) -> void:
 	
 	if x_direction:
 		velocity.x = x_direction * speed
-		_animated_sprite.play("Walk")
+		_animated_sprite.play(walk)
 		sync_flip_sprite = x_direction < 0
 		_animated_sprite.flip_h = sync_flip_sprite
+		$Networking.sync_flip_sprite = sync_flip_sprite
 	else:
-		_animated_sprite.play("default")
+		_animated_sprite.play(default)
 		velocity.x = move_toward(velocity.x, 0, speed)
 
 	if y_direction:
 		velocity.y = y_direction * speed
-		_animated_sprite.play("Walk")
+		_animated_sprite.play(walk)
 	else:
-		_animated_sprite.play("default")
+		_animated_sprite.play(default)
 		velocity.y = move_toward(velocity.y, 0, speed)
 		
 	# Move locally
@@ -89,7 +100,7 @@ func process_move(delta) -> void:
 
 func process_roll(delta) -> void:
 	velocity = roll_vector * roll_speed
-	_animated_sprite.play("Roll")
+	_animated_sprite.play(roll)
 
 func roll_animation_finished() -> void:
 	move_state = Movement.states.ROLL
