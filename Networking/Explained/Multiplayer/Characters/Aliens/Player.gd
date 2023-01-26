@@ -1,8 +1,8 @@
 extends CharacterBody2D
 class_name Player
 
-const DEFAULT_SPEED = 80
-const DEFAULT_ROLL_SPEED = 120
+const DEFAULT_SPEED = 200
+const DEFAULT_ROLL_SPEED = 280
 const DEFAULT_HEALTH = 100
 const CAMERA_MAX_ZOOM := Vector2(0.5, 0.5)
 const DISTANCE_FROM_CENTER_TO_HAND = 1

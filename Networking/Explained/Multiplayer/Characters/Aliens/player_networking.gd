@@ -21,3 +21,5 @@ var sync_move_state: Movement.states:
 		sync_move_state = value
 		processed_move_state = false
 var processed_move_state: bool
+
+var sync_flip_sprite: bool = false

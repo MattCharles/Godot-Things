@@ -22,7 +22,7 @@ func create_player(id):
 	#player.set_network_master(id)
 	#Player positions are randomized different for each player, but in this setup it doesn't matter
 	#If you are going to actually use randomization in a multiplayer game, consider synchronizing rng seeds
-	player.position = Vector2(randf_range(0,100),randf_range(0,100))
+	player.position = Vector2(randf_range(0,1080),randf_range(0,1920))
 	add_child(player)
 	return player
 

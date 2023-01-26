@@ -1,7 +1,5 @@
 extends Node
 
-signal button_press_count_changed(newValue : int)
-
 signal room_code_changed(new_code: String)
 
 var room_code: String = "XXXXX":

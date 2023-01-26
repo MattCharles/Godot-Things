@@ -3,27 +3,27 @@
 [ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="1_dpx2p"]
 [ext_resource type="Texture2D" uid="uid://b6m5amcx22cae" path="res://Characters/Poochys/Poochy-Stander.png" id="2_oar2p"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_b6igb"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_icpgy"]
 atlas = ExtResource("1_dpx2p")
 region = Rect2(0, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_782qd"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_qp83b"]
 atlas = ExtResource("1_dpx2p")
 region = Rect2(17, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_piklb"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_l4i62"]
 atlas = ExtResource("1_dpx2p")
 region = Rect2(34, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_svmul"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_aejnt"]
 atlas = ExtResource("1_dpx2p")
 region = Rect2(51, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_qlp27"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_6jxwu"]
 atlas = ExtResource("1_dpx2p")
 region = Rect2(68, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_xhksr"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_14u8n"]
 atlas = ExtResource("2_oar2p")
 region = Rect2(0, 0, 17, 23)
 
@@ -34,12 +34,12 @@ animations = [{
 "name": &"Jump",
 "speed": 5.0
 }, {
-"frames": [SubResource("AtlasTexture_b6igb"), SubResource("AtlasTexture_782qd"), SubResource("AtlasTexture_piklb"), SubResource("AtlasTexture_svmul"), SubResource("AtlasTexture_qlp27")],
+"frames": [SubResource("AtlasTexture_icpgy"), SubResource("AtlasTexture_qp83b"), SubResource("AtlasTexture_l4i62"), SubResource("AtlasTexture_aejnt"), SubResource("AtlasTexture_6jxwu")],
 "loop": true,
 "name": &"Walk",
 "speed": 5.0
 }, {
-"frames": [SubResource("AtlasTexture_xhksr")],
+"frames": [SubResource("AtlasTexture_14u8n")],
 "loop": true,
 "name": &"default",
 "speed": 5.0
