@@ -15,6 +15,7 @@ const ROOM_CODE_LENGTH = 5
 
 const PlayerScene = preload("res://Characters/Aliens/Player.tscn")
 @onready var PlaceholderScene = preload("res://Characters/Poochys/Stander.tscn")
+var GameScene = preload("res://Levels/Level1.tscn")
 
 var player_positions
 
@@ -96,7 +97,7 @@ func _player_connected(id): #When player connects, load game scene
 		get_tree().get_root().add_child(game)
 		queue_free()
 		
-func _on_ConnectTimer_timeout(): 
+func _on_connect_timer_timeout(): 
 	print("connection timer timeout")
 	if $HolePunch.is_host:
 		var net = ENetMultiplayerPeer.new() #Create regular godot peer to peer server
@@ -107,7 +108,7 @@ func _on_ConnectTimer_timeout():
 		var net = ENetMultiplayerPeer.new() #Connect to host
 		net.create_client(host_address, host_port, 0, 0, own_port)
 		multiplayer.set_multiplayer_peer(net)
-	$FailTimer.start(max_connect_time)
+	get_tree().change_scene_to_file("res://Levels/Level1.tscn")
 
 func _on_HolePunch_session_registered():
 	print("Status: Room open!")
@@ -124,11 +125,6 @@ func _on_HolePunch_return_room_code(_room_code):
 	
 	GameState.room_code = _room_code
 	$readyup/Controls/RoomCodeLabel.text = "Room Code: " + GameState.room_code
-
-#Finalize connection
-func _on_connect_timer_timeout():
-	print("connection timer timeout")
-	$menu/FailTimer.start(max_connect_time)
 
 func _on_fail_timer_timeout():
 	print("Status: Connection timed out!")
