@@ -18,12 +18,10 @@ position = Vector2(956, 538)
 texture = ExtResource("1_need5")
 
 [node name="Controls" type="VBoxContainer" parent="."]
-layout_mode = 0
 offset_right = 481.0
 offset_bottom = 1079.0
 
 [node name="RoomCodeLabel" type="Label" parent="Controls"]
-layout_mode = 2
 offset_right = 481.0
 offset_bottom = 72.0
 theme_override_font_sizes/font_size = 50
@@ -33,7 +31,6 @@ horizontal_alignment = 1
 script = ExtResource("2_paqod")
 
 [node name="PlayerNameLabel" type="Label" parent="Controls"]
-layout_mode = 2
 offset_top = 76.0
 offset_right = 481.0
 offset_bottom = 148.0
@@ -41,7 +38,6 @@ theme_override_font_sizes/font_size = 50
 text = "Player Name:"
 
 [node name="PlayerNameValueLabel" type="Label" parent="Controls"]
-layout_mode = 2
 offset_top = 152.0
 offset_right = 481.0
 offset_bottom = 224.0
@@ -49,7 +45,6 @@ theme_override_font_sizes/font_size = 50
 text = "Poochy"
 
 [node name="SceneProgressionContainer" type="VBoxContainer" parent="."]
-layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -62,7 +57,6 @@ theme_override_constants/separation = 14
 
 [node name="StartGameButton" type="Button" parent="SceneProgressionContainer"]
 custom_minimum_size = Vector2i(400, 0)
-layout_mode = 2
 offset_right = 400.0
 offset_bottom = 77.0
 size_flags_horizontal = 4
@@ -72,7 +66,6 @@ text = "Start Game"
 
 [node name="CancelButton" type="Button" parent="SceneProgressionContainer"]
 custom_minimum_size = Vector2i(400, 0)
-layout_mode = 2
 offset_top = 91.0
 offset_right = 400.0
 offset_bottom = 168.0
@@ -82,7 +75,7 @@ theme_override_font_sizes/font_size = 50
 text = "Back to Menu"
 
 [node name="P1Position" type="Control" parent="."]
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 0
 offset_left = 727.559
 offset_top = 832.134
@@ -90,7 +83,7 @@ offset_right = 767.559
 offset_bottom = 872.134
 
 [node name="P2Position" type="Control" parent="."]
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 0
 offset_left = 1083.38
 offset_top = 859.073
@@ -98,7 +91,7 @@ offset_right = 1123.38
 offset_bottom = 899.073
 
 [node name="P3Position" type="Control" parent="."]
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 0
 offset_left = 1426.85
 offset_top = 856.828
@@ -106,7 +99,7 @@ offset_right = 1466.85
 offset_bottom = 896.828
 
 [node name="P4Position" type="Control" parent="."]
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 0
 offset_left = 1763.59
 offset_top = 868.053
