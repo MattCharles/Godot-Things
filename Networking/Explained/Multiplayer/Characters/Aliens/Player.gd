@@ -5,10 +5,10 @@ const DEFAULT_SPEED = 200
 const DEFAULT_ROLL_SPEED = 280
 const DEFAULT_HEALTH = 100
 const CAMERA_MAX_ZOOM := Vector2(0.5, 0.5)
-const DISTANCE_FROM_CENTER_TO_HAND = 1
+const DISTANCE_FROM_CENTER_TO_HAND = 70
 
 @onready var _animated_sprite = $AnimatedSprite2D
-var sync_flip_sprite:bool = false
+
 # animation names
 var walk = "Walk" 
 var default = "default"
@@ -21,8 +21,6 @@ var maxSpeed := DEFAULT_SPEED
 var roll_speed := DEFAULT_ROLL_SPEED
 var move_state := Movement.states.MOVE
 var roll_vector := Vector2.DOWN
-
-
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -39,6 +37,25 @@ func _ready():
 func _process(_delta):
 	$UI/TextureProgressBar.value = health
 	$UI/TextureProgressBar.visible = health < maxHealth
+	if is_local_authority():
+		$Hand.position = get_hand_position()
+		$Hand.look_at(self.get_global_mouse_position())
+		$Hand/Sprite2d.flip_v = $Hand.global_position.x < self.global_position.x
+		$Networking.sync_hand_flip = $Hand/Sprite2d.flip_v
+		$Networking.sync_hand_rotation = $Hand.rotation
+		_animated_sprite.flip_h = $Hand/Sprite2d.flip_v
+		$Networking.sync_flip_sprite = _animated_sprite.flip_h
+	else:
+		if not $Networking.processed_hand_position:
+			$Hand.position = $Networking.sync_hand_position
+			$Networking.processed_hand_position = true
+		$Hand.rotation = $Networking.sync_hand_rotation
+		$Hand/Sprite2d.flip_v = $Networking.sync_hand_flip
+		_animated_sprite.flip_h = $Networking.sync_flip_sprite
+				
+	$Networking.sync_hand_rotation = $Hand.rotation
+	$Networking.sync_hand_position = $Hand.position
+		
 
 func _physics_process(delta):
 	match move_state:
@@ -53,7 +70,6 @@ func process_move(delta) -> void:
 			position = $Networking.sync_position
 			$Networking.processed_position = true
 		velocity = $Networking.sync_velocity
-		_animated_sprite.flip_h = $Networking.sync_flip_sprite
 		if velocity.x != 0 or velocity.y != 0:
 			_animated_sprite.play(walk)
 		else:
@@ -70,12 +86,9 @@ func process_move(delta) -> void:
 	var x_direction = Input.get_axis("move_left", "move_right")
 	var y_direction = Input.get_axis("move_up", "move_down")
 	
-	if x_direction:
+	if x_direction: #TODO: make character always face mouse
 		velocity.x = x_direction * speed
 		_animated_sprite.play(walk)
-		sync_flip_sprite = x_direction < 0
-		_animated_sprite.flip_h = sync_flip_sprite
-		$Networking.sync_flip_sprite = sync_flip_sprite
 	else:
 		velocity.x = move_toward(velocity.x, 0, speed)
 
@@ -107,11 +120,11 @@ func roll_animation_finished() -> void:
 	move_state = Movement.states.ROLL
 	
 func get_hand_position() -> Vector2:
-	var target = get_viewport().get_mouse_position()
+	var target = self.get_global_mouse_position()
 	var source = self.position
 	return DISTANCE_FROM_CENTER_TO_HAND * ( target - source ).normalized()
 	
 func get_hand_rotation() -> float:
-	var target = get_viewport().get_mouse_position()
+	var target = self.get_global_mouse_position()
 	var source = self.position
 	return source.angle_to(target)

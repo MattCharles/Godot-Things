@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://scjoku8kmkqj"]
+[gd_scene load_steps=13 format=3 uid="uid://scjoku8kmkqj"]
 
 [ext_resource type="SpriteFrames" uid="uid://yro4ypo6sek5" path="res://Characters/Aliens/Blue/BlueSpriteFrames.tres" id="1_bgwyd"]
 [ext_resource type="Script" path="res://Characters/Aliens/Player.gd" id="1_ytcn0"]
 [ext_resource type="Texture2D" uid="uid://cdvmbhtt0c41x" path="res://Assets/Particles/smoke_01.png" id="2_bvf2j"]
 [ext_resource type="Script" path="res://Characters/Aliens/player_networking.gd" id="4_h5uv8"]
+[ext_resource type="Texture2D" uid="uid://50xpn4158q84" path="res://Characters/Poochys/Shooter-hand.png" id="5_c0gyg"]
 
 [sub_resource type="Gradient" id="Gradient_0gfab"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -43,6 +44,12 @@ properties/4/sync = true
 properties/5/path = NodePath(".:sync_flip_sprite")
 properties/5/spawn = false
 properties/5/sync = true
+properties/6/path = NodePath(".:sync_hand_flip")
+properties/6/spawn = false
+properties/6/sync = true
+properties/7/path = NodePath(".:sync_hand_rotation")
+properties/7/spawn = true
+properties/7/sync = true
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 3
@@ -95,3 +102,10 @@ script = ExtResource("4_h5uv8")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
 replication_config = SubResource("SceneReplicationConfig_dhmlc")
+
+[node name="Hand" type="Node2D" parent="."]
+
+[node name="Sprite2d" type="Sprite2D" parent="Hand"]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("5_c0gyg")

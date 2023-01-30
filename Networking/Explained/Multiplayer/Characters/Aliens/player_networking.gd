@@ -13,8 +13,9 @@ var sync_hand_position : Vector2:
 		sync_hand_position = value
 		processed_hand_position = false
 var processed_hand_position: bool
-
+var sync_hand_rotation: float
 var sync_velocity : Vector2
+var sync_hand_flip: bool
 
 var sync_move_state: Movement.states
 
