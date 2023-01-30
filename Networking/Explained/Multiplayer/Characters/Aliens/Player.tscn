@@ -86,6 +86,7 @@ offset_right = -16.0
 offset_bottom = 11.0
 
 [node name="TextureProgressBar" type="TextureProgressBar" parent="UI"]
+layout_mode = 0
 offset_right = 15.0
 offset_bottom = 66.0
 value = 100.0
@@ -95,6 +96,7 @@ texture_under = SubResource("GradientTexture1D_0jono")
 texture_progress = SubResource("GradientTexture1D_uvfvn")
 
 [node name="PlayerNameLabel" type="Label" parent="UI"]
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
