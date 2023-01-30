@@ -9,6 +9,7 @@ const DISTANCE_FROM_CENTER_TO_HAND = 35
 @onready var _animated_sprite = $AnimatedSprite2D
 @onready var shoot_point = $Hand/ShootPoint
 var player_bullet = preload("res://Items/default_bullet.tscn")
+var shots_fired:int = 0
 
 # animation names
 var walk = "Walk" 
@@ -46,7 +47,8 @@ func _process(_delta):
 		_animated_sprite.flip_h = $Hand/Sprite2d.flip_v
 		$Networking.sync_flip_sprite = _animated_sprite.flip_h
 		if Input.is_action_pressed("shoot"):
-				rpc("instance_bullet", multiplayer.get_unique_id(), self.get_global_mouse_position(), get_distant_target())
+				shots_fired = shots_fired + 1
+				rpc("instance_bullet", multiplayer.get_unique_id(), self.get_global_mouse_position(), get_distant_target(), shots_fired)
 	else:
 		if not $Networking.processed_hand_position:
 			$Hand.position = $Networking.sync_hand_position
@@ -132,14 +134,21 @@ func get_distant_target() -> Vector2:
 	return 12345 * hand_position
 
 @rpc(any_peer, call_local, reliable)
-func instance_bullet(id, look_at, distant_target):
+func instance_bullet(id, look_at, distant_target, shot_id):
+	await get_tree().create_timer(0.2).timeout
+	var new_bullet_name = "Bullet" + str(name) + str(shot_id)
+	var new_path = "/root/Level/SpawnRoot/" + new_bullet_name
+	print(new_path)
+	print(get_node_or_null(new_path) != null)
+	if get_node_or_null(new_path) != null:
+		#node already exists in tree
+		print("not doubling")
+		return
 	var instance = player_bullet.instantiate()
-	instance.global_position = shoot_point.global_position
 	
-	instance.name = "Bullet" + str(name) + str(randi())
-	#instance.set_network_master(id)
-	instance.look_at(look_at)
-	instance.target = distant_target
+	instance.name = new_bullet_name
 	get_node("/root/Level/SpawnRoot").add_child(instance)
-	#var player_bullet_instance = Global.instance_node_at_location(player_bullet, self, shoot_point.global_position) #TODO: different bullet types
+	instance.target = distant_target
+	instance.look_at(look_at)
+	instance.global_position = shoot_point.global_position
 	
