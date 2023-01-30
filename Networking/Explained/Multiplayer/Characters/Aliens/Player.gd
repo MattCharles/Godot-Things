@@ -1,13 +1,14 @@
 extends CharacterBody2D
 class_name Player
 
-const DEFAULT_SPEED = 200
-const DEFAULT_ROLL_SPEED = 280
+const DEFAULT_SPEED = 400
+const DEFAULT_ROLL_SPEED = 700
 const DEFAULT_HEALTH = 100
-const CAMERA_MAX_ZOOM := Vector2(0.5, 0.5)
-const DISTANCE_FROM_CENTER_TO_HAND = 70
+const DISTANCE_FROM_CENTER_TO_HAND = 35
 
 @onready var _animated_sprite = $AnimatedSprite2D
+@onready var shoot_point = $Hand/ShootPoint
+var player_bullet = preload("res://Items/default_bullet.tscn")
 
 # animation names
 var walk = "Walk" 
@@ -30,8 +31,7 @@ func _ready():
 	# https://github.com/godotengine/godot/issues/44407
 	# https://github.com/godotengine/godot/issues/55284
 	$Networking/MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
-	
-	$Camera2D.current = is_local_authority()
+
 	$UI.visible = is_local_authority()
 
 func _process(_delta):
@@ -45,6 +45,8 @@ func _process(_delta):
 		$Networking.sync_hand_rotation = $Hand.rotation
 		_animated_sprite.flip_h = $Hand/Sprite2d.flip_v
 		$Networking.sync_flip_sprite = _animated_sprite.flip_h
+		if Input.is_action_pressed("shoot"):
+				rpc("instance_bullet", multiplayer.get_unique_id())
 	else:
 		if not $Networking.processed_hand_position:
 			$Hand.position = $Networking.sync_hand_position
@@ -76,10 +78,6 @@ func process_move(delta) -> void:
 			_animated_sprite.play(default)
 		move_and_slide()
 		return
-	else:
-		var zoom = $Camera2D.zoom.length()
-		if zoom < 1:
-			$Camera2D.zoom = $Camera2D.zoom.lerp(Vector2(1, 1), zoom * 0.005)
 
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
@@ -128,3 +126,16 @@ func get_hand_rotation() -> float:
 	var target = self.get_global_mouse_position()
 	var source = self.position
 	return source.angle_to(target)
+
+@rpc
+func instance_bullet(id):
+	#var player_bullet_instance = Global.instance_node_at_location(player_bullet, self, shoot_point.global_position) #TODO: different bullet types
+	var instance = player_bullet.instantiate()
+	self.add_child(instance)
+	instance.global_position = shoot_point
+	
+	instance.name = "Bullet" + name + str(randi())
+	instance.set_network_master(id)
+	instance.player_rotation = $Hand.rotation
+	instance.player_owner = id
+	

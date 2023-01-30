@@ -6,7 +6,10 @@
 script = ExtResource("1_i62b0")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-custom_minimum_size = Vector2i(1920, 1080)
+custom_minimum_size = Vector2(1920, 1080)
 offset_right = 1920.0
 offset_bottom = 1080.0
 color = Color(0.670588, 0.803922, 0.937255, 1)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(960, 540)

@@ -18,9 +18,10 @@ const PlayerScene = preload("res://Characters/Aliens/Player.tscn")
 var GameScene = preload("res://Levels/Level1.tscn")
 
 var player_positions
+var player_names
 
 func _ready():
-	multiplayer.peer_connected.connect(self._player_connected)
+	#multiplayer.peer_connected.connect(self._player_connected)
 	player_positions = [$readyup.get_node("P1Position"), $readyup.get_node("P2Position"), $readyup.get_node("P3Position"), $readyup.get_node("P4Position")]
 	player_name_field = $menu/Controls/PlayerNameContainer/LineEdit
 
@@ -75,7 +76,7 @@ func _on_HolePunch_hole_punched(my_port, hosts_port, hosts_address, num_plyrs):
 	else:
 		$ConnectTimer.start(3) #Waiting for host to start game
 
-func _on_HolePunch_update_lobby(nicknames, max_players): #TODO redraw entire lobby based on info
+func _on_HolePunch_update_lobby(nicknames, max_players):
 	var lobby_message = "Lobby "+str(nicknames.size())+"/"+str(max_players)+"\n"
 	var i = 0
 	for nickname in nicknames:
@@ -90,14 +91,6 @@ func _on_HolePunch_update_lobby(nicknames, max_players): #TODO redraw entire lob
 		print(lobby_message)
 	else:
 		print("Status: Room open!")
-		
-func _player_connected(id): #When player connects, load game scene
-	players_joined += 1
-	print(str(players_joined)+" out of "+str(num_players)+" joined.")
-	if players_joined >= num_players:
-		var game = preload("res://System/game.tscn").instantiate()
-		get_tree().get_root().add_child(game)
-		queue_free()
 		
 func _on_connect_timer_timeout(): 
 	print("connection timer timeout")
