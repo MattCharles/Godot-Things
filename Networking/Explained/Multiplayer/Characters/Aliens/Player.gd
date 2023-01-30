@@ -127,15 +127,19 @@ func get_hand_rotation() -> float:
 	var source = self.position
 	return source.angle_to(target)
 
-@rpc
+func get_distant_target() -> Vector2:
+	var hand_position = get_hand_position()
+	return 12345 * hand_position
+
+@rpc(any_peer, call_local, reliable)
 func instance_bullet(id):
 	#var player_bullet_instance = Global.instance_node_at_location(player_bullet, self, shoot_point.global_position) #TODO: different bullet types
 	var instance = player_bullet.instantiate()
-	self.add_child(instance)
-	instance.global_position = shoot_point
+	add_child(instance)
+	instance.global_position = shoot_point.global_position
 	
 	instance.name = "Bullet" + name + str(randi())
-	instance.set_network_master(id)
-	instance.player_rotation = $Hand.rotation
-	instance.player_owner = id
+	#instance.set_network_master(id)
+	instance.look_at(get_local_mouse_position())
+	instance.target = get_distant_target()
 	
