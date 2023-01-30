@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://Characters/Aliens/Player.gd" id="1_ytcn0"]
 [ext_resource type="Texture2D" uid="uid://cdvmbhtt0c41x" path="res://Assets/Particles/smoke_01.png" id="2_bvf2j"]
 [ext_resource type="Script" path="res://Characters/Aliens/player_networking.gd" id="4_h5uv8"]
-[ext_resource type="Texture2D" uid="uid://e3phaxjct6lj" path="res://Characters/Poochys/Shooter-hand.png" id="5_c0gyg"]
+[ext_resource type="Texture2D" uid="uid://50xpn4158q84" path="res://Characters/Poochys/Shooter-hand.png" id="5_c0gyg"]
 
 [sub_resource type="Gradient" id="Gradient_hg14e"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)

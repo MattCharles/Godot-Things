@@ -11,6 +11,7 @@ func _ready():
 		print("peer found: " + peer)
 		create_player(peer)
 	# Listen to peer connections, and create new player for them
+	# TODO: Some sort of start game timer. We should know how many connections to expect
 	multiplayer.peer_connected.connect(self.create_player)
 	# Listen to peer disconnections, and destroy their players
 	multiplayer.peer_disconnected.connect(self.destroy_player)

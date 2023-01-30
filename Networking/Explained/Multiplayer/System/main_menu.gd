@@ -139,20 +139,6 @@ func connection_setup():
 	nickname = player_name_field.text
 	if nickname == "":
 		nickname = "Player"
-
-
-func create_player(id : int) -> void:
-	# Instantiate a new player for this client.
-	var p = PlayerScene.instantiate()
-
-	# Set the name, so players can figure out their local authority
-	p.name = str(id)
-	
-	$menu/Players.add_child(p)
-
-func destroy_player(id : int) -> void:
-	# Delete this peer's node.
-	$menu/Players.get_node(str(id)).queue_free()
 		
 func _on_button_start_pressed():
 	$HolePunch.finalize_peers()

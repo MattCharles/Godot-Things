@@ -46,7 +46,7 @@ func _process(_delta):
 		_animated_sprite.flip_h = $Hand/Sprite2d.flip_v
 		$Networking.sync_flip_sprite = _animated_sprite.flip_h
 		if Input.is_action_pressed("shoot"):
-				rpc("instance_bullet", multiplayer.get_unique_id())
+				rpc("instance_bullet", multiplayer.get_unique_id(), self.get_global_mouse_position(), get_distant_target())
 	else:
 		if not $Networking.processed_hand_position:
 			$Hand.position = $Networking.sync_hand_position
@@ -132,14 +132,14 @@ func get_distant_target() -> Vector2:
 	return 12345 * hand_position
 
 @rpc(any_peer, call_local, reliable)
-func instance_bullet(id):
-	#var player_bullet_instance = Global.instance_node_at_location(player_bullet, self, shoot_point.global_position) #TODO: different bullet types
+func instance_bullet(id, look_at, distant_target):
 	var instance = player_bullet.instantiate()
-	add_child(instance)
 	instance.global_position = shoot_point.global_position
 	
-	instance.name = "Bullet" + name + str(randi())
+	instance.name = "Bullet" + str(name) + str(randi())
 	#instance.set_network_master(id)
-	instance.look_at(get_local_mouse_position())
-	instance.target = get_distant_target()
+	instance.look_at(look_at)
+	instance.target = distant_target
+	get_node("/root/Level/SpawnRoot").add_child(instance)
+	#var player_bullet_instance = Global.instance_node_at_location(player_bullet, self, shoot_point.global_position) #TODO: different bullet types
 	

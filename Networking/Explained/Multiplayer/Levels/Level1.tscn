@@ -2,14 +2,20 @@
 
 [ext_resource type="Script" path="res://Levels/Level1.gd" id="1_i62b0"]
 
-[node name="GameScene" type="Node2D"]
+[node name="Level" type="Node2D"]
 script = ExtResource("1_i62b0")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(1920, 1080)
+custom_minimum_size = Vector2i(1920, 1080)
 offset_right = 1920.0
 offset_bottom = 1080.0
 color = Color(0.670588, 0.803922, 0.937255, 1)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(960, 540)
+
+[node name="SpawnRoot" type="Node" parent="."]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://Items/default_bullet.tscn")
+spawn_path = NodePath("../SpawnRoot")

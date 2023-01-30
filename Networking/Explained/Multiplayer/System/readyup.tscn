@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cb7ldofgws1ui"]
 
 [ext_resource type="Script" path="res://System/readyup.gd" id="1_0jaqa"]
-[ext_resource type="Texture2D" uid="uid://c0u2avgp13i8g" path="res://Assets/Backgrounds/CharacterSelectBG.png" id="1_need5"]
+[ext_resource type="Texture2D" uid="uid://d1pplg6o0yeon" path="res://Assets/Backgrounds/CharacterSelectBG.png" id="1_need5"]
 
 [node name="readyup" type="Control"]
 layout_mode = 3
@@ -17,29 +17,25 @@ position = Vector2(956, 538)
 texture = ExtResource("1_need5")
 
 [node name="Controls" type="VBoxContainer" parent="."]
-layout_mode = 0
 offset_right = 481.0
 offset_bottom = 1079.0
 
 [node name="RoomCodeLabel" type="Label" parent="Controls"]
-layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "Room Code: XXXXX
 "
 horizontal_alignment = 1
 
 [node name="PlayerNameLabel" type="Label" parent="Controls"]
-layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "Player Name:"
 
 [node name="PlayerNameValueLabel" type="Label" parent="Controls"]
-layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "Poochy"
 
 [node name="SceneProgressionContainer" type="VBoxContainer" parent="."]
-layout_mode = 0
+anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 39.0
@@ -50,16 +46,14 @@ grow_vertical = 0
 theme_override_constants/separation = 14
 
 [node name="StartGameButton" type="Button" parent="SceneProgressionContainer"]
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 2
+custom_minimum_size = Vector2i(400, 0)
 size_flags_horizontal = 4
 size_flags_vertical = 8
 theme_override_font_sizes/font_size = 50
 text = "Start Game"
 
 [node name="CancelButton" type="Button" parent="SceneProgressionContainer"]
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 2
+custom_minimum_size = Vector2i(400, 0)
 size_flags_horizontal = 4
 size_flags_vertical = 8
 theme_override_font_sizes/font_size = 50
