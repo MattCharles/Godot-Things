@@ -5,12 +5,6 @@
 [ext_resource type="PackedScene" uid="uid://cb7ldofgws1ui" path="res://System/readyup.tscn" id="4_ca60h"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_n5y0o"]
-animations = [{
-"frames": [null, null, null, null, null],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
 
 [node name="main_menu" type="Control"]
 layout_mode = 3
@@ -23,9 +17,10 @@ script = ExtResource("1_qh1ql")
 
 [node name="readyup" parent="." instance=ExtResource("4_ca60h")]
 visible = false
+layout_mode = 1
 
 [node name="menu" type="Control" parent="."]
-layout_mode = 3
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -33,7 +28,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Background" type="ColorRect" parent="menu"]
-anchors_preset = 15
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -41,7 +36,7 @@ grow_vertical = 2
 color = Color(0.235294, 0.235294, 0.235294, 1)
 
 [node name="Title" type="Label" parent="menu"]
-anchors_preset = 5
+layout_mode = 0
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -211.0
@@ -55,7 +50,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Controls" type="VBoxContainer" parent="menu"]
-anchors_preset = 8
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -70,80 +65,60 @@ theme_override_constants/separation = 40
 alignment = 1
 
 [node name="PlayerNameContainer" type="HBoxContainer" parent="menu/Controls"]
-offset_top = 212.0
-offset_right = 1298.0
-offset_bottom = 289.0
+layout_mode = 2
 theme_override_constants/separation = 30
 alignment = 1
 
 [node name="Label" type="Label" parent="menu/Controls/PlayerNameContainer"]
-offset_left = 172.0
-offset_top = 2.0
-offset_right = 496.0
-offset_bottom = 74.0
+layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "Player Name:
 "
 
 [node name="LineEdit" type="LineEdit" parent="menu/Controls/PlayerNameContainer"]
-custom_minimum_size = Vector2i(600, 0)
-offset_left = 526.0
-offset_right = 1126.0
-offset_bottom = 77.0
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 50
 placeholder_text = "Poochy"
 
 [node name="RoomCodeContainer" type="HBoxContainer" parent="menu/Controls"]
-offset_top = 329.0
-offset_right = 1298.0
-offset_bottom = 406.0
+layout_mode = 2
 theme_override_constants/separation = 30
 alignment = 1
 
 [node name="Label" type="Label" parent="menu/Controls/RoomCodeContainer"]
-offset_left = 188.0
-offset_top = 2.0
-offset_right = 480.0
-offset_bottom = 74.0
+layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "Room Code:"
 
 [node name="LineEdit" type="LineEdit" parent="menu/Controls/RoomCodeContainer"]
-custom_minimum_size = Vector2i(600, 0)
-offset_left = 510.0
-offset_right = 1110.0
-offset_bottom = 77.0
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 50
 placeholder_text = "CHNDS"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="menu/Controls"]
-offset_top = 446.0
-offset_right = 1298.0
-offset_bottom = 523.0
+layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
 
 [node name="CreateLobbyButton" type="Button" parent="menu/Controls/HBoxContainer"]
-custom_minimum_size = Vector2i(400, 0)
-offset_left = 239.0
-offset_right = 639.0
-offset_bottom = 77.0
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "Create Lobby
 "
 
 [node name="JoinLobbyButton" type="Button" parent="menu/Controls/HBoxContainer"]
-custom_minimum_size = Vector2i(400, 0)
-offset_left = 659.0
-offset_right = 1059.0
-offset_bottom = 77.0
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 50
 text = "Join Lobby"
@@ -154,8 +129,8 @@ one_shot = true
 
 [node name="Connecting" type="HBoxContainer" parent="menu"]
 visible = false
-custom_minimum_size = Vector2i(300, 200)
-anchors_preset = 8
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -169,6 +144,7 @@ grow_vertical = 2
 alignment = 1
 
 [node name="ConnectingText" type="Label" parent="menu/Connecting"]
+layout_mode = 2
 size_flags_horizontal = 8
 theme_override_font_sizes/font_size = 55
 text = "Connecting to the server..."

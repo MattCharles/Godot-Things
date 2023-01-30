@@ -16,7 +16,7 @@ func _ready():
 	multiplayer.peer_disconnected.connect(self.destroy_player)
 
 func create_player(id):
-	print("spawning: " + id)
+	print("spawning: " + str(id))
 	var player = preload("res://Characters/Aliens/Player.tscn").instantiate()
 	player.name = str(id)
 	#player.set_network_master(id)
