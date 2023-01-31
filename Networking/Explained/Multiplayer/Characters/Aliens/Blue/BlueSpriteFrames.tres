@@ -1,7 +1,11 @@
-[gd_resource type="SpriteFrames" load_steps=9 format=3 uid="uid://yro4ypo6sek5"]
+[gd_resource type="SpriteFrames" load_steps=10 format=3 uid="uid://yro4ypo6sek5"]
 
 [ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="1_dpx2p"]
 [ext_resource type="Texture2D" uid="uid://b6m5amcx22cae" path="res://Characters/Poochys/Poochy-Stander.png" id="2_oar2p"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e8r1q"]
+atlas = ExtResource("2_oar2p")
+region = Rect2(0, 0, 17, 23)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bx68q"]
 atlas = ExtResource("1_dpx2p")
@@ -32,6 +36,11 @@ animations = [{
 "frames": [],
 "loop": true,
 "name": &"Jump",
+"speed": 5.0
+}, {
+"frames": [SubResource("AtlasTexture_e8r1q")],
+"loop": true,
+"name": &"Roll",
 "speed": 5.0
 }, {
 "frames": [SubResource("AtlasTexture_bx68q"), SubResource("AtlasTexture_53r2j"), SubResource("AtlasTexture_0hsd6"), SubResource("AtlasTexture_1oobx"), SubResource("AtlasTexture_2tuia")],

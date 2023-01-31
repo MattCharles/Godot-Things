@@ -36,6 +36,7 @@ func _ready():
 	$Networking/MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
 
 	$UI.visible = is_local_authority()
+	$UI/PlayerNameLabel.text = str(multiplayer.get_unique_id())
 
 func _process(_delta):
 	$UI/TextureProgressBar.value = health
@@ -50,6 +51,7 @@ func _process(_delta):
 		$Networking.sync_flip_sprite = _animated_sprite.flip_h
 		if Input.is_action_just_pressed("shoot"):
 			shots_fired = shots_fired + 1
+			#rpc("instance_bullet", multiplayer.get_unique_id(), self.get_global_mouse_position(), get_distant_target(), shots_fired)
 			rpc("instance_bullet", multiplayer.get_unique_id(), self.get_global_mouse_position(), get_distant_target(), shots_fired)
 	else:
 		if not $Networking.processed_hand_position:
@@ -150,3 +152,19 @@ func instance_bullet(id, look_at, distant_target, shot_id):
 	instance.look_at(look_at)
 	instance.global_position = shoot_point.global_position
 	
+@rpc(any_peer)
+func shoot_remote(id, look_at, distant_target, shot_id):
+	var instance = player_bullet.instantiate()
+	instance.name = str(randi())
+	get_node("/root/Level/SpawnRoot").add_child(instance, true)
+	instance.target = distant_target
+	instance.look_at(look_at)
+	instance.global_position = shoot_point.global_position
+
+func shoot_local(id, look_at, distant_target, shot_id):
+	var instance = player_bullet.instantiate()
+	instance.name = str(randi())
+	get_node("/root/Level/SpawnRoot").add_child(instance, true)
+	instance.target = distant_target
+	instance.look_at(look_at)
+	instance.global_position = shoot_point.global_position

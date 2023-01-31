@@ -71,6 +71,7 @@ color_ramp = SubResource("Gradient_hg14e")
 texture_filter = 1
 scale = Vector2(5, 5)
 frames = ExtResource("1_bgwyd")
+animation = &"Roll"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-1, 13)
