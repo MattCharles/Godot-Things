@@ -12,6 +12,7 @@ var player_bullet = preload("res://Items/default_bullet.tscn")
 var shot_cooldown
 var shot_ids = {}
 var shots_fired:int = 0
+var roll_time = 0.5
 
 # animation names
 var walk = "Walk" 
@@ -108,7 +109,10 @@ func process_move(delta) -> void:
 	move_and_slide()
 	
 	if Input.is_action_just_pressed("roll"):
+		roll_vector = get_hand_position().normalized()
 		move_state = Movement.states.ROLL
+		await get_tree().create_timer(roll_time).timeout
+		roll_finished()
 		
 	# Update sync variables, which will be replicated to everyone else
 	$Networking.sync_position = position
@@ -116,11 +120,24 @@ func process_move(delta) -> void:
 	
 
 func process_roll(delta) -> void:
-	velocity = roll_vector * roll_speed
 	_animated_sprite.play(roll)
+	if !is_local_authority(): # this is somebody else's player character
+		if not $Networking.processed_position:
+			position = $Networking.sync_position
+			$Networking.processed_position = true
+		velocity = $Networking.sync_velocity
+		move_and_slide()
+		return
+	
+	velocity = roll_vector * roll_speed
+	print(velocity)
+	move_and_slide()
+	
+	$Networking.sync_position = position
+	$Networking.sync_velocity = velocity
 
-func roll_animation_finished() -> void:
-	move_state = Movement.states.ROLL
+func roll_finished() -> void:
+	move_state = Movement.states.MOVE
 	
 func get_hand_position() -> Vector2:
 	var target = self.get_global_mouse_position()
