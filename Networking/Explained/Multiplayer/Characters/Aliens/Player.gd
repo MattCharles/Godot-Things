@@ -109,7 +109,7 @@ func process_move(delta) -> void:
 	move_and_slide()
 	
 	if Input.is_action_just_pressed("roll"):
-		roll_vector = get_hand_position().normalized()
+		roll_vector = Vector2(x_direction, y_direction).normalized()
 		move_state = Movement.states.ROLL
 		await get_tree().create_timer(roll_time).timeout
 		roll_finished()
@@ -121,6 +121,7 @@ func process_move(delta) -> void:
 
 func process_roll(delta) -> void:
 	_animated_sprite.play(roll)
+	$CollisionShape2D.disabled = true
 	if !is_local_authority(): # this is somebody else's player character
 		if not $Networking.processed_position:
 			position = $Networking.sync_position
@@ -137,6 +138,7 @@ func process_roll(delta) -> void:
 	$Networking.sync_velocity = velocity
 
 func roll_finished() -> void:
+	$CollisionShape2D.disabled = false
 	move_state = Movement.states.MOVE
 	
 func get_hand_position() -> Vector2:
