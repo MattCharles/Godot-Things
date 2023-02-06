@@ -38,17 +38,38 @@ animations = [{
 "name": &"Jump",
 "speed": 5.0
 }, {
-"frames": [SubResource("AtlasTexture_e8r1q")],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e8r1q")
+}],
 "loop": true,
 "name": &"Roll",
 "speed": 5.0
 }, {
-"frames": [SubResource("AtlasTexture_bx68q"), SubResource("AtlasTexture_53r2j"), SubResource("AtlasTexture_0hsd6"), SubResource("AtlasTexture_1oobx"), SubResource("AtlasTexture_2tuia")],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bx68q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_53r2j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0hsd6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1oobx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2tuia")
+}],
 "loop": true,
 "name": &"Walk",
 "speed": 5.0
 }, {
-"frames": [SubResource("AtlasTexture_s0xiu")],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s0xiu")
+}],
 "loop": true,
 "name": &"default",
 "speed": 5.0

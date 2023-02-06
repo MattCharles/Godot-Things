@@ -22,6 +22,7 @@ offset_bottom = -31.0
 grow_horizontal = 2
 
 [node name="Name" type="Label" parent="Details"]
+layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 35
 text = "PoochyName"

@@ -155,7 +155,7 @@ func get_distant_target() -> Vector2:
 	var hand_position = get_hand_position()
 	return 12345 * hand_position
 
-@rpc(any_peer, call_local, reliable)
+@rpc("any_peer", "call_local", "reliable")
 func instance_bullet(id, look_at, distant_target, shot_id):
 	print(str(shot_id))
 	print(shot_ids)
