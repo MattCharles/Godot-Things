@@ -9,3 +9,4 @@ var room_code: String = "XXXXX":
 		emit_signal(StringName("room_code_changed"), room_code)
 
 var names: Array = []
+var ids: Array = []

@@ -2,6 +2,7 @@ extends Node2D
 
 var host_player = null 
 var host_id
+var num_connected = 0
 
 func _ready():
 	host_id = multiplayer.get_unique_id()
@@ -20,6 +21,8 @@ func create_player(id):
 	print("spawning: " + str(id))
 	var player = preload("res://Characters/Aliens/Player.tscn").instantiate()
 	player.name = str(id)
+	player.player_name = player.name.rstrip("0123456789")
+	num_connected = num_connected + 1
 	
 	#player.set_network_master(id)
 	#Player positions are randomized different for each player, but in this setup it doesn't matter
