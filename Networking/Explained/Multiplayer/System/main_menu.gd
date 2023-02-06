@@ -35,6 +35,7 @@ func _on_create_lobby_button_pressed(): #TODO: only letters
 	$menu/Controls.visible = false
 	$menu/Connecting.visible = true
 	$readyup/Controls/PlayerNameValueLabel.text = player_name
+	$game_start.num_playing = 2
 
 func _on_join_lobby_button_pressed(): #TODO: only letters
 	var room_code = $menu/Controls/RoomCodeContainer/LineEdit.text.to_upper()
@@ -49,6 +50,8 @@ func _on_join_lobby_button_pressed(): #TODO: only letters
 		print(id + " joining")
 		$HolePunch.start_traversal(room_code, false, id, player_name) #Attempt to connect to server as client
 		print("Status: Connecting to session...")
+		$menu/Connecting.visible = true
+		$menu/Controls.visible = false
 	else:
 		print("Status: Invalid roomcode!")
 
@@ -102,17 +105,32 @@ func _on_HolePunch_update_lobby(nicknames, max_players):
 		print("Status: Room open!")
 		
 func _on_connect_timer_timeout(): 
+	$ConnectTimer.stop()
 	if $HolePunch.is_host:
 		var net = ENetMultiplayerPeer.new() #Create regular godot peer to peer server
 		net.create_server(own_port, 2) #You can follow regular godot networking tutorials to extend this
 		multiplayer.set_multiplayer_peer(net)
-		
+		multiplayer.peer_connected.connect(self._update_counter)
+		$game_start.start_game.connect(self._load_level)
 	else:
+		$game_start.start_game.connect(self._load_level)
 		var net = ENetMultiplayerPeer.new() #Connect to host
 		net.create_client(host_address, host_port, 0, 0, own_port)
 		multiplayer.set_multiplayer_peer(net)
 	print(GameState.names)
+	
+
+func _load_level():
+	rpc("_load_fr")
+	
+@rpc("call_local")
+func _load_fr():
 	get_tree().change_scene_to_file("res://Levels/Level1.tscn")
+
+func _update_counter(id):
+	if $HolePunch.is_host:
+		$game_start.num_connected = $game_start.num_connected + 1
+	print(str(id) + " connected")
 
 func _on_HolePunch_session_registered():
 	print("Status: Room open!")

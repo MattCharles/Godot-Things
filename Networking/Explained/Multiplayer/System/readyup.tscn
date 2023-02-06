@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cb7ldofgws1ui"]
 
 [ext_resource type="Script" path="res://System/readyup.gd" id="1_0jaqa"]
-[ext_resource type="Texture2D" uid="uid://c0u2avgp13i8g" path="res://Assets/Backgrounds/CharacterSelectBG.png" id="1_need5"]
+[ext_resource type="Texture2D" uid="uid://d1pplg6o0yeon" path="res://Assets/Backgrounds/CharacterSelectBG.png" id="1_need5"]
 
 [node name="readyup" type="Control"]
 layout_mode = 3
