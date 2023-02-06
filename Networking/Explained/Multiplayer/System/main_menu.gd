@@ -31,7 +31,9 @@ func _on_create_lobby_button_pressed():
 	is_host=true
 	connection_setup()
 	var player_name = player_name_field.get_text() if player_name_field.get_text() != "" else "Poochy"
-	$HolePunch.start_traversal("", true, player_name + str(randi()), player_name) #Attempt to connect to server as host
+	var id = player_name + str(randi())
+	$HolePunch.start_traversal("", true, id, player_name) #Attempt to connect to server as host
+	print(id + " joining")
 	$menu/Controls.visible = false
 	$menu/Connecting.visible = true
 	$readyup/Controls/PlayerNameValueLabel.text = player_name
@@ -45,7 +47,9 @@ func _on_join_lobby_button_pressed():
 	if room_code.length() == ROOM_CODE_LENGTH:
 		is_host = false
 		connection_setup()
-		$HolePunch.start_traversal(room_code, false, player_name + str(randi()), player_name) #Attempt to connect to server as client
+		var id = player_name + str(randi())
+		print(id + " joining")
+		$HolePunch.start_traversal(room_code, false, id, player_name) #Attempt to connect to server as client
 		print("Status: Connecting to session...")
 	else:
 		print("Status: Invalid roomcode!")
@@ -85,6 +89,7 @@ func _on_HolePunch_update_lobby(nicknames, max_players):
 		placeholder.set_position(player_positions[i].position)
 		i += 1
 		add_child(placeholder)
+		GameState.names.append(nickname)
 		lobby_message+=nickname+"\n"
 	if nicknames.size()>1: #you're not alone!
 		print("Status: Ready to play!")
@@ -94,6 +99,8 @@ func _on_HolePunch_update_lobby(nicknames, max_players):
 		
 func _on_connect_timer_timeout(): 
 	print("connection timer timeout")
+	for peer in $HolePunch.peers:
+		print(peer)
 	if $HolePunch.is_host:
 		var net = ENetMultiplayerPeer.new() #Create regular godot peer to peer server
 		net.create_server(own_port, 2) #You can follow regular godot networking tutorials to extend this

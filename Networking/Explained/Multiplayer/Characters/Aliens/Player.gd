@@ -10,8 +10,6 @@ const DISTANCE_FROM_CENTER_TO_HAND = 45
 @onready var shoot_point = $Hand/ShootPoint
 var player_bullet = preload("res://Items/default_bullet.tscn")
 var shot_cooldown
-var shot_ids = {}
-var shots_fired:int = 0
 var roll_time = 0.5
 
 # animation names
@@ -55,8 +53,7 @@ func _process(_delta):
 		_animated_sprite.flip_h = $Hand/Sprite2d.flip_v
 		$Networking.sync_flip_sprite = _animated_sprite.flip_h
 		if Input.is_action_just_pressed("shoot"):
-			shots_fired = shots_fired + 1
-			rpc("instance_bullet", multiplayer.get_unique_id(), self.get_global_mouse_position(), get_distant_target(), shots_fired)
+			rpc("instance_bullet", multiplayer.get_unique_id(), self.get_global_mouse_position(), get_distant_target())
 	else:
 		health = $Networking.sync_health
 		if not $Networking.processed_hand_position:
@@ -73,6 +70,8 @@ func _process(_delta):
 		
 
 func _physics_process(delta):
+	if health < 0:
+		die()
 	match move_state:
 		Movement.states.MOVE:
 			process_move(delta)
@@ -167,12 +166,7 @@ func damage(amount):
 		rpc("take_damage", amount)
 
 @rpc("any_peer", "call_local", "reliable")
-func instance_bullet(id, look_at, distant_target, shot_id):
-	print(str(shot_id))
-	print(shot_ids)
-	if shot_ids.has(shot_id):
-		return
-	shot_ids[shot_id] = true
+func instance_bullet(id, look_at, distant_target):
 	var instance = player_bullet.instantiate()
 	instance.name = str(randi())
 	get_node("/root/Level/SpawnRoot").add_child(instance, true)
@@ -185,3 +179,7 @@ func take_damage(amount):
 	print(health)
 	health = health - amount
 	$Networking.sync_health = health
+
+func die():
+	queue_free()
+	print("idie")

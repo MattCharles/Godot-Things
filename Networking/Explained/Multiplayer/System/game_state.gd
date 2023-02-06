@@ -7,3 +7,5 @@ var room_code: String = "XXXXX":
 		room_code = new_code
 		print('room code is ' + str(room_code))
 		emit_signal(StringName("room_code_changed"), room_code)
+
+var names: Array = []
