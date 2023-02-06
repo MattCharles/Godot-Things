@@ -46,7 +46,7 @@ func _on_join_lobby_button_pressed(): #TODO: only letters
 	if room_code.length() == ROOM_CODE_LENGTH:
 		is_host = false
 		connection_setup()
-		var id = player_name + str(multiplayer.get_unique_id())
+		var id = player_name + str(randi())
 		print(id + " joining")
 		$HolePunch.start_traversal(room_code, false, id, player_name) #Attempt to connect to server as client
 		print("Status: Connecting to session...")
@@ -76,10 +76,6 @@ func _on_HolePunch_hole_punched(my_port, hosts_port, hosts_address, num_plyrs):
 	print("Status: Connection successful")
 	players_joined = 0
 	GameState.ids.clear()
-	for peer in $HolePunch.peers.keys():
-		GameState.ids.append(peer)
-	
-	GameState.ids.append($HolePunch.client_name)
 	await get_tree().process_frame
 	if $HolePunch.is_host:
 		$ConnectTimer.start(1) #Waiting for port to become unused to start game
@@ -96,7 +92,6 @@ func _on_HolePunch_update_lobby(nicknames, max_players):
 		placeholder.set_position(player_positions[i].position)
 		i += 1
 		add_child(placeholder)
-		GameState.names.append(nickname)
 		lobby_message+=nickname+"\n"
 	if nicknames.size()>1: #you're not alone!
 		print("Status: Ready to play!")
@@ -112,12 +107,16 @@ func _on_connect_timer_timeout():
 		multiplayer.set_multiplayer_peer(net)
 		multiplayer.peer_connected.connect(self._update_counter)
 		$game_start.start_game.connect(self._load_level)
+		GameState.names.append($HolePunch.client_name)
+		GameState.ids.append(multiplayer.get_unique_id())
 	else:
 		$game_start.start_game.connect(self._load_level)
 		var net = ENetMultiplayerPeer.new() #Connect to host
 		net.create_client(host_address, host_port, 0, 0, own_port)
 		multiplayer.set_multiplayer_peer(net)
-	print(GameState.names)
+		GameState.names.append($HolePunch.client_name)
+		GameState.ids.append(multiplayer.get_unique_id())
+	
 	
 
 func _load_level():

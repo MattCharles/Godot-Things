@@ -16,6 +16,9 @@ func _ready():
 
 func create_player(id):
 	print("spawning: " + str(id))
+	print("Do we know the names? The IDs?") 
+	print(GameState.names)
+	print(GameState.ids)
 	var player = preload("res://Characters/Aliens/Player.tscn").instantiate()
 	player.name = str(id)
 	player.player_name = player.name.rstrip("0123456789")
