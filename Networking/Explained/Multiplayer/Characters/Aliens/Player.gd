@@ -4,7 +4,7 @@ class_name Player
 const DEFAULT_SPEED = 400
 const DEFAULT_ROLL_SPEED = 700
 const DEFAULT_HEALTH = 100
-const DISTANCE_FROM_CENTER_TO_HAND = 35
+const DISTANCE_FROM_CENTER_TO_HAND = 45
 
 @onready var _animated_sprite = $AnimatedSprite2D
 @onready var shoot_point = $Hand/ShootPoint
@@ -20,12 +20,13 @@ var default = "default"
 var roll = "Roll"
 
 var health := DEFAULT_HEALTH
-var maxHealth := DEFAULT_HEALTH
+var max_health := DEFAULT_HEALTH
 var speed := DEFAULT_SPEED
 var maxSpeed := DEFAULT_SPEED
 var roll_speed := DEFAULT_ROLL_SPEED
 var move_state := Movement.states.MOVE
 var roll_vector := Vector2.DOWN
+var player_name := "Poochy"
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -36,12 +37,15 @@ func _ready():
 	# https://github.com/godotengine/godot/issues/55284
 	$Networking/MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
 
-	$UI.visible = is_local_authority()
-	$UI/PlayerNameLabel.text = str(multiplayer.get_unique_id())
+	$Networking.sync_health = health
+	$UI/TextureProgressBar.value = health
+	$Networking.sync_max_health = max_health
+	$UI.visible = true
+	$UI/PlayerNameLabel.text = player_name
+	$Networking.sync_player_name = player_name
+	
 
 func _process(_delta):
-	$UI/TextureProgressBar.value = health
-	$UI/TextureProgressBar.visible = health < maxHealth
 	if is_local_authority():
 		$Hand.position = get_hand_position()
 		$Hand.look_at(self.get_global_mouse_position())
@@ -54,6 +58,7 @@ func _process(_delta):
 			shots_fired = shots_fired + 1
 			rpc("instance_bullet", multiplayer.get_unique_id(), self.get_global_mouse_position(), get_distant_target(), shots_fired)
 	else:
+		health = $Networking.sync_health
 		if not $Networking.processed_hand_position:
 			$Hand.position = $Networking.sync_hand_position
 			$Networking.processed_hand_position = true
@@ -61,6 +66,8 @@ func _process(_delta):
 		$Hand/Sprite2d.flip_v = $Networking.sync_hand_flip
 		_animated_sprite.flip_h = $Networking.sync_flip_sprite
 				
+	$UI/TextureProgressBar.value = health
+	$UI/TextureProgressBar.visible = health < max_health
 	$Networking.sync_hand_rotation = $Hand.rotation
 	$Networking.sync_hand_position = $Hand.position
 		
@@ -154,13 +161,16 @@ func get_hand_rotation() -> float:
 func get_distant_target() -> Vector2:
 	var hand_position = get_hand_position()
 	return 12345 * hand_position
+	
+func damage(amount):
+	if multiplayer.is_server():
+		rpc("take_damage", amount)
 
 @rpc("any_peer", "call_local", "reliable")
 func instance_bullet(id, look_at, distant_target, shot_id):
 	print(str(shot_id))
 	print(shot_ids)
 	if shot_ids.has(shot_id):
-		print("the")
 		return
 	shot_ids[shot_id] = true
 	var instance = player_bullet.instantiate()
@@ -169,3 +179,9 @@ func instance_bullet(id, look_at, distant_target, shot_id):
 	instance.target = distant_target
 	instance.look_at(look_at)
 	instance.global_position = shoot_point.global_position
+
+@rpc("call_local", "reliable")
+func take_damage(amount):
+	print(health)
+	health = health - amount
+	$Networking.sync_health = health

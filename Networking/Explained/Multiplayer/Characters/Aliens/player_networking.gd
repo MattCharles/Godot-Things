@@ -1,7 +1,6 @@
 extends Node
 
-
-var player_name: String
+var sync_player_name: String
 var sync_position : Vector2:
 	set(value):
 		sync_position = value
@@ -20,3 +19,7 @@ var sync_hand_flip: bool
 var sync_move_state: Movement.states
 
 var sync_flip_sprite: bool
+
+var sync_health: int
+var sync_max_health: int
+

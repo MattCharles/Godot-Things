@@ -14,10 +14,8 @@ func _on_VisibilityNotifier2D_screen_exited():
 	queue_free()
 
 func _on_default_bullet_body_entered(body):
-	if not body is Player:
-		return
-	print("hit player!")
-	if multiplayer.is_server():
-		print("server!")
+	if body is Player:
+		body.damage(damage)
+	
 	queue_free()
 		
