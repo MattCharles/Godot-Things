@@ -6,26 +6,26 @@
 [ext_resource type="Script" path="res://Characters/Aliens/player_networking.gd" id="4_h5uv8"]
 [ext_resource type="Texture2D" uid="uid://50xpn4158q84" path="res://Characters/Poochys/Shooter-hand.png" id="5_c0gyg"]
 
-[sub_resource type="Gradient" id="Gradient_djvfr"]
+[sub_resource type="Gradient" id="Gradient_0gmir"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8sr7w"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7scja"]
 radius = 18.2667
 height = 74.6667
 
-[sub_resource type="Gradient" id="Gradient_iihl8"]
+[sub_resource type="Gradient" id="Gradient_c25sc"]
 colors = PackedColorArray(0, 0.164706, 0.290196, 1, 0, 0.258824, 0.454902, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_gg23b"]
-gradient = SubResource("Gradient_iihl8")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_187nc"]
+gradient = SubResource("Gradient_c25sc")
 
-[sub_resource type="Gradient" id="Gradient_qqj1m"]
+[sub_resource type="Gradient" id="Gradient_v3pn6"]
 colors = PackedColorArray(0, 0.278431, 0.486275, 1, 0, 0.576471, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_en4hd"]
-gradient = SubResource("Gradient_qqj1m")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_in3vx"]
+gradient = SubResource("Gradient_v3pn6")
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_by2gf"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_uj3j3"]
 properties/0/path = NodePath(":sync_position")
 properties/0/spawn = true
 properties/0/sync = true
@@ -71,7 +71,7 @@ emission_shape = 1
 emission_sphere_radius = 12.43
 gravity = Vector2(0, 98)
 scale_amount_min = 0.5
-color_ramp = SubResource("Gradient_djvfr")
+color_ramp = SubResource("Gradient_0gmir")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
@@ -82,7 +82,7 @@ animation = &"Roll"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-1, 13)
 scale = Vector2(1.5, -1.24493)
-shape = SubResource("CapsuleShape2D_8sr7w")
+shape = SubResource("CapsuleShape2D_7scja")
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -99,8 +99,8 @@ offset_bottom = 66.0
 value = 100.0
 fill_mode = 3
 nine_patch_stretch = true
-texture_under = SubResource("GradientTexture1D_gg23b")
-texture_progress = SubResource("GradientTexture1D_en4hd")
+texture_under = SubResource("GradientTexture1D_187nc")
+texture_progress = SubResource("GradientTexture1D_in3vx")
 
 [node name="PlayerNameLabel" type="Label" parent="UI"]
 layout_mode = 1
@@ -123,7 +123,7 @@ horizontal_alignment = 1
 script = ExtResource("4_h5uv8")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
-replication_config = SubResource("SceneReplicationConfig_by2gf")
+replication_config = SubResource("SceneReplicationConfig_uj3j3")
 
 [node name="Hand" type="Node2D" parent="."]
 

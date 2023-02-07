@@ -10,3 +10,5 @@ var room_code: String = "XXXXX":
 
 var names: Array = []
 var ids: Array = []
+
+var name_dict := {}

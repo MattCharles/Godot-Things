@@ -86,6 +86,7 @@ func _on_HolePunch_update_lobby(nicknames, max_players):
 	GameState.names.clear()
 	var lobby_message = "Lobby "+str(nicknames.size())+"/"+str(max_players)+"\n"
 	var i = 0
+	GameState.names.append_array(nicknames)
 	for nickname in nicknames:
 		var placeholder = PlaceholderScene.instantiate()
 		placeholder.nickname = nickname
@@ -107,29 +108,47 @@ func _on_connect_timer_timeout():
 		multiplayer.set_multiplayer_peer(net)
 		multiplayer.peer_connected.connect(self._update_counter)
 		$game_start.start_game.connect(self._load_level)
-		GameState.names.append($HolePunch.client_name)
-		GameState.ids.append(multiplayer.get_unique_id())
 	else:
 		$game_start.start_game.connect(self._load_level)
+		#multiplayer.peer_connected.connect(self.print_hello, $HolePunch.client_name)
 		var net = ENetMultiplayerPeer.new() #Connect to host
 		net.create_client(host_address, host_port, 0, 0, own_port)
 		multiplayer.set_multiplayer_peer(net)
-		GameState.names.append($HolePunch.client_name)
-		GameState.ids.append(multiplayer.get_unique_id())
-	
-	
 
 func _load_level():
+	rpc_id(1, "add_name", $HolePunch.client_name)
 	rpc("_load_fr")
+	
+func print_hello(id):
+	rpc_id(1, "print_on_server", id)
+	
+@rpc("call_local", "any_peer")
+func print_on_server(i):
+	print("hello " + i)
 	
 @rpc("call_local")
 func _load_fr():
-	get_tree().change_scene_to_file("res://Levels/Level1.tscn")
+	var root = get_node("/root/")
+	var now = get_node("/root/main_menu")
+	root.remove_child(now)
+	now.call_deferred("free")
+	
+	var player_stuff = load("res://System/memory.tscn").instantiate()
+	player_stuff.contents = {"a": "b", "1": "2"}
+	var next_scene = load("res://Levels/Level1.tscn").instantiate()
+	#get_tree().change_scene_to_file("res://Levels/Level1.tscn")
+	next_scene.add_child(player_stuff)
+	root.add_child(next_scene)
+	
+	
+@rpc("call_local", "any_peer", "reliable")
+func add_name(new_name):
+	print("rpc called by " + str(multiplayer.get_remote_sender_id()))
+	GameState.name_dict[multiplayer.get_remote_sender_id()] = new_name
 
 func _update_counter(id):
 	if $HolePunch.is_host:
 		$game_start.num_connected = $game_start.num_connected + 1
-	print(str(id) + " connected")
 
 func _on_HolePunch_session_registered():
 	print("Status: Room open!")
