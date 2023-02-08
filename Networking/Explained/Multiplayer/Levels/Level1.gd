@@ -15,8 +15,6 @@ func _ready():
 	multiplayer.peer_disconnected.connect(self.destroy_player)
 
 func create_player(id):
-	var help = rpc_id(id, "get_name")
-	print(help)
 	print(GameState.name_dict.keys())
 	print(GameState.name_dict.values())
 	var player = preload("res://Characters/Aliens/Player.tscn").instantiate()
@@ -34,7 +32,3 @@ func create_player(id):
 func destroy_player(id : int) -> void:
 	# Delete this peer's node.
 	$Players.get_node(str(id)).queue_free()
-
-@rpc("any_peer")
-func get_name():
-	return GameState.name_dict[multiplayer.get_remote_sender_id()]

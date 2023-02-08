@@ -13,3 +13,11 @@ color = Color(0.670588, 0.803922, 0.937255, 1)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(960, 540)
+
+[node name="SpawnRoot" type="Node" parent="."]
+
+[node name="PlayerData" type="Node" parent="."]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="PlayerData"]
+_spawnable_scenes = PackedStringArray("res://System/memory.tscn")
+spawn_path = NodePath("..")

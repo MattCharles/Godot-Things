@@ -15,7 +15,7 @@ const ROOM_CODE_LENGTH = 5
 
 const PlayerScene = preload("res://Characters/Aliens/Player.tscn")
 @onready var PlaceholderScene = preload("res://Characters/Poochys/Stander.tscn")
-var GameScene = preload("res://Levels/Level1.tscn")
+@onready var GameScene = preload("res://Levels/Level1.tscn").instantiate()
 
 var player_positions
 
@@ -114,9 +114,16 @@ func _on_connect_timer_timeout():
 		var net = ENetMultiplayerPeer.new() #Connect to host
 		net.create_client(host_address, host_port, 0, 0, own_port)
 		multiplayer.set_multiplayer_peer(net)
+	var player_stuff = load("res://System/memory.tscn").instantiate()
+	player_stuff.set_multiplayer_authority(multiplayer.get_unique_id())
+	player_stuff.contents = {"a": "b", "1": "2"}
+	player_stuff.name = $HolePunch.client_name
+	GameScene.get_node("PlayerData").add_child(player_stuff)
+	
 
 func _load_level():
-	rpc_id(1, "add_name", $HolePunch.client_name)
+	rpc("add_name", $HolePunch.client_name)
+	
 	rpc("_load_fr")
 	
 func print_hello(id):
@@ -132,13 +139,7 @@ func _load_fr():
 	var now = get_node("/root/main_menu")
 	root.remove_child(now)
 	now.call_deferred("free")
-	
-	var player_stuff = load("res://System/memory.tscn").instantiate()
-	player_stuff.contents = {"a": "b", "1": "2"}
-	var next_scene = load("res://Levels/Level1.tscn").instantiate()
-	#get_tree().change_scene_to_file("res://Levels/Level1.tscn")
-	next_scene.add_child(player_stuff)
-	root.add_child(next_scene)
+	root.add_child(GameScene)
 	
 	
 @rpc("call_local", "any_peer", "reliable")
