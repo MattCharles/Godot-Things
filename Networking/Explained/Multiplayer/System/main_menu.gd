@@ -16,6 +16,7 @@ const ROOM_CODE_LENGTH = 5
 const PlayerScene = preload("res://Characters/Aliens/Player.tscn")
 @onready var PlaceholderScene = preload("res://Characters/Poochys/Stander.tscn")
 @onready var GameScene = preload("res://Levels/Level1.tscn").instantiate()
+@onready var player_stuff = preload("res://System/memory.tscn").instantiate()
 
 var player_positions
 
@@ -77,6 +78,11 @@ func _on_HolePunch_hole_punched(my_port, hosts_port, hosts_address, num_plyrs):
 	players_joined = 0
 	GameState.ids.clear()
 	await get_tree().process_frame
+	
+	player_stuff.contents = $HolePunch.peers
+	player_stuff.contents[$HolePunch.client_name] = {"id": 1, "name": $HolePunch.client_name}
+	player_stuff.name = "Players"
+	GameScene.get_node("PlayerData").add_child(player_stuff)
 	if $HolePunch.is_host:
 		$ConnectTimer.start(1) #Waiting for port to become unused to start game
 	else:
@@ -110,45 +116,25 @@ func _on_connect_timer_timeout():
 		$game_start.start_game.connect(self._load_level)
 	else:
 		$game_start.start_game.connect(self._load_level)
-		#multiplayer.peer_connected.connect(self.print_hello, $HolePunch.client_name)
 		var net = ENetMultiplayerPeer.new() #Connect to host
 		net.create_client(host_address, host_port, 0, 0, own_port)
 		multiplayer.set_multiplayer_peer(net)
-	var player_stuff = load("res://System/memory.tscn").instantiate()
-	player_stuff.set_multiplayer_authority(multiplayer.get_unique_id())
-	player_stuff.contents = {"a": "b", "1": "2"}
-	player_stuff.name = $HolePunch.client_name
-	GameScene.get_node("PlayerData").add_child(player_stuff)
-	
 
 func _load_level():
-	rpc("add_name", $HolePunch.client_name)
-	
 	rpc("_load_fr")
 	
-func print_hello(id):
-	rpc_id(1, "print_on_server", id)
-	
 @rpc("call_local", "any_peer")
-func print_on_server(i):
-	print("hello " + i)
-	
-@rpc("call_local")
 func _load_fr():
 	var root = get_node("/root/")
 	var now = get_node("/root/main_menu")
 	root.remove_child(now)
 	now.call_deferred("free")
 	root.add_child(GameScene)
-	
-	
-@rpc("call_local", "any_peer", "reliable")
-func add_name(new_name):
-	print("rpc called by " + str(multiplayer.get_remote_sender_id()))
-	GameState.name_dict[multiplayer.get_remote_sender_id()] = new_name
 
 func _update_counter(id):
 	if $HolePunch.is_host:
+		var this_player = player_stuff.contents.keys()[$game_start.num_connected-1]
+		player_stuff.contents[this_player]["id"] = id
 		$game_start.num_connected = $game_start.num_connected + 1
 
 func _on_HolePunch_session_registered():

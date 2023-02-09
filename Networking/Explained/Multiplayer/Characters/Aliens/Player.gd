@@ -39,8 +39,11 @@ func _ready():
 	$UI/TextureProgressBar.value = health
 	$Networking.sync_max_health = max_health
 	$UI.visible = true
+	if is_local_authority():
+		$Networking.sync_player_name = player_name
+	else:
+		player_name = $Networking.sync_player_name
 	$UI/PlayerNameLabel.text = player_name
-	$Networking.sync_player_name = player_name
 	
 
 func _process(_delta):
@@ -161,6 +164,10 @@ func get_distant_target() -> Vector2:
 	var hand_position = get_hand_position()
 	return 12345 * hand_position
 	
+func change_name(_new_name):
+	print("Setting name to " + _new_name)
+	rpc("remote_change_name", _new_name)
+	
 func damage(amount):
 	if multiplayer.is_server():
 		rpc("take_damage", amount)
@@ -183,3 +190,10 @@ func take_damage(amount):
 func die():
 	queue_free()
 	print("idie")
+
+@rpc("call_local", "reliable")
+func remote_change_name(_new_name):
+	print(_new_name)
+	player_name = _new_name
+	$Networking.sync_player_name = _new_name
+	$UI/PlayerNameLabel.text = player_name

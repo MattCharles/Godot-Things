@@ -15,18 +15,18 @@ func _ready():
 	multiplayer.peer_disconnected.connect(self.destroy_player)
 
 func create_player(id):
-	print(GameState.name_dict.keys())
-	print(GameState.name_dict.values())
 	var player = preload("res://Characters/Aliens/Player.tscn").instantiate()
+	var memory_node = $PlayerData.get_node("Players")
 	player.name = str(id)
-	player.player_name = player.name.rstrip("0123456789")
-	num_connected = num_connected + 1
-	
-	#player.set_network_master(id)
-	#Player positions are randomized different for each player, but in this setup it doesn't matter
-	#If you are going to actually use randomization in a multiplayer game, consider synchronizing rng seeds
 	player.position = Vector2(randf_range(0,1920),randf_range(0,1080))
 	add_child(player)
+	if multiplayer.is_server():
+		for entry in memory_node.contents:
+			if memory_node.contents[entry]["id"] == id:
+				var new_name = memory_node.contents[entry]["name"]
+				player.change_name(new_name.rstrip("0123456789"))
+	num_connected = num_connected + 1
+	
 	return player
 
 func destroy_player(id : int) -> void:
