@@ -78,7 +78,6 @@ func _process(_delta):
 func _physics_process(delta):
 	if health < 0:
 		die()
-	print(move_state)
 	match move_state:
 		Movement.states.MOVE:
 			process_move(delta)
@@ -138,7 +137,7 @@ func process_roll(delta) -> void:
 	_animated_sprite.play(roll)
 	print("rolling")
 	if !is_local_authority(): # this is somebody else's player character
-		$CollisionShape2D.disabled = !$Networking.sync_collidable
+		$CollisionShape2D.set_deferred("disabled", !$Networking.sync_collidable)
 		print("Starting roll for " + str($Networking/MultiplayerSynchronizer.get_multiplayer_authority()) + ": collidable status = " + str($Networking.sync_collidable))
 		if not $Networking.processed_position:
 			position = $Networking.sync_position
@@ -147,7 +146,7 @@ func process_roll(delta) -> void:
 		move_and_slide()
 		return
 	$Networking.sync_collidable = false
-	$CollisionShape2D.disabled = !$Networking.sync_collidable
+	$CollisionShape2D.set_deferred("disabled", !$Networking.sync_collidable)
 	
 	velocity = roll_vector * roll_speed
 	move_and_slide()
@@ -157,9 +156,9 @@ func process_roll(delta) -> void:
 
 func roll_finished() -> void:
 	$Networking.sync_collidable = true
-	$CollisionShape2D.disabled = !$Networking.sync_collidable
-	if is_local_authority():
-		$Networking.sync_move_state = Movement.states.MOVE
+	$CollisionShape2D.set_deferred("disabled", !$Networking.sync_collidable)
+	#if is_local_authority():
+	$Networking.sync_move_state = Movement.states.MOVE
 	move_state = Movement.states.MOVE
 	
 func get_hand_position() -> Vector2:
@@ -200,6 +199,8 @@ func take_damage(amount):
 	$Networking.sync_health = health
 
 func die():
+	if !multiplayer.is_server():
+		return
 	print("die from player")
 	emit_signal("i_die", $Networking/MultiplayerSynchronizer.get_multiplayer_authority())
 
