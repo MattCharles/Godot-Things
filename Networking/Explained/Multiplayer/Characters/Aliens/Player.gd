@@ -6,6 +6,8 @@ const DEFAULT_ROLL_SPEED = 700
 const DEFAULT_HEALTH = 100
 const DISTANCE_FROM_CENTER_TO_HAND = 45
 
+signal i_die(id: int)
+
 @onready var _animated_sprite = $AnimatedSprite2D
 @onready var shoot_point = $Hand/ShootPoint
 var player_bullet = preload("res://Items/default_bullet.tscn")
@@ -198,8 +200,8 @@ func take_damage(amount):
 	$Networking.sync_health = health
 
 func die():
-	queue_free()
-	print("idie")
+	print("die from player")
+	emit_signal("i_die", $Networking/MultiplayerSynchronizer.get_multiplayer_authority())
 
 @rpc("call_local", "reliable")
 func remote_change_name(_new_name):
