@@ -31,4 +31,4 @@ func create_player(id):
 
 func destroy_player(id : int) -> void:
 	# Delete this peer's node.
-	$Players.get_node(str(id)).queue_free()
+	get_node(str(id)).queue_free()

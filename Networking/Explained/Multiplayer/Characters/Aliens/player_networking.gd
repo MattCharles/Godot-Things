@@ -23,3 +23,4 @@ var sync_flip_sprite: bool
 var sync_health: int
 var sync_max_health: int
 
+var sync_collidable := false

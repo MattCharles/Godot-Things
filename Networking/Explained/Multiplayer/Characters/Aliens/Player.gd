@@ -65,6 +65,7 @@ func _process(_delta):
 		$Hand.rotation = $Networking.sync_hand_rotation
 		$Hand/Sprite2d.flip_v = $Networking.sync_hand_flip
 		_animated_sprite.flip_h = $Networking.sync_flip_sprite
+		move_state = $Networking.sync_move_state
 				
 	$UI/TextureProgressBar.value = health
 	$UI/TextureProgressBar.visible = health < max_health
@@ -75,6 +76,7 @@ func _process(_delta):
 func _physics_process(delta):
 	if health < 0:
 		die()
+	print(move_state)
 	match move_state:
 		Movement.states.MOVE:
 			process_move(delta)
@@ -87,6 +89,7 @@ func process_move(delta) -> void:
 			position = $Networking.sync_position
 			$Networking.processed_position = true
 		velocity = $Networking.sync_velocity
+		#move_state = $Networking.sync_move_state
 		if velocity.x != 0 or velocity.y != 0:
 			_animated_sprite.play(walk)
 		else:
@@ -120,6 +123,7 @@ func process_move(delta) -> void:
 	if Input.is_action_just_pressed("roll"):
 		roll_vector = Vector2(x_direction, y_direction).normalized()
 		move_state = Movement.states.ROLL
+		$Networking.sync_move_state = Movement.states.ROLL
 		await get_tree().create_timer(roll_time).timeout
 		roll_finished()
 		
@@ -130,24 +134,30 @@ func process_move(delta) -> void:
 
 func process_roll(delta) -> void:
 	_animated_sprite.play(roll)
-	$CollisionShape2D.disabled = true
+	print("rolling")
 	if !is_local_authority(): # this is somebody else's player character
+		$CollisionShape2D.disabled = !$Networking.sync_collidable
+		print("Starting roll for " + str($Networking/MultiplayerSynchronizer.get_multiplayer_authority()) + ": collidable status = " + str($Networking.sync_collidable))
 		if not $Networking.processed_position:
 			position = $Networking.sync_position
 			$Networking.processed_position = true
 		velocity = $Networking.sync_velocity
 		move_and_slide()
 		return
+	$Networking.sync_collidable = false
+	$CollisionShape2D.disabled = !$Networking.sync_collidable
 	
 	velocity = roll_vector * roll_speed
-	print(velocity)
 	move_and_slide()
 	
 	$Networking.sync_position = position
 	$Networking.sync_velocity = velocity
 
 func roll_finished() -> void:
-	$CollisionShape2D.disabled = false
+	$Networking.sync_collidable = true
+	$CollisionShape2D.disabled = !$Networking.sync_collidable
+	if is_local_authority():
+		$Networking.sync_move_state = Movement.states.MOVE
 	move_state = Movement.states.MOVE
 	
 func get_hand_position() -> Vector2:
