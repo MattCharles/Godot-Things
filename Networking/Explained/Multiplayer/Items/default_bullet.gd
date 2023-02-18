@@ -11,11 +11,15 @@ func _physics_process(delta):
 	position = position + velocity * delta
 
 func _on_VisibilityNotifier2D_screen_exited():
-	queue_free()
+	rpc("free")
 
 func _on_default_bullet_body_entered(body):
 	if body is Player:
 		body.damage(damage)
 	
-	queue_free()
+	rpc("free")
 		
+
+@rpc("call_local", "any_peer")
+func free():
+	queue_free()
