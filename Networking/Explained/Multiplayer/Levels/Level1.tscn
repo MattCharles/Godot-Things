@@ -23,13 +23,11 @@ _spawnable_scenes = PackedStringArray("res://System/memory.tscn")
 spawn_path = NodePath("..")
 
 [node name="PickingTime" type="Control" parent="."]
-visible = false
 custom_minimum_size = Vector2(1920, 1080)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
-size_flags_horizontal = 4
 
 [node name="ColorRect" type="ColorRect" parent="PickingTime"]
 layout_mode = 1
@@ -40,12 +38,15 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.290196, 0.290196, 0.290196, 1)
 
-[node name="ChoiceCointainer" type="HBoxContainer" parent="PickingTime"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PickingTime"]
 layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_left = 69.0
-offset_top = 76.0
-offset_right = -68.0
-offset_bottom = 850.0
-grow_horizontal = 2
+anchors_preset = -1
+anchor_left = 0.03
+anchor_top = 0.045
+anchor_right = 0.978
+anchor_bottom = 0.923
+offset_left = -0.600002
+offset_top = 0.399998
+offset_right = 0.239868
+theme_override_constants/separation = 18
+alignment = 1
