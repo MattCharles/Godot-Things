@@ -27,6 +27,7 @@ var roll_speed := DEFAULT_ROLL_SPEED
 var move_state := Movement.states.MOVE
 var roll_vector := Vector2.DOWN
 var player_name := "Poochy"
+var dead := false
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -76,7 +77,7 @@ func _process(_delta):
 		
 
 func _physics_process(delta):
-	if health < 0:
+	if health <= 0 and not dead:
 		die()
 	match move_state:
 		Movement.states.MOVE:
@@ -103,7 +104,7 @@ func process_move(delta) -> void:
 	var x_direction = Input.get_axis("move_left", "move_right")
 	var y_direction = Input.get_axis("move_up", "move_down")
 	
-	if x_direction: #TODO: make character always face mouse
+	if x_direction:
 		velocity.x = x_direction * speed
 		_animated_sprite.play(walk)
 	else:
@@ -200,8 +201,11 @@ func take_damage(amount):
 
 func die():
 	if !multiplayer.is_server():
+		dead = $Networking.sync_dead
 		return
 	print("die from player")
+	dead = true
+	$Networking.sync_dead = true
 	emit_signal("i_die", $Networking/MultiplayerSynchronizer.get_multiplayer_authority())
 
 @rpc("call_local", "reliable")
@@ -210,3 +214,9 @@ func remote_change_name(_new_name):
 	player_name = _new_name
 	$Networking.sync_player_name = _new_name
 	$UI/PlayerNameLabel.text = player_name
+
+@rpc("call_local", "reliable")
+func remote_dictate_position(new_position):
+	print("remote position set")
+	position = new_position
+	pass

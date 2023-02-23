@@ -24,3 +24,4 @@ var sync_health: int
 var sync_max_health: int
 
 var sync_collidable := false
+var sync_dead: bool

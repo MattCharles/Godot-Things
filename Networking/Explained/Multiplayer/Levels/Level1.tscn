@@ -1,11 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://bfifxodn1uacu"]
+[gd_scene load_steps=3 format=3 uid="uid://bfifxodn1uacu"]
 
 [ext_resource type="Script" path="res://Levels/Level1.gd" id="1_i62b0"]
+[ext_resource type="Script" path="res://Levels/Networking.gd" id="2_2ei3q"]
 
 [node name="Level" type="Node2D"]
 script = ExtResource("1_i62b0")
 
 [node name="ColorRect" type="ColorRect" parent="."]
+z_index = -1
 custom_minimum_size = Vector2(1920, 1080)
 offset_right = 1920.0
 offset_bottom = 1080.0
@@ -30,6 +32,7 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 
 [node name="ColorRect" type="ColorRect" parent="PickingTime"]
+z_index = -1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -50,3 +53,9 @@ offset_top = 0.399998
 offset_right = 0.239868
 theme_override_constants/separation = 18
 alignment = 1
+
+[node name="Networking" type="Node" parent="."]
+script = ExtResource("2_2ei3q")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
+root_path = NodePath("../..")

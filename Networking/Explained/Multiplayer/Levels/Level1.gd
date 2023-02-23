@@ -2,10 +2,11 @@ extends Node2D
 
 var host_player = null 
 var host_id
-var num_connected = 0
 var alive := {}
 var wins := {}
 var player_nodes := {}
+
+var choice_button = preload("res://Items/upgrade_choice.tscn")
 
 func _ready():
 	host_id = multiplayer.get_unique_id()
@@ -21,14 +22,14 @@ func create_player(id):
 	var player = preload("res://Characters/Aliens/Player.tscn").instantiate()
 	var memory_node = $PlayerData.get_node("Players")
 	player.name = str(id)
-	player.position = _get_spawn_position(num_connected, 2) # TODO: support multiplayer games
 	add_child(player)
 	if multiplayer.is_server():
+		player.rpc("remote_dictate_position", _get_spawn_position($Networking.sync_num_connected, 2)) # TODO: support multiplayer games
+		$Networking.sync_num_connected = $Networking.sync_num_connected + 1
 		for entry in memory_node.contents:
 			if memory_node.contents[entry]["id"] == id:
 				var new_name = memory_node.contents[entry]["name"]
 				player.change_name(new_name.rstrip("0123456789"))
-	num_connected = num_connected + 1
 	alive[id] = true
 	wins[id] = 0
 	player_nodes[id] = player
@@ -40,12 +41,16 @@ func kill_player(id: int) -> void:
 	print("killing " + str(id))
 	alive[id] = false
 	if one_left():
+		if multiplayer.is_server():
+			$Networking.sync_game_state = PlayState.State.PICKING
 		print("Winner found!")
 		var winner = get_all_alive(alive)[0]
 		wins[winner] += 1
 		print(str(winner) + " has won " + str(wins[winner]) + " time(s)")
 		hide_all_players()
 		$PickingTime.visible = true
+		for n in 3:
+			$PickingTime/HBoxContainer.add_child(choice_button.instantiate())
 
 func destroy_player(id : int) -> void:
 	# Delete this peer's node.
@@ -71,11 +76,10 @@ func get_all_matching(map, value) -> Array:
 func respawn_all():
 	pass
 
-func _get_spawn_position(i: int, num_playing:int) -> Vector2:
-	var result:=Vector2(0, 0)
-	result.x = 100 + (i * 1700)
+func _get_spawn_position(i: int, num_playing:int) -> Vector2: 
+	var result:=Vector2(100 + (i * 1700), 0)
 	print(result.x)
-	print(i)
+	print("i = " + str(i))
 	if num_playing == 2:
 		result.y = 480
 	if num_playing == 3 or num_playing == 4:
@@ -84,5 +88,11 @@ func _get_spawn_position(i: int, num_playing:int) -> Vector2:
 	return result
 
 func hide_all_players() -> void:
+	modify_player_visibility(false)
+
+func unhide_all_players() -> void:
+	modify_player_visibility(true)
+	
+func modify_player_visibility(value) -> void:
 	for player in alive.keys():
-		player_nodes[player].visible = false
+		player_nodes[player].visible = value

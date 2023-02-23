@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Items/default_bullet.gd" id="1_2tldu"]
 [ext_resource type="Texture2D" uid="uid://dcmo23rq31stq" path="res://Items/buttonBlue.png" id="1_coy6n"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_xhxfj"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gjt3k"]
 radius = 23.0
 height = 46.0
 
@@ -17,7 +17,7 @@ texture = ExtResource("1_coy6n")
 
 [node name="CollisionShape2d" type="CollisionShape2D" parent="Sprite2D/Area2d"]
 position = Vector2(0, 11)
-shape = SubResource("CapsuleShape2D_xhxfj")
+shape = SubResource("CapsuleShape2D_gjt3k")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
 

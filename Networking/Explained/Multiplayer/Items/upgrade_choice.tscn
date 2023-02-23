@@ -1,0 +1,79 @@
+[gd_scene load_steps=10 format=3 uid="uid://bpywgdd3137bb"]
+
+[ext_resource type="Script" path="res://UpgradeChoice.gd" id="1_vdpt2"]
+[ext_resource type="Texture2D" uid="uid://b6m5amcx22cae" path="res://Characters/Poochys/Poochy-Stander.png" id="2_346dw"]
+[ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_lnfwc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ry6do"]
+atlas = ExtResource("3_lnfwc")
+region = Rect2(0, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bf5vy"]
+atlas = ExtResource("3_lnfwc")
+region = Rect2(17, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cufya"]
+atlas = ExtResource("3_lnfwc")
+region = Rect2(34, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lrbf6"]
+atlas = ExtResource("3_lnfwc")
+region = Rect2(51, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2o7dj"]
+atlas = ExtResource("3_lnfwc")
+region = Rect2(68, 0, 17, 23)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ilk51"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_346dw")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ry6do")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bf5vy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cufya")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lrbf6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2o7dj")
+}],
+"loop": true,
+"name": &"hover",
+"speed": 5.0
+}]
+
+[node name="UpgradeChoice" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+size_flags_horizontal = 3
+script = ExtResource("1_vdpt2")
+
+[node name="Button" type="Button" parent="."]
+custom_minimum_size = Vector2(500, 888)
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+expand_icon = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Button"]
+sprite_frames = SubResource("SpriteFrames_ilk51")
+animation = &"hover"
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
+[connection signal="mouse_exited" from="Button" to="." method="_on_button_mouse_exited"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
