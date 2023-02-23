@@ -37,21 +37,16 @@ func create_player(id):
 	
 	return player
 
-func kill_player(id: int) -> void:
+func kill_player(id: int) -> void: 
 	print("killing " + str(id))
 	alive[id] = false
+	print("Winner found!")
+	var winner = get_all_alive(alive)[0]
+	wins[winner] += 1
+	print(str(winner) + " has won " + str(wins[winner]) + " time(s)")
 	if one_left():
 		if multiplayer.is_server():
-			$Networking.sync_game_state = PlayState.State.PICKING
-		print("Winner found!")
-		var winner = get_all_alive(alive)[0]
-		wins[winner] += 1
-		print(str(winner) + " has won " + str(wins[winner]) + " time(s)")
-		hide_all_players()
-		$PickingTime.visible = true
-		for n in 3:
-			$PickingTime/HBoxContainer.add_child(choice_button.instantiate())
-
+			rpc("enter_picking_time", winner)
 func destroy_player(id : int) -> void:
 	# Delete this peer's node.
 	print("destroying " + str(id))
@@ -86,6 +81,16 @@ func _get_spawn_position(i: int, num_playing:int) -> Vector2:
 		result.y = 320 + (320 if i >= 3 else 0)
 	
 	return result
+
+@rpc("reliable", "call_local")
+func enter_picking_time(id) -> void:
+	print("pick world,,, for " + str(id))
+	if multiplayer.is_server():
+		$Networking.sync_game_state = PlayState.State.PICKING
+	hide_all_players()
+	$PickingTime.visible = true
+	for n in 3:
+		$PickingTime/HBoxContainer.add_child(choice_button.instantiate())
 
 func hide_all_players() -> void:
 	modify_player_visibility(false)

@@ -1,7 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://bfifxodn1uacu"]
+[gd_scene load_steps=4 format=3 uid="uid://bfifxodn1uacu"]
 
 [ext_resource type="Script" path="res://Levels/Level1.gd" id="1_i62b0"]
 [ext_resource type="Script" path="res://Levels/Networking.gd" id="2_2ei3q"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_6blho"]
+properties/0/path = NodePath(".:sync_num_connected")
+properties/0/spawn = true
+properties/0/sync = true
+properties/1/path = NodePath(".:sync_game_state")
+properties/1/spawn = true
+properties/1/sync = true
 
 [node name="Level" type="Node2D"]
 script = ExtResource("1_i62b0")
@@ -58,4 +66,4 @@ alignment = 1
 script = ExtResource("2_2ei3q")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
-root_path = NodePath("../..")
+replication_config = SubResource("SceneReplicationConfig_6blho")
