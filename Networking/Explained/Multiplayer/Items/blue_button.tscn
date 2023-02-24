@@ -1,8 +1,39 @@
-[gd_scene load_steps=6 format=3 uid="uid://dgjn4lpgc05qp"]
+[gd_scene load_steps=6 format=3 uid="uid://d122c6n00bwem"]
 
-[ext_resource type="Script" path="res://Items/blue_button.gd" id="1_35n0c"]
 [ext_resource type="Texture2D" uid="uid://dcmo23rq31stq" path="res://Items/buttonBlue.png" id="2_3l0fu"]
-[ext_resource type="Texture2D" uid="uid://gsm7g02s0xew" path="res://Items/buttonBlue_pressed.png" id="2_kyogj"]
+
+[sub_resource type="GDScript" id="GDScript_mita3"]
+script/source = "extends Area2D
+
+@export
+var pressed_texture : Texture2D
+@export
+var default_texture : Texture2D
+@export
+var reset_delay := 3.0
+
+var isPressed : bool:
+	set (newValue):
+		if newValue:
+			$Sprite2D.texture = pressed_texture
+		else:
+			$Sprite2D.texture = default_texture
+		isPressed = newValue
+
+func _on_blue_button_body_entered(body):
+	if isPressed:
+		return
+	if not body is Player:
+		return
+	isPressed = true
+	if multiplayer.is_server():
+		GameState.button_press_count += 1
+		await get_tree().create_timer(reset_delay).timeout
+		isPressed = false
+"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jsqrh"]
+load_path = "res://.godot/imported/buttonBlue_pressed.png-dfe399dcc6b9c033175be45718ef0cb4.ctex"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8apkt"]
 size = Vector2(64, 61)
@@ -14,8 +45,8 @@ properties/0/sync = true
 
 [node name="BlueButton" type="Area2D"]
 collision_mask = 2
-script = ExtResource("1_35n0c")
-pressed_texture = ExtResource("2_kyogj")
+script = SubResource("GDScript_mita3")
+pressed_texture = SubResource("CompressedTexture2D_jsqrh")
 default_texture = ExtResource("2_3l0fu")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

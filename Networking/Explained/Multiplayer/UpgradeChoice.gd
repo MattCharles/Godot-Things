@@ -23,15 +23,15 @@ func set_description(value):
 func set_id(id):
 	rpc("sync_id", id)
 	
-@rpc("call_local", "reliable")
+@rpc("call_local", "reliable", "any_peer")
 func sync_id(id):
 	card_id = id
 	
-@rpc("call_local", "reliable")
+@rpc("call_local", "reliable", "any_peer")
 func sync_title(value):
 	$Title.text = value
 	
-@rpc("call_local", "reliable")
+@rpc("call_local", "reliable", "any_peer")
 func sync_description(value):
 	$Description.text = value
 	

@@ -1,13 +1,82 @@
-[gd_scene load_steps=13 format=3 uid="uid://scjoku8kmkqj"]
+[gd_scene load_steps=20 format=3 uid="uid://ds41tvyxujn2h"]
 
-[ext_resource type="SpriteFrames" uid="uid://yro4ypo6sek5" path="res://Characters/Aliens/Blue/BlueSpriteFrames.tres" id="1_bgwyd"]
-[ext_resource type="Script" path="res://Characters/Aliens/Player.gd" id="1_ytcn0"]
-[ext_resource type="Texture2D" uid="uid://cdvmbhtt0c41x" path="res://Assets/Particles/smoke_01.png" id="2_bvf2j"]
-[ext_resource type="Script" path="res://Characters/Aliens/player_networking.gd" id="4_h5uv8"]
+[ext_resource type="Script" path="res://Characters/Player.gd" id="1_uheab"]
+[ext_resource type="Texture2D" uid="uid://b6m5amcx22cae" path="res://Characters/Poochys/Poochy-Stander.png" id="2_lj62y"]
+[ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_f8meu"]
+[ext_resource type="Script" path="res://Characters/player_networking.gd" id="4_4qpvw"]
 [ext_resource type="Texture2D" uid="uid://50xpn4158q84" path="res://Characters/Poochys/Shooter-hand.png" id="5_c0gyg"]
 
-[sub_resource type="Gradient" id="Gradient_xlcf4"]
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+[sub_resource type="AtlasTexture" id="AtlasTexture_e8r1q"]
+atlas = ExtResource("2_lj62y")
+region = Rect2(0, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bx68q"]
+atlas = ExtResource("3_f8meu")
+region = Rect2(0, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_53r2j"]
+atlas = ExtResource("3_f8meu")
+region = Rect2(17, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0hsd6"]
+atlas = ExtResource("3_f8meu")
+region = Rect2(34, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1oobx"]
+atlas = ExtResource("3_f8meu")
+region = Rect2(51, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2tuia"]
+atlas = ExtResource("3_f8meu")
+region = Rect2(68, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s0xiu"]
+atlas = ExtResource("2_lj62y")
+region = Rect2(0, 0, 17, 23)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_62n7l"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"Jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e8r1q")
+}],
+"loop": true,
+"name": &"Roll",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bx68q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_53r2j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0hsd6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1oobx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2tuia")
+}],
+"loop": true,
+"name": &"Walk",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s0xiu")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_yofkj"]
 radius = 18.2667
@@ -65,24 +134,12 @@ properties/11/sync = true
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 3
-script = ExtResource("1_ytcn0")
-
-[node name="JetpackParticles" type="CPUParticles2D" parent="."]
-position = Vector2(-4, 47)
-emitting = false
-amount = 32
-draw_order = 1
-texture = ExtResource("2_bvf2j")
-emission_shape = 1
-emission_sphere_radius = 12.43
-gravity = Vector2(0, 98)
-scale_amount_min = 0.5
-color_ramp = SubResource("Gradient_xlcf4")
+script = ExtResource("1_uheab")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 scale = Vector2(5, 5)
-sprite_frames = ExtResource("1_bgwyd")
+sprite_frames = SubResource("SpriteFrames_62n7l")
 animation = &"Roll"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -126,7 +183,7 @@ text = "Poochy"
 horizontal_alignment = 1
 
 [node name="Networking" type="Node" parent="."]
-script = ExtResource("4_h5uv8")
+script = ExtResource("4_4qpvw")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
 replication_config = SubResource("SceneReplicationConfig_p3y61")

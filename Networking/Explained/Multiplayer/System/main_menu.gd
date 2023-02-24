@@ -13,7 +13,7 @@ var player_name_field
 
 const ROOM_CODE_LENGTH = 5
 
-const PlayerScene = preload("res://Characters/Aliens/Player.tscn")
+const PlayerScene = preload("res://Characters/Player.tscn")
 @onready var PlaceholderScene = preload("res://Characters/Poochys/Stander.tscn")
 @onready var GameScene = preload("res://Levels/Level1.tscn").instantiate()
 @onready var player_stuff = preload("res://System/memory.tscn").instantiate()

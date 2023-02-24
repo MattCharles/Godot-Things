@@ -1,7 +1,7 @@
 extends Control
 
 @export
-var PlayerScene = preload("res://Characters/Aliens/Player.tscn")
+var PlayerScene = preload("res://Characters/Player.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

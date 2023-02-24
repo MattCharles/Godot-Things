@@ -19,7 +19,7 @@ func _ready():
 	multiplayer.peer_disconnected.connect(self.destroy_player)
 
 func create_player(id):
-	var player = preload("res://Characters/Aliens/Player.tscn").instantiate()
+	var player = preload("res://Characters/Player.tscn").instantiate()
 	var memory_node = $PlayerData.get_node("Players")
 	player.name = str(id)
 	add_child(player)

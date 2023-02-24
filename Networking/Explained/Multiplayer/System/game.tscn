@@ -1,9 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://xj123c0rivpb"]
+[gd_scene load_steps=4 format=3 uid="uid://fxfhq8dddqe7"]
 
 [ext_resource type="PackedScene" uid="uid://dhvi1o1ili7f" path="res://Maps/TestMap.tscn" id="3_r4wht"]
 
 [sub_resource type="GDScript" id="GDScript_rve2u"]
-script/source = "extends Node
+script/source = "xtends Node
 
 @export
 var PlayerScene = preload(\"res://Characters/Aliens/Player.tscn\")
@@ -58,6 +58,7 @@ func update_label(newScore : int) -> void:
 
 [node name="MainGame" type="Node"]
 script = SubResource("GDScript_rve2u")
+PlayerScene = null
 
 [node name="Players" type="Node2D" parent="."]
 position = Vector2(325, 0)
