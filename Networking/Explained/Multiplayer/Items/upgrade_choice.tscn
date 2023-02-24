@@ -65,6 +65,15 @@ properties/1/sync = true
 properties/2/path = NodePath(".:updated_animation")
 properties/2/spawn = true
 properties/2/sync = true
+properties/3/path = NodePath("Description:text")
+properties/3/spawn = true
+properties/3/sync = true
+properties/4/path = NodePath("Title:text")
+properties/4/spawn = true
+properties/4/sync = true
+properties/5/path = NodePath(".:card_id")
+properties/5/spawn = true
+properties/5/sync = true
 
 [node name="UpgradeChoice" type="Control"]
 layout_mode = 3
@@ -80,6 +89,8 @@ offset_bottom = 8.0
 expand_icon = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Button"]
+position = Vector2(257, 244)
+scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_hdekg")
 animation = &"hover"
 
@@ -88,6 +99,25 @@ animation = &"hover"
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
 root_path = NodePath("../..")
 replication_config = SubResource("SceneReplicationConfig_6aebc")
+
+[node name="Description" type="Label" parent="."]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 488.0
+offset_right = 489.0
+offset_bottom = 876.0
+theme_override_font_sizes/font_size = 52
+text = "Description"
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 11.0
+offset_right = 489.0
+offset_bottom = 94.0
+theme_override_font_sizes/font_size = 52
+text = "Title"
+horizontal_alignment = 1
 
 [connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
 [connection signal="mouse_exited" from="Button" to="." method="_on_button_mouse_exited"]

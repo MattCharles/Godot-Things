@@ -95,6 +95,13 @@ func enter_picking_time(id) -> void:
 		button.name = str(n)
 		$PickingTime/HBoxContainer.add_child(button)
 		button.set_picker(id)
+		button.set_title(str(n))
+		button.set_description(str(n))
+		button.set_id(n)
+		button.picked.connect(card_picked)
+		
+func card_picked(id, picker) -> void:
+	print("Nice pick of " + str(id) +  " for " + str(picker))
 
 func hide_all_players() -> void:
 	modify_player_visibility(false)
@@ -105,3 +112,4 @@ func unhide_all_players() -> void:
 func modify_player_visibility(value) -> void:
 	for player in alive.keys():
 		player_nodes[player].visible = value
+		player_nodes[player].set_process(value)
