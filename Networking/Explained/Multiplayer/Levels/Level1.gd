@@ -47,6 +47,7 @@ func kill_player(id: int) -> void:
 	if one_left():
 		if multiplayer.is_server():
 			rpc("enter_picking_time", winner)
+	
 func destroy_player(id : int) -> void:
 	# Delete this peer's node.
 	print("destroying " + str(id))
@@ -90,7 +91,10 @@ func enter_picking_time(id) -> void:
 	hide_all_players()
 	$PickingTime.visible = true
 	for n in 3:
-		$PickingTime/HBoxContainer.add_child(choice_button.instantiate())
+		var button = choice_button.instantiate()
+		button.name = str(n)
+		$PickingTime/HBoxContainer.add_child(button)
+		button.set_picker(id)
 
 func hide_all_players() -> void:
 	modify_player_visibility(false)
