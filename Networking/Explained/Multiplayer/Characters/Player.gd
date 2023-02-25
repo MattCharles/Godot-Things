@@ -23,7 +23,6 @@ var roll_time = 0.5
 var health := DEFAULT_HEALTH
 var max_health := DEFAULT_HEALTH
 var speed := DEFAULT_SPEED
-var max_speed := DEFAULT_SPEED
 var roll_speed := DEFAULT_ROLL_SPEED
 var move_state := Movement.states.MOVE
 var roll_vector := Vector2.DOWN
@@ -216,7 +215,6 @@ func reset():
 	health = DEFAULT_HEALTH
 	max_health = DEFAULT_HEALTH
 	speed = DEFAULT_SPEED
-	max_speed = DEFAULT_SPEED
 	roll_speed = DEFAULT_ROLL_SPEED
 	scale = DEFAULT_SCALE
 	# Then, add all our modifiers 
@@ -224,6 +222,8 @@ func reset():
 	for node in modifier_nodes:
 		print(node.modifiers)
 		modify_with(node.modifiers)
+	dead = false
+	$Networking.sync_dead = false
 		
 func modify_with(dict:Dictionary): #TODO: Generalize, more mods
 	if dict.has("max_health"):
@@ -235,10 +235,11 @@ func modify_with(dict:Dictionary): #TODO: Generalize, more mods
 		var scale_mod = dict["scale"]
 		if scale_mod.has("multiply"):
 			scale = scale * scale_mod["multiply"]
-	if dict.has("max_speed"):
-		var max_speed_mod = dict["max_speed"]
-		if max_speed_mod.has("multiply"):
-			max_speed = max_speed_mod["multiply"]
+			print(str(scale))
+	if dict.has("speed"):
+		var speed_mod = dict["speed"]
+		if speed_mod.has("multiply"):
+			speed = speed * speed_mod["multiply"]
 
 @rpc("call_local", "reliable")
 func remote_change_name(_new_name):

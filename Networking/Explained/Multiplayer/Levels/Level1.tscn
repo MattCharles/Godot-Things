@@ -19,7 +19,7 @@ z_index = -1
 custom_minimum_size = Vector2(1920, 1080)
 offset_right = 1920.0
 offset_bottom = 1080.0
-color = Color(0.670588, 0.803922, 0.937255, 1)
+color = Color(0.290196, 0.290196, 0.290196, 1)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(960, 540)
@@ -33,6 +33,7 @@ _spawnable_scenes = PackedStringArray("res://System/memory.tscn")
 spawn_path = NodePath("..")
 
 [node name="PickingTime" type="Control" parent="."]
+visible = false
 custom_minimum_size = Vector2(1920, 1080)
 layout_mode = 3
 anchors_preset = 0

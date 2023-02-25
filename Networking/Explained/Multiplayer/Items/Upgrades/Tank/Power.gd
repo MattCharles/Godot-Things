@@ -5,9 +5,9 @@ const modifiers := {
 		"multiply": 1.2
 	},
 	"scale": {
-		"mutliply": 1.2
+		"multiply": 1.2
 	},
-	"max_speed": {
+	"speed": {
 		"multiply": .9
 	}
 }

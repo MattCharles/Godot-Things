@@ -106,7 +106,9 @@ func card_picked(card_id, player_id) -> void:
 
 @rpc("reliable", "call_local", "any_peer") #TODO: security here
 func exit_picking_time() -> void:
-	$PickingTime/HBoxContainer.get_children().map(queue_free)
+	for choice in $PickingTime/HBoxContainer.get_children():
+		$PickingTime/HBoxContainer.remove_child(choice)
+		choice.queue_free()
 	$PickingTime.visible = false
 	unhide_all_players()
 	reset_players()
@@ -124,4 +126,5 @@ func modify_player_visibility(value) -> void:
 		
 func reset_players() -> void:
 	for player in alive.keys():
+		alive[player] = true
 		player_nodes[player].reset()
