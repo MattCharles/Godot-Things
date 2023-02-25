@@ -7,6 +7,8 @@ var wins := {}
 var player_nodes := {}
 
 var choice_button = preload("res://Items/upgrade_choice.tscn")
+var tank_button = preload("res://Items/Upgrades/Tank/choice.tscn")
+var powers = [load("res://Items/Upgrades/Tank/power.tscn")] #TODO - load the power node when choice is displayed
 
 func _ready():
 	host_id = multiplayer.get_unique_id()
@@ -46,7 +48,7 @@ func kill_player(id: int) -> void:
 	print(str(winner) + " has won " + str(wins[winner]) + " time(s)")
 	if one_left():
 		if multiplayer.is_server():
-			rpc("enter_picking_time", winner)
+			rpc("enter_picking_time", id)
 	
 func destroy_player(id : int) -> void:
 	# Delete this peer's node.
@@ -91,17 +93,23 @@ func enter_picking_time(id) -> void:
 	hide_all_players()
 	$PickingTime.visible = true
 	for n in 3:
-		var button = choice_button.instantiate()
+		var button = tank_button.instantiate()
 		button.name = str(n)
 		$PickingTime/HBoxContainer.add_child(button)
 		button.set_picker(id)
-		button.set_title(str(n))
-		button.set_description(str(n))
-		button.set_id(n)
 		button.picked.connect(card_picked)
 		
-func card_picked(id, picker) -> void:
-	print("Nice pick of " + str(id) +  " for " + str(picker))
+func card_picked(card_id, player_id) -> void:
+	print("Nice pick of " + str(card_id) +  " for " + str(player_id))
+	player_nodes[player_id].get_node("Powers").add_child(powers[card_id].instantiate())
+	rpc("exit_picking_time")
+
+@rpc("reliable", "call_local", "any_peer") #TODO: security here
+func exit_picking_time() -> void:
+	$PickingTime/HBoxContainer.get_children().map(queue_free)
+	$PickingTime.visible = false
+	unhide_all_players()
+	reset_players()
 
 func hide_all_players() -> void:
 	modify_player_visibility(false)
@@ -113,3 +121,7 @@ func modify_player_visibility(value) -> void:
 	for player in alive.keys():
 		player_nodes[player].visible = value
 		player_nodes[player].set_process(value)
+		
+func reset_players() -> void:
+	for player in alive.keys():
+		player_nodes[player].reset()

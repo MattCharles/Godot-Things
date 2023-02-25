@@ -33,7 +33,6 @@ func _on_blue_button_body_entered(body):
 "
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jsqrh"]
-load_path = "res://.godot/imported/buttonBlue_pressed.png-dfe399dcc6b9c033175be45718ef0cb4.ctex"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8apkt"]
 size = Vector2(64, 61)

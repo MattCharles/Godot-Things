@@ -1,34 +1,35 @@
-[gd_scene load_steps=11 format=3 uid="uid://bpywgdd3137bb"]
+[gd_scene load_steps=12 format=3 uid="uid://q645ieeqxncj"]
 
-[ext_resource type="Script" path="res://UpgradeChoice.gd" id="1_vdpt2"]
-[ext_resource type="Texture2D" uid="uid://b6m5amcx22cae" path="res://Characters/Poochys/Poochy-Stander.png" id="2_346dw"]
-[ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_lnfwc"]
+[ext_resource type="Script" path="res://UpgradeChoice.gd" id="1_6rffo"]
+[ext_resource type="Texture2D" uid="uid://b6m5amcx22cae" path="res://Characters/Poochys/Poochy-Stander.png" id="2_25jgl"]
+[ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_pxudx"]
+[ext_resource type="PackedScene" uid="uid://cq8nwpvu5n74l" path="res://Items/Upgrades/Tank/power.tscn" id="4_86n73"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_tg0pc"]
-atlas = ExtResource("3_lnfwc")
+[sub_resource type="AtlasTexture" id="AtlasTexture_mfe6u"]
+atlas = ExtResource("3_pxudx")
 region = Rect2(0, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_idqsd"]
-atlas = ExtResource("3_lnfwc")
+[sub_resource type="AtlasTexture" id="AtlasTexture_giqf2"]
+atlas = ExtResource("3_pxudx")
 region = Rect2(17, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_7ql1v"]
-atlas = ExtResource("3_lnfwc")
+[sub_resource type="AtlasTexture" id="AtlasTexture_w4iit"]
+atlas = ExtResource("3_pxudx")
 region = Rect2(34, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_01ju1"]
-atlas = ExtResource("3_lnfwc")
+[sub_resource type="AtlasTexture" id="AtlasTexture_bsv4v"]
+atlas = ExtResource("3_pxudx")
 region = Rect2(51, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_xhxar"]
-atlas = ExtResource("3_lnfwc")
+[sub_resource type="AtlasTexture" id="AtlasTexture_tbkqk"]
+atlas = ExtResource("3_pxudx")
 region = Rect2(68, 0, 17, 23)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_th5u5"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_hdekg"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_346dw")
+"texture": ExtResource("2_25jgl")
 }],
 "loop": true,
 "name": &"default",
@@ -36,26 +37,26 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_tg0pc")
+"texture": SubResource("AtlasTexture_mfe6u")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_idqsd")
+"texture": SubResource("AtlasTexture_giqf2")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_7ql1v")
+"texture": SubResource("AtlasTexture_w4iit")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_01ju1")
+"texture": SubResource("AtlasTexture_bsv4v")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_xhxar")
+"texture": SubResource("AtlasTexture_tbkqk")
 }],
 "loop": true,
 "name": &"hover",
 "speed": 5.0
 }]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_enxv3"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_6aebc"]
 properties/0/path = NodePath(".:picker")
 properties/0/spawn = true
 properties/0/sync = true
@@ -75,11 +76,11 @@ properties/5/path = NodePath(".:card_id")
 properties/5/spawn = true
 properties/5/sync = true
 
-[node name="UpgradeChoice" type="Control"]
+[node name="Tank" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 size_flags_horizontal = 3
-script = ExtResource("1_vdpt2")
+script = ExtResource("1_6rffo")
 
 [node name="Button" type="Button" parent="."]
 custom_minimum_size = Vector2(500, 888)
@@ -90,15 +91,15 @@ expand_icon = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Button"]
 position = Vector2(257, 244)
-scale = Vector2(5, 5)
-sprite_frames = SubResource("SpriteFrames_th5u5")
+scale = Vector2(10, 5)
+sprite_frames = SubResource("SpriteFrames_hdekg")
 animation = &"hover"
 
 [node name="Networking" type="Node" parent="."]
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
 root_path = NodePath("../..")
-replication_config = SubResource("SceneReplicationConfig_enxv3")
+replication_config = SubResource("SceneReplicationConfig_6aebc")
 
 [node name="Description" type="Label" parent="."]
 layout_mode = 0
@@ -107,7 +108,8 @@ offset_top = 488.0
 offset_right = 489.0
 offset_bottom = 876.0
 theme_override_font_sizes/font_size = 52
-text = "Description"
+text = "Get more Poochy Health!"
+autowrap_mode = 3
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 0
@@ -116,8 +118,10 @@ offset_top = 11.0
 offset_right = 489.0
 offset_bottom = 94.0
 theme_override_font_sizes/font_size = 52
-text = "Title"
+text = "Tank"
 horizontal_alignment = 1
+
+[node name="TankPower" parent="." instance=ExtResource("4_86n73")]
 
 [connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
 [connection signal="mouse_exited" from="Button" to="." method="_on_button_mouse_exited"]

@@ -5,24 +5,25 @@ const DEFAULT_SPEED = 400
 const DEFAULT_ROLL_SPEED = 700
 const DEFAULT_HEALTH = 100
 const DISTANCE_FROM_CENTER_TO_HAND = 45
+const DEFAULT_SCALE = Vector2(1, 1)
 
 signal i_die(id: int)
 
 @onready var _animated_sprite = $AnimatedSprite2D
 @onready var shoot_point = $Hand/ShootPoint
 var player_bullet = preload("res://Items/default_bullet.tscn")
-var shot_cooldown
-var roll_time = 0.5
 
 # animation names
 var walk = "Walk" 
 var default = "default"
 var roll = "Roll"
 
+var shot_cooldown
+var roll_time = 0.5
 var health := DEFAULT_HEALTH
 var max_health := DEFAULT_HEALTH
 var speed := DEFAULT_SPEED
-var maxSpeed := DEFAULT_SPEED
+var max_speed := DEFAULT_SPEED
 var roll_speed := DEFAULT_ROLL_SPEED
 var move_state := Movement.states.MOVE
 var roll_vector := Vector2.DOWN
@@ -207,6 +208,37 @@ func die():
 	dead = true
 	$Networking.sync_dead = true
 	emit_signal("i_die", $Networking/MultiplayerSynchronizer.get_multiplayer_authority())
+	
+func reset():
+	# First, set everything to defaults.
+	#  TODO
+	roll_time = 0.5
+	health = DEFAULT_HEALTH
+	max_health = DEFAULT_HEALTH
+	speed = DEFAULT_SPEED
+	max_speed = DEFAULT_SPEED
+	roll_speed = DEFAULT_ROLL_SPEED
+	scale = DEFAULT_SCALE
+	# Then, add all our modifiers 
+	var modifier_nodes = get_node("Powers").get_children()
+	for node in modifier_nodes:
+		print(node.modifiers)
+		modify_with(node.modifiers)
+		
+func modify_with(dict:Dictionary): #TODO: Generalize, more mods
+	if dict.has("max_health"):
+		var health_mod = dict["max_health"]
+		if health_mod.has("multiply"):
+			max_health = max_health * health_mod["multiply"]
+			health = max_health
+	if dict.has("scale"):
+		var scale_mod = dict["scale"]
+		if scale_mod.has("multiply"):
+			scale = scale * scale_mod["multiply"]
+	if dict.has("max_speed"):
+		var max_speed_mod = dict["max_speed"]
+		if max_speed_mod.has("multiply"):
+			max_speed = max_speed_mod["multiply"]
 
 @rpc("call_local", "reliable")
 func remote_change_name(_new_name):

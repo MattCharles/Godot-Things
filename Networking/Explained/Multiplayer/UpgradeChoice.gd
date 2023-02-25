@@ -4,7 +4,7 @@ extends Control
 var picker := 0
 var remote_animation := "default"
 var updated_animation := true
-var card_id := 0
+const card_id := 0
 
 signal picked(id, picker)
 
@@ -19,13 +19,6 @@ func set_title(value):
 	
 func set_description(value):
 	rpc("sync_description", value)
-
-func set_id(id):
-	rpc("sync_id", id)
-	
-@rpc("call_local", "reliable", "any_peer")
-func sync_id(id):
-	card_id = id
 	
 @rpc("call_local", "reliable", "any_peer")
 func sync_title(value):

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cq8nwpvu5n74l"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/Tank/Power.gd" id="1_lxpyr"]
+
+[node name="Tank" type="Node"]
+script = ExtResource("1_lxpyr")
