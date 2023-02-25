@@ -6,12 +6,14 @@ const DEFAULT_ROLL_SPEED = 700
 const DEFAULT_HEALTH = 100
 const DISTANCE_FROM_CENTER_TO_HAND = 45
 const DEFAULT_SCALE = Vector2(1, 1)
+const DEFAULT_SPREAD = 30 # Measured in degrees, in either direction
+const DEFAULT_BULLETS_PER_SHOT = 1 # I clicked shoot. How many bullets come out at once?
+const DEFAULT_BULLET = preload("res://Items/default_bullet.tscn")
 
 signal i_die(id: int)
 
 @onready var _animated_sprite = $AnimatedSprite2D
 @onready var shoot_point = $Hand/ShootPoint
-var player_bullet = preload("res://Items/default_bullet.tscn")
 
 # animation names
 var walk = "Walk" 
@@ -20,6 +22,7 @@ var roll = "Roll"
 
 var shot_cooldown
 var roll_time = 0.5
+var player_bullet := DEFAULT_BULLET
 var health := DEFAULT_HEALTH
 var max_health := DEFAULT_HEALTH
 var speed := DEFAULT_SPEED
@@ -28,6 +31,8 @@ var move_state := Movement.states.MOVE
 var roll_vector := Vector2.DOWN
 var player_name := "Poochy"
 var dead := false
+var spread := DEFAULT_SPREAD
+var bullets_per_shot := DEFAULT_BULLETS_PER_SHOT
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -59,7 +64,7 @@ func _process(_delta):
 		_animated_sprite.flip_h = $Hand/Sprite2d.flip_v
 		$Networking.sync_flip_sprite = _animated_sprite.flip_h
 		if Input.is_action_just_pressed("shoot"):
-			rpc("instance_bullet", multiplayer.get_unique_id(), self.get_global_mouse_position(), get_distant_target())
+			rpc("process_shot", multiplayer.get_unique_id(), self.get_global_mouse_position(), get_distant_target())
 	else:
 		health = $Networking.sync_health
 		if not $Networking.processed_hand_position:
@@ -186,13 +191,16 @@ func damage(amount):
 		rpc("take_damage", amount)
 
 @rpc("any_peer", "call_local", "reliable")
-func instance_bullet(id, look_at, distant_target):
-	var instance = player_bullet.instantiate()
-	instance.name = str(randi())
-	get_node("/root/Level/SpawnRoot").add_child(instance, true)
-	instance.target = distant_target
-	instance.look_at(look_at)
-	instance.global_position = shoot_point.global_position
+func process_shot(id, look_at, distant_target):
+	for bullet_count in bullets_per_shot:
+		var bullet_angle = random_angle(spread)
+		var target = distant_target.rotated(bullet_angle)
+		var instance = player_bullet.instantiate()
+		instance.name = str(randi())
+		get_node("/root/Level/SpawnRoot").add_child(instance, true)
+		instance.target = target
+		instance.look_at(look_at)
+		instance.global_position = shoot_point.global_position
 
 @rpc("call_local", "reliable")
 func take_damage(amount):
@@ -258,3 +266,10 @@ func remote_dictate_position(new_position):
 	print("remote position set")
 	position = new_position
 	pass
+
+# Get a random number from negative max to max.
+func random_angle(max) -> float:
+	var result = (randi() % max) * -1 if randi() % 2 == 1 else 1
+	result = deg_to_rad(result)
+	print(str(result))
+	return result
