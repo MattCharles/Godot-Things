@@ -128,7 +128,7 @@ func process_move(delta) -> void:
 		move_state = Movement.states.ROLL
 		$Networking.sync_move_state = Movement.states.ROLL
 		await get_tree().create_timer(roll_time).timeout
-		roll_finished()
+		rpc("roll_finished")
 		
 	# Update sync variables, which will be replicated to everyone else
 	$Networking.sync_position = position
@@ -156,6 +156,7 @@ func process_roll(delta) -> void:
 	$Networking.sync_position = position
 	$Networking.sync_velocity = velocity
 
+@rpc("reliable", "any_peer", "call_local")
 func roll_finished() -> void:
 	$Networking.sync_collidable = true
 	$CollisionShape2D.set_deferred("disabled", !$Networking.sync_collidable)
