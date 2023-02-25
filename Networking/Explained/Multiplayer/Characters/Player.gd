@@ -71,6 +71,7 @@ func _process(_delta):
 		move_state = $Networking.sync_move_state
 				
 	$UI/TextureProgressBar.value = health
+	$UI/TextureProgressBar.max_value = max_health
 	$UI/TextureProgressBar.visible = health < max_health
 	$Networking.sync_hand_rotation = $Hand.rotation
 	$Networking.sync_hand_position = $Hand.position
@@ -210,20 +211,24 @@ func die():
 	
 func reset():
 	# First, set everything to defaults.
-	#  TODO
 	roll_time = 0.5
 	health = DEFAULT_HEALTH
 	max_health = DEFAULT_HEALTH
 	speed = DEFAULT_SPEED
 	roll_speed = DEFAULT_ROLL_SPEED
 	scale = DEFAULT_SCALE
+	
 	# Then, add all our modifiers 
 	var modifier_nodes = get_node("Powers").get_children()
 	for node in modifier_nodes:
 		print(node.modifiers)
 		modify_with(node.modifiers)
+	# Finally, some stuff will want to go over the network explicitly.
+	$Networking.sync_max_health = max_health
+	$Networking.sync_health = health
 	dead = false
 	$Networking.sync_dead = false
+	
 		
 func modify_with(dict:Dictionary): #TODO: Generalize, more mods
 	if dict.has("max_health"):
