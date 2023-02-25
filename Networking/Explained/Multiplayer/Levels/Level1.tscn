@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Levels/Level1.gd" id="1_i62b0"]
 [ext_resource type="Script" path="res://Levels/Networking.gd" id="2_2ei3q"]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_4717h"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_4wquc"]
 properties/0/path = NodePath(".:sync_num_connected")
 properties/0/spawn = true
 properties/0/sync = true
@@ -67,4 +67,4 @@ alignment = 1
 script = ExtResource("2_2ei3q")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
-replication_config = SubResource("SceneReplicationConfig_4717h")
+replication_config = SubResource("SceneReplicationConfig_4wquc")

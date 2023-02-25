@@ -4,7 +4,7 @@ class_name Player
 const DEFAULT_SPEED = 400
 const DEFAULT_ROLL_SPEED = 700
 const DEFAULT_HEALTH = 100
-const DISTANCE_FROM_CENTER_TO_HAND = 45
+const DISTANCE_FROM_CENTER_TO_HAND = 55
 const DEFAULT_SCALE = Vector2(1, 1)
 const DEFAULT_SPREAD = 30 # Measured in degrees, in either direction
 const DEFAULT_BULLETS_PER_SHOT = 1 # I clicked shoot. How many bullets come out at once?
@@ -67,7 +67,7 @@ func _process(_delta):
 			for bullet_count in bullets_per_shot:
 				var distant_target = get_distant_target()
 				var bullet_angle = random_angle(spread)
-				var target = distant_target.rotated(bullet_angle)				
+				var target = distant_target.rotated(bullet_angle)
 				rpc("process_shot", multiplayer.get_unique_id(), self.get_global_mouse_position(), target)
 	else:
 		health = $Networking.sync_health
@@ -146,7 +146,6 @@ func process_move(delta) -> void:
 
 func process_roll(delta) -> void:
 	_animated_sprite.play(roll)
-	print("rolling")
 	if !is_local_authority(): # this is somebody else's player character
 		$CollisionShape2D.set_deferred("disabled", !$Networking.sync_collidable)
 		print("Starting roll for " + str($Networking/MultiplayerSynchronizer.get_multiplayer_authority()) + ": collidable status = " + str($Networking.sync_collidable))
@@ -175,7 +174,8 @@ func roll_finished() -> void:
 func get_hand_position() -> Vector2:
 	var target = self.get_global_mouse_position()
 	var source = self.position
-	return DISTANCE_FROM_CENTER_TO_HAND * ( target - source ).normalized()
+	var result = DISTANCE_FROM_CENTER_TO_HAND * ( target - source ).normalized()
+	return result
 	
 func get_hand_rotation() -> float:
 	var target = self.get_global_mouse_position()
@@ -234,8 +234,9 @@ func reset():
 		print(node.modifiers)
 		modify_with(node.modifiers)
 	# Finally, some stuff will want to go over the network explicitly.
-	print("setting bpc to " + str(bullets_per_shot))
-	rpc("set_bullets_per_shot", bullets_per_shot)
+	print("setting bpc to " + str(bullets_per_shot) + " by request of " + str(multiplayer.get_remote_sender_id()))
+	if is_local_authority():
+		rpc("set_bullets_per_shot", bullets_per_shot)
 	$Networking.sync_bullets_per_shot = bullets_per_shot
 	$Networking.sync_max_health = max_health
 	$Networking.sync_health = health
@@ -253,7 +254,6 @@ func modify_with(dict:Dictionary): #TODO: Generalize, more mods
 		var scale_mod = dict["scale"]
 		if scale_mod.has("multiply"):
 			scale = scale * scale_mod["multiply"]
-			print(str(scale))
 	if dict.has("speed"):
 		var speed_mod = dict["speed"]
 		if speed_mod.has("multiply"):
@@ -282,7 +282,7 @@ func remote_dictate_position(new_position):
 	print("remote position set")
 	position = new_position
 	
-@rpc("reliable")
+@rpc("reliable", "call_local", "any_peer")
 func set_bullets_per_shot(bpc):
 	print("new bpc " + str(bpc))
 	bullets_per_shot = bpc
@@ -291,5 +291,4 @@ func set_bullets_per_shot(bpc):
 func random_angle(max) -> float:
 	var result = (randi() % max) * -1 if randi() % 2 == 1 else 1
 	result = deg_to_rad(result)
-	print("bullet angle is " + str(result))
 	return result
