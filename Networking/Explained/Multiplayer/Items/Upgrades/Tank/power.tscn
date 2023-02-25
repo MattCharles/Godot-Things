@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" path="res://Items/Upgrades/Tank/Power.gd" id="1_lxpyr"]
 
-[node name="Tank" type="Node"]
+[node name="Shotgun" type="Node"]
 script = ExtResource("1_lxpyr")

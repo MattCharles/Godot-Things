@@ -16,10 +16,8 @@ func _on_VisibilityNotifier2D_screen_exited():
 func _on_default_bullet_body_entered(body):
 	if body is Player:
 		body.damage(damage)
-	
-	rpc("free")
-		
+		rpc("free")
 
 @rpc("call_local", "any_peer")
 func free():
-	queue_free()
+	call_deferred("free")

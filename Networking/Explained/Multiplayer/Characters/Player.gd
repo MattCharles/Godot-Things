@@ -64,7 +64,11 @@ func _process(_delta):
 		_animated_sprite.flip_h = $Hand/Sprite2d.flip_v
 		$Networking.sync_flip_sprite = _animated_sprite.flip_h
 		if Input.is_action_just_pressed("shoot"):
-			rpc("process_shot", multiplayer.get_unique_id(), self.get_global_mouse_position(), get_distant_target())
+			for bullet_count in bullets_per_shot:
+				var distant_target = get_distant_target()
+				var bullet_angle = random_angle(spread)
+				var target = distant_target.rotated(bullet_angle)				
+				rpc("process_shot", multiplayer.get_unique_id(), self.get_global_mouse_position(), target)
 	else:
 		health = $Networking.sync_health
 		if not $Networking.processed_hand_position:
@@ -164,7 +168,6 @@ func process_roll(delta) -> void:
 func roll_finished() -> void:
 	$Networking.sync_collidable = true
 	$CollisionShape2D.set_deferred("disabled", !$Networking.sync_collidable)
-	#if is_local_authority():
 	$Networking.sync_move_state = Movement.states.MOVE
 	move_state = Movement.states.MOVE
 	
@@ -192,15 +195,12 @@ func damage(amount):
 
 @rpc("any_peer", "call_local", "reliable")
 func process_shot(id, look_at, distant_target):
-	for bullet_count in bullets_per_shot:
-		var bullet_angle = random_angle(spread)
-		var target = distant_target.rotated(bullet_angle)
-		var instance = player_bullet.instantiate()
-		instance.name = str(randi())
-		get_node("/root/Level/SpawnRoot").add_child(instance, true)
-		instance.target = target
-		instance.look_at(look_at)
-		instance.global_position = shoot_point.global_position
+	var instance = player_bullet.instantiate()
+	instance.name = str(randi())
+	get_node("/root/Level/SpawnRoot").add_child(instance, true)
+	instance.target = distant_target
+	instance.look_at(look_at)
+	instance.global_position = shoot_point.global_position
 
 @rpc("call_local", "reliable")
 func take_damage(amount):
@@ -225,6 +225,7 @@ func reset():
 	speed = DEFAULT_SPEED
 	roll_speed = DEFAULT_ROLL_SPEED
 	scale = DEFAULT_SCALE
+	bullets_per_shot = DEFAULT_BULLETS_PER_SHOT
 	
 	# Then, add all our modifiers 
 	var modifier_nodes = get_node("Powers").get_children()
@@ -232,6 +233,9 @@ func reset():
 		print(node.modifiers)
 		modify_with(node.modifiers)
 	# Finally, some stuff will want to go over the network explicitly.
+	print("setting bpc to " + str(bullets_per_shot))
+	rpc("set_bullets_per_shot", bullets_per_shot)
+	$Networking.sync_bullets_per_shot = bullets_per_shot
 	$Networking.sync_max_health = max_health
 	$Networking.sync_health = health
 	dead = false
@@ -253,7 +257,18 @@ func modify_with(dict:Dictionary): #TODO: Generalize, more mods
 		var speed_mod = dict["speed"]
 		if speed_mod.has("multiply"):
 			speed = speed * speed_mod["multiply"]
-
+	if dict.has("bullets_per_shot"):
+		var per_shot_mod = dict["bullets_per_shot"]
+		if per_shot_mod.has("add"):
+			bullets_per_shot = bullets_per_shot + per_shot_mod["add"]
+			print("Adding mod of " + str(per_shot_mod["add"]))
+			print("Looking rn at bpc " + str(bullets_per_shot))
+	if dict.has("bullet_scale"):
+		var per_shot_mod = dict["bullet_scale"]
+		if per_shot_mod.has("multiply"):
+			#bullets_per_shot = bullets_per_shot * per_shot_mod["multiply"]
+			pass
+	
 @rpc("call_local", "reliable")
 func remote_change_name(_new_name):
 	print(_new_name)
@@ -265,11 +280,15 @@ func remote_change_name(_new_name):
 func remote_dictate_position(new_position):
 	print("remote position set")
 	position = new_position
-	pass
+	
+@rpc("reliable")
+func set_bullets_per_shot(bpc):
+	print("new bpc " + str(bpc))
+	bullets_per_shot = bpc
 
 # Get a random number from negative max to max.
 func random_angle(max) -> float:
 	var result = (randi() % max) * -1 if randi() % 2 == 1 else 1
 	result = deg_to_rad(result)
-	print(str(result))
+	print("bullet angle is " + str(result))
 	return result

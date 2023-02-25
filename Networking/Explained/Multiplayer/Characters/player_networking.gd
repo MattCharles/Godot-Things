@@ -25,3 +25,5 @@ var sync_max_health: int
 
 var sync_collidable := false
 var sync_dead: bool
+
+var sync_bullets_per_shot := 1
