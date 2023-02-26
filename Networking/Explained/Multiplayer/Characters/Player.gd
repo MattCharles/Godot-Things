@@ -219,7 +219,6 @@ func process_shot(bname, id, look_at, distant_target):
 
 @rpc("call_local", "reliable")
 func take_damage(amount):
-	print(health)
 	health = health - amount
 	$Networking.sync_health = health
 

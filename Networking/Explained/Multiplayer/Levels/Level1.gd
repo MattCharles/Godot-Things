@@ -88,6 +88,7 @@ func _get_spawn_position(i: int, num_playing:int) -> Vector2:
 
 @rpc("reliable", "call_local")
 func enter_picking_time(id) -> void:
+	remove_all_bullets()
 	print("pick world,,, for " + str(id))
 	if multiplayer.is_server():
 		$Networking.sync_game_state = PlayState.State.PICKING
@@ -129,3 +130,8 @@ func reset_players() -> void:
 	for player in alive.keys():
 		alive[player] = true
 		player_nodes[player].reset()
+
+func remove_all_bullets() -> void:
+	for node in $SpawnRoot.get_children():
+		if not node is MultiplayerSpawner:
+			node.call_deferred("free")
