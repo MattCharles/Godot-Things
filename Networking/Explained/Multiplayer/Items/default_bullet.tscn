@@ -1,25 +1,35 @@
-[gd_scene load_steps=5 format=3 uid="uid://cipeo5kk86d0o"]
+[gd_scene load_steps=7 format=3 uid="uid://cipeo5kk86d0o"]
 
 [ext_resource type="Script" path="res://Items/default_bullet.gd" id="1_2tldu"]
 [ext_resource type="Texture2D" uid="uid://dcmo23rq31stq" path="res://Items/buttonBlue.png" id="1_coy6n"]
+[ext_resource type="Script" path="res://Items/Networking.gd" id="3_5h0hf"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_lg5en"]
+bounce = 1.0
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_e2lop"]
 properties/0/path = NodePath("..:position")
 properties/0/spawn = true
 properties/0/sync = true
+properties/1/path = NodePath(".:sync_num_bounces")
+properties/1/spawn = true
+properties/1/sync = true
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wxhqq"]
 
 [node name="default_bullet" type="RigidBody2D"]
+physics_material_override = SubResource("PhysicsMaterial_lg5en")
 gravity_scale = 0.0
+continuous_cd = 1
+max_contacts_reported = 10
+contact_monitor = true
 script = ExtResource("1_2tldu")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_coy6n")
 
-[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
-
 [node name="Networking" type="Node" parent="."]
+script = ExtResource("3_5h0hf")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
 replication_interval = 1.006
@@ -28,4 +38,4 @@ replication_config = SubResource("SceneReplicationConfig_e2lop")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_wxhqq")
 
-[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_VisibilityNotifier2D_screen_exited"]
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

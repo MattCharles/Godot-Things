@@ -71,11 +71,12 @@ func _process(_delta):
 		_animated_sprite.flip_h = $Hand/Sprite2d.flip_v
 		$Networking.sync_flip_sprite = _animated_sprite.flip_h
 		if Input.is_action_just_pressed("shoot"):
+			var shot_id = randi()
 			for bullet_count in bullets_per_shot:
 				var distant_target = get_distant_target()
 				var bullet_angle = random_angle(spread)
 				var target = distant_target.rotated(bullet_angle)
-				rpc("process_shot", str(randi()), multiplayer.get_unique_id(), self.get_global_mouse_position(), target)
+				rpc("process_shot", str(shot_id + bullet_count), multiplayer.get_unique_id(), self.get_global_mouse_position(), target)
 	else:
 		health = $Networking.sync_health
 		max_health = $Networking.sync_max_health
