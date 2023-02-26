@@ -75,7 +75,7 @@ func _process(_delta):
 				var distant_target = get_distant_target()
 				var bullet_angle = random_angle(spread)
 				var target = distant_target.rotated(bullet_angle)
-				rpc("process_shot", multiplayer.get_unique_id(), self.get_global_mouse_position(), target)
+				rpc("process_shot", str(randi()), multiplayer.get_unique_id(), self.get_global_mouse_position(), target)
 	else:
 		health = $Networking.sync_health
 		max_health = $Networking.sync_max_health
@@ -202,17 +202,18 @@ func damage(amount):
 	if multiplayer.is_server():
 		rpc("take_damage", amount)
 
-@rpc("any_peer", "call_local", "reliable")
-func process_shot(id, look_at, distant_target):
+@rpc("reliable", "any_peer", "call_local")
+func process_shot(bname, id, look_at, distant_target):
+	print("shooting")
 	var instance = player_bullet.instantiate()
-	instance.name = str(randi())
-	instance.apply_impulse(Vector2.ZERO, Vector2(instance.speed, 0))
+	instance.name = bname
 	get_node("/root/Level/SpawnRoot").add_child(instance, true)
 	instance.scale = instance.scale * bullet_scale # scale is a vector 2
 	instance.target = distant_target
 	instance.damage = bullet_damage
 	instance.look_at(look_at)
 	instance.global_position = shoot_point.global_position
+	#instance.get_node("RigidBody2D").apply_impulse(distant_target.normalized() * instance.speed, Vector2.ZERO)
 	instance.fire()
 
 @rpc("call_local", "reliable")

@@ -1,9 +1,9 @@
 extends RigidBody2D
 
 var target = Vector2(0, 0)
-var speed = 100000
+var speed = 1000
 var damage = 35
-var num_bounces = 10
+var num_bounces = 1
 
 var velocity = Vector2()
 
@@ -34,4 +34,4 @@ func _on_body_entered(body):
 
 func fire():
 	print("firing at " + str(target))
-	self.apply_impulse(Vector2.ZERO, Vector2(speed, speed))
+	self.apply_impulse(target.normalized() * speed, Vector2.ZERO)

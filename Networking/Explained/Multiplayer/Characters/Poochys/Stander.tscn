@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cxoj0r6ngch4c"]
 
-[ext_resource type="Texture2D" uid="uid://cqcbn0ytw0ot7" path="res://Characters/Poochys/Poochy-Stander.png" id="1_niq5l"]
+[ext_resource type="Texture2D" uid="uid://b6m5amcx22cae" path="res://Characters/Poochys/Poochy-Stander.png" id="1_niq5l"]
 [ext_resource type="Script" path="res://Characters/Poochys/Stander.gd" id="1_pl7dj"]
 
 [node name="LobbyPlaceholder" type="Node2D"]

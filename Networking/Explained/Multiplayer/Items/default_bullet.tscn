@@ -3,16 +3,15 @@
 [ext_resource type="Script" path="res://Items/default_bullet.gd" id="1_2tldu"]
 [ext_resource type="Texture2D" uid="uid://dcmo23rq31stq" path="res://Items/buttonBlue.png" id="1_coy6n"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_h1r0t"]
-friction = 0.0
-bounce = 1.0
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_e2lop"]
+properties/0/path = NodePath("..:position")
+properties/0/spawn = true
+properties/0/sync = true
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_hsdlu"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_wxhqq"]
 
 [node name="default_bullet" type="RigidBody2D"]
-physics_material_override = SubResource("PhysicsMaterial_h1r0t")
 gravity_scale = 0.0
-can_sleep = false
 script = ExtResource("1_2tldu")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -20,8 +19,13 @@ texture = ExtResource("1_coy6n")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_hsdlu")
+[node name="Networking" type="Node" parent="."]
 
-[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
+replication_interval = 1.006
+replication_config = SubResource("SceneReplicationConfig_e2lop")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_wxhqq")
+
 [connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_VisibilityNotifier2D_screen_exited"]
