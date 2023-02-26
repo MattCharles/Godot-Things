@@ -11,6 +11,7 @@ const DEFAULT_BULLETS_PER_SHOT = 1 # I clicked shoot. How many bullets come out 
 const DEFAULT_BULLET = preload("res://Items/default_bullet.tscn")
 const DEFAULT_BULLET_SCALE = 1.0
 const DEFAULT_BULLET_DAMAGE = 35
+const ORDERED_OPERATIONS = ["add", "multiply"]
 
 signal i_die(id: int)
 
@@ -236,50 +237,61 @@ func reset():
 	bullets_per_shot = DEFAULT_BULLETS_PER_SHOT
 	bullet_scale = DEFAULT_BULLET_SCALE
 	
-	# Then, add all our modifiers 
-	var modifier_nodes = get_node("Powers").get_children()
-	for node in modifier_nodes:
-		print(node.modifiers)
-		modify_with(node.modifiers)
+	modify()
+	health = max_health
 	# Finally, some stuff will want to go over the network explicitly.
-	print("setting bpc to " + str(bullets_per_shot) + " by request of " + str(multiplayer.get_remote_sender_id()))
 	if is_local_authority():
 		rpc("set_bullets_per_shot", bullets_per_shot)
 		rpc("set_bullet_scale", bullet_scale)
+		rpc("set_bullet_damage", bullet_damage)
 	$Networking.sync_bullet_scale = bullet_scale
 	$Networking.sync_bullets_per_shot = bullets_per_shot
 	$Networking.sync_max_health = max_health
 	$Networking.sync_health = health
 	dead = false
 	$Networking.sync_dead = false
+
+# Take modifier_nodes, a list of nodes which have a dictionary, .modifiers
+# on each node:
+# Put each modifier into a bucket named for the property it's modifying.
+# Then, iterate through all buckets.
+# Find all additions to be made. Make them first.
+# Then, find all multiplications to be made. Make them.
+# Finally, set the variable. This does mean that variables in the modifier dictionary need to match
+#   the variable names in this script to be useful.
+
+func modify():
+	var modifier_nodes = get_node("Powers").get_children()
+	var grouped_mods = {}
+	for node in modifier_nodes:
+		var modifiers = node.modifiers
+		for dictionary_name in modifiers.keys():
+			if get(dictionary_name) == null:
+				print("Warning - modifying unknown property from choice node - " + str(dictionary_name))
+				continue
+			if !grouped_mods.has(dictionary_name):
+				grouped_mods[dictionary_name] = {}
+			for operation in modifiers[dictionary_name]:
+				if operation not in ORDERED_OPERATIONS:
+					print("Warning - unknown operation called from a choice node - " + str(operation))
+					continue
+				if !grouped_mods[dictionary_name].has(operation):
+					grouped_mods[dictionary_name][operation] = []
+				var operation_details = {operation: modifiers[dictionary_name][operation]}
+				grouped_mods[dictionary_name][operation].push_back(operation_details)
 	
-		
-func modify_with(dict:Dictionary): #TODO: Generalize, more mods
-	if dict.has("max_health"):
-		var health_mod = dict["max_health"]
-		if health_mod.has("multiply"):
-			max_health = max_health * health_mod["multiply"]
-			health = max_health
-	if dict.has("scale"):
-		var scale_mod = dict["scale"]
-		if scale_mod.has("multiply"):
-			scale = scale * scale_mod["multiply"]
-	if dict.has("speed"):
-		var speed_mod = dict["speed"]
-		if speed_mod.has("multiply"):
-			speed = speed * speed_mod["multiply"]
-	if dict.has("bullets_per_shot"):
-		var per_shot_mod = dict["bullets_per_shot"]
-		if per_shot_mod.has("add"):
-			bullets_per_shot = bullets_per_shot + per_shot_mod["add"]
-	if dict.has("bullet_scale"):
-		var bullet_scale_mod = dict["bullet_scale"]
-		if bullet_scale_mod.has("multiply"):
-			bullet_scale = bullet_scale * bullet_scale_mod["multiply"]
-	if dict.has("bullet_damage"):
-		var bullet_damage_mod = dict["bullet_damage"]
-		if bullet_damage_mod.has("multiply"):
-			bullet_damage = bullet_damage * bullet_damage_mod["multiply"]
+	for stat in grouped_mods.keys(): # will modify variables
+		var result = get(stat)
+		for ordered_operation in ORDERED_OPERATIONS:
+			if !grouped_mods[stat].has(ordered_operation):
+				continue
+			if ordered_operation == "add":
+				for add_value in grouped_mods[stat][ordered_operation]:
+					result = result + add_value["add"]
+			if ordered_operation == "multiply":
+				for add_value in grouped_mods[stat][ordered_operation]:
+					result = result * add_value["multiply"]
+		set(stat, result)
 	
 @rpc("call_local", "reliable")
 func remote_change_name(_new_name):
@@ -300,6 +312,10 @@ func set_bullets_per_shot(bpc):
 @rpc("reliable", "call_local", "any_peer")
 func set_bullet_scale(new_scale):
 	bullet_scale = new_scale
+	
+@rpc("reliable", "call_local", "any_peer")
+func set_bullet_damage(new_damage):
+	bullet_damage = new_damage
 
 # Get a random number from negative max to max.
 func random_angle(max) -> float:
