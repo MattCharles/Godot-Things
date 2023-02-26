@@ -6,5 +6,8 @@ const modifiers := {
 	},
 	"bullet_scale": {
 		"multiply": .6
+	},
+	"bullet_damage": {
+		"multiply": .6
 	}
 }

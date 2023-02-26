@@ -110,7 +110,7 @@ offset_top = 488.0
 offset_right = 489.0
 offset_bottom = 876.0
 theme_override_font_sizes/font_size = 52
-text = "Get more Poochy Health!"
+text = "Add two more (weaker) bullets to your shot!"
 autowrap_mode = 3
 
 [node name="Title" type="Label" parent="."]
@@ -120,7 +120,7 @@ offset_top = 11.0
 offset_right = 489.0
 offset_bottom = 94.0
 theme_override_font_sizes/font_size = 52
-text = "Tank"
+text = "Shotgun"
 horizontal_alignment = 1
 
 [node name="ShotgunPower" parent="." instance=ExtResource("4_b4kds")]

@@ -6,9 +6,11 @@ const DEFAULT_ROLL_SPEED = 700
 const DEFAULT_HEALTH = 100
 const DISTANCE_FROM_CENTER_TO_HAND = 55
 const DEFAULT_SCALE = Vector2(1, 1)
-const DEFAULT_SPREAD = 30 # Measured in degrees, in either direction
+const DEFAULT_SPREAD = 10 # Measured in degrees, in either direction
 const DEFAULT_BULLETS_PER_SHOT = 1 # I clicked shoot. How many bullets come out at once?
 const DEFAULT_BULLET = preload("res://Items/default_bullet.tscn")
+const DEFAULT_BULLET_SCALE = 1.0
+const DEFAULT_BULLET_DAMAGE = 35
 
 signal i_die(id: int)
 
@@ -33,6 +35,8 @@ var player_name := "Poochy"
 var dead := false
 var spread := DEFAULT_SPREAD
 var bullets_per_shot := DEFAULT_BULLETS_PER_SHOT
+var bullet_scale := DEFAULT_BULLET_SCALE
+var bullet_damage := DEFAULT_BULLET_DAMAGE
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -200,7 +204,9 @@ func process_shot(id, look_at, distant_target):
 	var instance = player_bullet.instantiate()
 	instance.name = str(randi())
 	get_node("/root/Level/SpawnRoot").add_child(instance, true)
+	instance.scale = instance.scale * bullet_scale # scale is a vector 2
 	instance.target = distant_target
+	instance.damage = bullet_damage
 	instance.look_at(look_at)
 	instance.global_position = shoot_point.global_position
 
@@ -228,6 +234,7 @@ func reset():
 	roll_speed = DEFAULT_ROLL_SPEED
 	scale = DEFAULT_SCALE
 	bullets_per_shot = DEFAULT_BULLETS_PER_SHOT
+	bullet_scale = DEFAULT_BULLET_SCALE
 	
 	# Then, add all our modifiers 
 	var modifier_nodes = get_node("Powers").get_children()
@@ -238,6 +245,8 @@ func reset():
 	print("setting bpc to " + str(bullets_per_shot) + " by request of " + str(multiplayer.get_remote_sender_id()))
 	if is_local_authority():
 		rpc("set_bullets_per_shot", bullets_per_shot)
+		rpc("set_bullet_scale", bullet_scale)
+	$Networking.sync_bullet_scale = bullet_scale
 	$Networking.sync_bullets_per_shot = bullets_per_shot
 	$Networking.sync_max_health = max_health
 	$Networking.sync_health = health
@@ -263,13 +272,14 @@ func modify_with(dict:Dictionary): #TODO: Generalize, more mods
 		var per_shot_mod = dict["bullets_per_shot"]
 		if per_shot_mod.has("add"):
 			bullets_per_shot = bullets_per_shot + per_shot_mod["add"]
-			print("Adding mod of " + str(per_shot_mod["add"]))
-			print("Looking rn at bpc " + str(bullets_per_shot))
 	if dict.has("bullet_scale"):
-		var per_shot_mod = dict["bullet_scale"]
-		if per_shot_mod.has("multiply"):
-			#bullets_per_shot = bullets_per_shot * per_shot_mod["multiply"]
-			pass
+		var bullet_scale_mod = dict["bullet_scale"]
+		if bullet_scale_mod.has("multiply"):
+			bullet_scale = bullet_scale * bullet_scale_mod["multiply"]
+	if dict.has("bullet_damage"):
+		var bullet_damage_mod = dict["bullet_damage"]
+		if bullet_damage_mod.has("multiply"):
+			bullet_damage = bullet_damage * bullet_damage_mod["multiply"]
 	
 @rpc("call_local", "reliable")
 func remote_change_name(_new_name):
@@ -285,8 +295,11 @@ func remote_dictate_position(new_position):
 	
 @rpc("reliable", "call_local", "any_peer")
 func set_bullets_per_shot(bpc):
-	print("new bpc " + str(bpc))
 	bullets_per_shot = bpc
+	
+@rpc("reliable", "call_local", "any_peer")
+func set_bullet_scale(new_scale):
+	bullet_scale = new_scale
 
 # Get a random number from negative max to max.
 func random_angle(max) -> float:
