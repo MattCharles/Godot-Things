@@ -1,35 +1,38 @@
 [gd_scene load_steps=12 format=3 uid="uid://q645ieeqxncj"]
 
 [ext_resource type="Script" path="res://Items/Upgrades/Tank/choice.gd" id="1_3osfn"]
-[ext_resource type="Texture2D" uid="uid://b6m5amcx22cae" path="res://Characters/Poochys/Poochy-Stander.png" id="2_25jgl"]
-[ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_pxudx"]
+[ext_resource type="Texture2D" uid="uid://07ytbs8mg2j1" path="res://Items/Upgrades/Tank/Tank-Sheet.png" id="2_ypa4x"]
 [ext_resource type="PackedScene" uid="uid://cq8nwpvu5n74l" path="res://Items/Upgrades/Tank/power.tscn" id="4_86n73"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_hf1lj"]
-atlas = ExtResource("3_pxudx")
-region = Rect2(0, 0, 17, 23)
+[sub_resource type="AtlasTexture" id="AtlasTexture_8wpbd"]
+atlas = ExtResource("2_ypa4x")
+region = Rect2(30, 0, 30, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_uvmj4"]
-atlas = ExtResource("3_pxudx")
-region = Rect2(17, 0, 17, 23)
+[sub_resource type="AtlasTexture" id="AtlasTexture_sadgo"]
+atlas = ExtResource("2_ypa4x")
+region = Rect2(0, 0, 30, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_pcidj"]
-atlas = ExtResource("3_pxudx")
-region = Rect2(34, 0, 17, 23)
+[sub_resource type="AtlasTexture" id="AtlasTexture_ypxhi"]
+atlas = ExtResource("2_ypa4x")
+region = Rect2(30, 0, 30, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_dwo0t"]
-atlas = ExtResource("3_pxudx")
-region = Rect2(51, 0, 17, 23)
+[sub_resource type="AtlasTexture" id="AtlasTexture_kjcya"]
+atlas = ExtResource("2_ypa4x")
+region = Rect2(60, 0, 30, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ytl1b"]
-atlas = ExtResource("3_pxudx")
-region = Rect2(68, 0, 17, 23)
+[sub_resource type="AtlasTexture" id="AtlasTexture_70dte"]
+atlas = ExtResource("2_ypa4x")
+region = Rect2(90, 0, 30, 30)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_sppux"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_10t6d"]
+atlas = ExtResource("2_ypa4x")
+region = Rect2(120, 0, 30, 30)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_x43q3"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_25jgl")
+"texture": SubResource("AtlasTexture_8wpbd")
 }],
 "loop": true,
 "name": &"default",
@@ -37,26 +40,26 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_hf1lj")
+"texture": SubResource("AtlasTexture_sadgo")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_uvmj4")
+"texture": SubResource("AtlasTexture_ypxhi")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_pcidj")
+"texture": SubResource("AtlasTexture_kjcya")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_dwo0t")
+"texture": SubResource("AtlasTexture_70dte")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ytl1b")
+"texture": SubResource("AtlasTexture_10t6d")
 }],
 "loop": true,
 "name": &"hover",
 "speed": 5.0
 }]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_bppti"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_a1uye"]
 properties/0/path = NodePath(".:picker")
 properties/0/spawn = true
 properties/0/sync = true
@@ -91,15 +94,16 @@ expand_icon = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Button"]
 position = Vector2(257, 244)
-scale = Vector2(10, 5)
-sprite_frames = SubResource("SpriteFrames_sppux")
+scale = Vector2(10, 10)
+sprite_frames = SubResource("SpriteFrames_x43q3")
 animation = &"hover"
+speed_scale = 3.0
 
 [node name="Networking" type="Node" parent="."]
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
 root_path = NodePath("../..")
-replication_config = SubResource("SceneReplicationConfig_bppti")
+replication_config = SubResource("SceneReplicationConfig_a1uye")
 
 [node name="Description" type="Label" parent="."]
 layout_mode = 0

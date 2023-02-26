@@ -12,6 +12,7 @@ const DEFAULT_BULLET = preload("res://Items/default_bullet.tscn")
 const DEFAULT_BULLET_SCALE = 1.0
 const DEFAULT_BULLET_DAMAGE = 35
 const ORDERED_OPERATIONS = ["add", "multiply"]
+const DEFAULT_BULLET_BOUNCES = 0
 
 signal i_die(id: int)
 
@@ -38,6 +39,7 @@ var spread := DEFAULT_SPREAD
 var bullets_per_shot := DEFAULT_BULLETS_PER_SHOT
 var bullet_scale := DEFAULT_BULLET_SCALE
 var bullet_damage := DEFAULT_BULLET_DAMAGE
+var bullet_bounces = 1
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -204,12 +206,14 @@ func damage(amount):
 func process_shot(id, look_at, distant_target):
 	var instance = player_bullet.instantiate()
 	instance.name = str(randi())
+	instance.apply_impulse(Vector2.ZERO, Vector2(instance.speed, 0))
 	get_node("/root/Level/SpawnRoot").add_child(instance, true)
 	instance.scale = instance.scale * bullet_scale # scale is a vector 2
 	instance.target = distant_target
 	instance.damage = bullet_damage
 	instance.look_at(look_at)
 	instance.global_position = shoot_point.global_position
+	instance.fire()
 
 @rpc("call_local", "reliable")
 func take_damage(amount):

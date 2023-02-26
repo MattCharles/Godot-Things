@@ -1,26 +1,27 @@
-[gd_scene load_steps=4 format=3 uid="uid://cipeo5kk86d0o"]
+[gd_scene load_steps=5 format=3 uid="uid://cipeo5kk86d0o"]
 
 [ext_resource type="Script" path="res://Items/default_bullet.gd" id="1_2tldu"]
 [ext_resource type="Texture2D" uid="uid://dcmo23rq31stq" path="res://Items/buttonBlue.png" id="1_coy6n"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ansup"]
-radius = 23.0
-height = 46.0
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_h1r0t"]
+friction = 0.0
+bounce = 1.0
 
-[node name="default_bullet" type="Node2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_hsdlu"]
+
+[node name="default_bullet" type="RigidBody2D"]
+physics_material_override = SubResource("PhysicsMaterial_h1r0t")
+gravity_scale = 0.0
+can_sleep = false
 script = ExtResource("1_2tldu")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_coy6n")
 
-[node name="Area2d" type="Area2D" parent="Sprite2D"]
-
-[node name="CollisionShape2d" type="CollisionShape2D" parent="Sprite2D/Area2d"]
-position = Vector2(0, 11)
-shape = SubResource("CapsuleShape2D_ansup")
-
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
 
-[connection signal="area_entered" from="Sprite2D/Area2d" to="." method="_on_default_bullet_body_entered"]
-[connection signal="body_entered" from="Sprite2D/Area2d" to="." method="_on_default_bullet_body_entered"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_hsdlu")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_VisibilityNotifier2D_screen_exited"]
