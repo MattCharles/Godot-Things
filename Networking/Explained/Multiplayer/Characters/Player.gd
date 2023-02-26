@@ -71,6 +71,7 @@ func _process(_delta):
 				rpc("process_shot", multiplayer.get_unique_id(), self.get_global_mouse_position(), target)
 	else:
 		health = $Networking.sync_health
+		max_health = $Networking.sync_max_health
 		if not $Networking.processed_hand_position:
 			$Hand.position = $Networking.sync_hand_position
 			$Networking.processed_hand_position = true
