@@ -1,18 +1,20 @@
 extends CharacterBody2D
 class_name Player
 
-const DEFAULT_SPEED = 400
-const DEFAULT_ROLL_SPEED = 700
-const DEFAULT_HEALTH = 100
-const DISTANCE_FROM_CENTER_TO_HAND = 55
-const DEFAULT_SCALE = Vector2(1, 1)
-const DEFAULT_SPREAD = 10 # Measured in degrees, in either direction
-const DEFAULT_BULLETS_PER_SHOT = 1 # I clicked shoot. How many bullets come out at once?
-const DEFAULT_BULLET = preload("res://Items/default_bullet.tscn")
-const DEFAULT_BULLET_SCALE = 1.0
-const DEFAULT_BULLET_DAMAGE = 35
-const ORDERED_OPERATIONS = ["add", "multiply"]
-const DEFAULT_BULLET_BOUNCES = 0
+const DEFAULT_SPEED := 400
+const DEFAULT_ROLL_SPEED := 700
+const DEFAULT_HEALTH := 100
+const DISTANCE_FROM_CENTER_TO_HAND := 55
+const DEFAULT_SCALE := Vector2(1, 1)
+const DEFAULT_SPREAD := 10 # Measured in degrees, in either direction
+const DEFAULT_BULLETS_PER_SHOT := 1 # I clicked shoot. How many bullets come out at once?
+const DEFAULT_BULLET := preload("res://Items/default_bullet.tscn")
+const DEFAULT_BULLET_SCALE := 1.0
+const DEFAULT_BULLET_DAMAGE := 35
+const ORDERED_OPERATIONS := ["add", "multiply"]
+const DEFAULT_BULLET_BOUNCES := 0
+const DEFAULT_SHOTS_PER_BURST := 1
+const DEFAULT_BURST_GAP := .1
 
 signal i_die(id: int)
 
@@ -39,7 +41,9 @@ var spread := DEFAULT_SPREAD
 var bullets_per_shot := DEFAULT_BULLETS_PER_SHOT
 var bullet_scale := DEFAULT_BULLET_SCALE
 var bullet_damage := DEFAULT_BULLET_DAMAGE
-var bullet_bounces = 1
+var bullet_bounces := DEFAULT_BULLET_BOUNCES
+var shots_per_burst := DEFAULT_SHOTS_PER_BURST
+var shots_left_to_burst := shots_per_burst
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -71,12 +75,7 @@ func _process(_delta):
 		_animated_sprite.flip_h = $Hand/Sprite2d.flip_v
 		$Networking.sync_flip_sprite = _animated_sprite.flip_h
 		if Input.is_action_just_pressed("shoot"):
-			var shot_id = randi()
-			for bullet_count in bullets_per_shot:
-				var distant_target = get_distant_target()
-				var bullet_angle = random_angle(spread)
-				var target = distant_target.rotated(bullet_angle)
-				rpc("process_shot", str(shot_id + bullet_count), multiplayer.get_unique_id(), self.get_global_mouse_position(), target)
+			shoot()
 	else:
 		health = $Networking.sync_health
 		max_health = $Networking.sync_max_health
@@ -94,6 +93,23 @@ func _process(_delta):
 	$Networking.sync_hand_rotation = $Hand.rotation
 	$Networking.sync_hand_position = $Hand.position
 		
+func shoot():
+	var shot_id = randi()
+	for bullet_count in bullets_per_shot:
+		var distant_target = get_distant_target()
+		var bullet_angle = random_angle(spread)
+		var target = distant_target.rotated(bullet_angle)
+		rpc("process_shot", str(shot_id + bullet_count), multiplayer.get_unique_id(), self.get_global_mouse_position(), target)
+	shots_left_to_burst = shots_left_to_burst - 1
+	if shots_left_to_burst > 0:
+		var timer := Timer.new()
+		add_child(timer)
+		timer.wait_time = DEFAULT_BURST_GAP
+		timer.one_shot = true
+		timer.timeout.connect(shoot)
+		timer.start()
+	else:
+		shots_left_to_burst = shots_per_burst
 
 func _physics_process(delta):
 	if health <= 0 and not dead:
@@ -214,7 +230,7 @@ func process_shot(bname, id, look_at, distant_target):
 	instance.damage = bullet_damage
 	instance.look_at(look_at)
 	instance.global_position = shoot_point.global_position
-	#instance.get_node("RigidBody2D").apply_impulse(distant_target.normalized() * instance.speed, Vector2.ZERO)
+	instance.num_bounces = bullet_bounces
 	instance.fire()
 
 @rpc("call_local", "reliable")
@@ -241,18 +257,25 @@ func reset():
 	scale = DEFAULT_SCALE
 	bullets_per_shot = DEFAULT_BULLETS_PER_SHOT
 	bullet_scale = DEFAULT_BULLET_SCALE
+	bullet_bounces = DEFAULT_BULLET_BOUNCES
+	shots_per_burst = DEFAULT_SHOTS_PER_BURST
 	
 	modify()
+	bullet_damage = 1 if bullet_damage < 1 else bullet_damage
 	health = max_health
+	shots_left_to_burst = shots_per_burst
 	# Finally, some stuff will want to go over the network explicitly.
 	if is_local_authority():
 		rpc("set_bullets_per_shot", bullets_per_shot)
 		rpc("set_bullet_scale", bullet_scale)
 		rpc("set_bullet_damage", bullet_damage)
+		rpc("set_bullet_bounces", bullet_bounces)
+		rpc("set_shots_per_burst", shots_per_burst)
 	$Networking.sync_bullet_scale = bullet_scale
 	$Networking.sync_bullets_per_shot = bullets_per_shot
 	$Networking.sync_max_health = max_health
 	$Networking.sync_health = health
+	$Networking.sync_shots_per_burst = shots_per_burst
 	dead = false
 	$Networking.sync_dead = false
 
@@ -321,6 +344,14 @@ func set_bullet_scale(new_scale):
 @rpc("reliable", "call_local", "any_peer")
 func set_bullet_damage(new_damage):
 	bullet_damage = new_damage
+
+@rpc("reliable", "call_local", "any_peer")
+func set_bullet_bounces(new_bounces):
+	bullet_bounces = new_bounces
+	
+@rpc("reliable", "call_local", "any_peer")
+func set_shots_per_burst(new_shots_per_burst):
+	shots_per_burst = new_shots_per_burst
 
 # Get a random number from negative max to max.
 func random_angle(max) -> float:

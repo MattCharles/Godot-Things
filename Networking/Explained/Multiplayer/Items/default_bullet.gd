@@ -4,7 +4,7 @@ class_name Bullet
 var target = Vector2(0, 0)
 var speed = 1000
 var damage = 35
-var num_bounces = 1
+var num_bounces = 0
 
 var velocity = Vector2()
 
@@ -16,6 +16,8 @@ func free():
 	call_deferred("free")
 
 func _on_body_entered(body):
+	if !multiplayer.is_server():
+		return
 	print("collided")
 	
 	if body is Player:

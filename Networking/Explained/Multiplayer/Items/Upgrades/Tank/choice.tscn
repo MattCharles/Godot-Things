@@ -1,38 +1,38 @@
 [gd_scene load_steps=12 format=3 uid="uid://q645ieeqxncj"]
 
 [ext_resource type="Script" path="res://Items/Upgrades/Tank/choice.gd" id="1_3osfn"]
-[ext_resource type="Texture2D" uid="uid://b45u0odqpx6sl" path="res://Items/Upgrades/Tank/Tank-Sheet.png" id="2_ypa4x"]
+[ext_resource type="Texture2D" uid="uid://07ytbs8mg2j1" path="res://Items/Upgrades/Tank/Tank-Sheet.png" id="2_ypa4x"]
 [ext_resource type="PackedScene" uid="uid://cq8nwpvu5n74l" path="res://Items/Upgrades/Tank/power.tscn" id="4_86n73"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_oc1uc"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_orjq2"]
 atlas = ExtResource("2_ypa4x")
 region = Rect2(30, 0, 30, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_mftc4"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_ply7f"]
 atlas = ExtResource("2_ypa4x")
 region = Rect2(0, 0, 30, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_5oh21"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_8mcsq"]
 atlas = ExtResource("2_ypa4x")
 region = Rect2(30, 0, 30, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_xc7vu"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_b0mkc"]
 atlas = ExtResource("2_ypa4x")
 region = Rect2(60, 0, 30, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_83uba"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_psplc"]
 atlas = ExtResource("2_ypa4x")
 region = Rect2(90, 0, 30, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_uf0p1"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_c5org"]
 atlas = ExtResource("2_ypa4x")
 region = Rect2(120, 0, 30, 30)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_8uto7"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_gpms3"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_oc1uc")
+"texture": SubResource("AtlasTexture_orjq2")
 }],
 "loop": true,
 "name": &"default",
@@ -40,26 +40,26 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_mftc4")
+"texture": SubResource("AtlasTexture_ply7f")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_5oh21")
+"texture": SubResource("AtlasTexture_8mcsq")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_xc7vu")
+"texture": SubResource("AtlasTexture_b0mkc")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_83uba")
+"texture": SubResource("AtlasTexture_psplc")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_uf0p1")
+"texture": SubResource("AtlasTexture_c5org")
 }],
 "loop": true,
 "name": &"hover",
 "speed": 5.0
 }]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_d77cx"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_he6as"]
 properties/0/path = NodePath(".:picker")
 properties/0/spawn = true
 properties/0/sync = true
@@ -95,7 +95,7 @@ expand_icon = true
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Button"]
 position = Vector2(257, 244)
 scale = Vector2(10, 10)
-sprite_frames = SubResource("SpriteFrames_8uto7")
+sprite_frames = SubResource("SpriteFrames_gpms3")
 animation = &"hover"
 speed_scale = 3.0
 
@@ -103,7 +103,7 @@ speed_scale = 3.0
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
 root_path = NodePath("../..")
-replication_config = SubResource("SceneReplicationConfig_d77cx")
+replication_config = SubResource("SceneReplicationConfig_he6as")
 
 [node name="Description" type="Label" parent="."]
 layout_mode = 0
@@ -125,7 +125,7 @@ theme_override_font_sizes/font_size = 52
 text = "Tank"
 horizontal_alignment = 1
 
-[node name="TankPower" parent="." instance=ExtResource("4_86n73")]
+[node name="Tank" parent="." instance=ExtResource("4_86n73")]
 
 [connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
 [connection signal="mouse_exited" from="Button" to="." method="_on_button_mouse_exited"]

@@ -7,9 +7,16 @@ var wins := {}
 var player_nodes := {}
 
 var choice_button = preload("res://Items/upgrade_choice.tscn")
-var tank_button = preload("res://Items/Upgrades/Tank/choice.tscn")
-var shotgun_button = preload("res://Items/Upgrades/Shotgun/choice.tscn")
-var powers = [load("res://Items/Upgrades/Tank/power.tscn"), load("res://Items/Upgrades/Shotgun/power.tscn")] #TODO - load the power node when choice is displayed
+
+var buttons = [preload("res://Items/Upgrades/Tank/choice.tscn"),
+				preload("res://Items/Upgrades/Shotgun/choice.tscn"),
+				preload("res://Items/Upgrades/BouncyBullets/choice.tscn"),
+				preload("res://Items/Upgrades/TripleBurst/choice.tscn")]
+
+var powers = [load("res://Items/Upgrades/Tank/power.tscn"), 
+				load("res://Items/Upgrades/Shotgun/power.tscn"),
+				load("res://Items/Upgrades/BouncyBullets/power.tscn"),
+				load("res://Items/Upgrades/TripleBurst/power.tscn")] #TODO - load the power node when choice is displayed
 
 func _ready():
 	host_id = multiplayer.get_unique_id()
@@ -95,7 +102,7 @@ func enter_picking_time(id) -> void:
 	hide_all_players()
 	$PickingTime.visible = true
 	for n in 3:
-		var button = tank_button.instantiate() if n != 1 else shotgun_button.instantiate()
+		var button = buttons[n + 1].instantiate()
 		button.name = str(n)
 		$PickingTime/HBoxContainer.add_child(button)
 		button.set_picker(id)

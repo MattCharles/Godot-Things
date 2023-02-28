@@ -4,7 +4,7 @@ extends Control
 var picker := 0
 var remote_animation := "default"
 var updated_animation := true
-const card_id := 2
+const card_id := 3
 
 signal picked(id, picker)
 

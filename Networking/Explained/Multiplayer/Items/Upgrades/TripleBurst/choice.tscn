@@ -1,9 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://dw1p0oc5eemol"]
+[gd_scene load_steps=13 format=3 uid="uid://dw1p0oc5eemol"]
 
-[ext_resource type="Script" path="res://Items/Upgrades/BouncyBullets/choice.gd" id="1_t8c1x"]
+[ext_resource type="Script" path="res://Items/Upgrades/TripleBurst/choice.gd" id="1_14pe8"]
 [ext_resource type="Texture2D" uid="uid://cqcbn0ytw0ot7" path="res://Characters/Poochys/Poochy-Stander.png" id="2_73ptf"]
 [ext_resource type="Texture2D" uid="uid://11pswvtjxkmy" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_8mmam"]
-[ext_resource type="PackedScene" uid="uid://dgyjm7jaanthg" path="res://Items/Upgrades/BouncyBullets/power.tscn" id="4_4iudv"]
+[ext_resource type="PackedScene" uid="uid://dgyjm7jaanthg" path="res://Items/Upgrades/TripleBurst/power.tscn" id="4_4iudv"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_o7o47"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_t7qfd"]
 atlas = ExtResource("3_8mmam")
@@ -76,11 +78,11 @@ properties/5/path = NodePath(".:card_id")
 properties/5/spawn = true
 properties/5/sync = true
 
-[node name="Bouncer" type="Control"]
+[node name="TripleBurst" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 size_flags_horizontal = 3
-script = ExtResource("1_t8c1x")
+script = ExtResource("1_14pe8")
 
 [node name="Button" type="Button" parent="."]
 custom_minimum_size = Vector2(500, 888)
@@ -90,8 +92,28 @@ offset_bottom = 8.0
 expand_icon = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Button"]
+modulate = Color(1, 0, 1, 1)
+material = SubResource("CanvasItemMaterial_o7o47")
 position = Vector2(257, 244)
-rotation = 1.21824
+rotation = -2.07869
+scale = Vector2(10, 5)
+sprite_frames = SubResource("SpriteFrames_jcgiv")
+animation = &"hover"
+
+[node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="Button"]
+modulate = Color(1, 0, 1, 1)
+material = SubResource("CanvasItemMaterial_o7o47")
+position = Vector2(363, 193)
+rotation = -2.07869
+scale = Vector2(10, 5)
+sprite_frames = SubResource("SpriteFrames_jcgiv")
+animation = &"hover"
+
+[node name="AnimatedSprite2D3" type="AnimatedSprite2D" parent="Button"]
+modulate = Color(1, 0, 1, 1)
+material = SubResource("CanvasItemMaterial_o7o47")
+position = Vector2(150, 302)
+rotation = -2.07869
 scale = Vector2(10, 5)
 sprite_frames = SubResource("SpriteFrames_jcgiv")
 animation = &"hover"
@@ -109,7 +131,7 @@ offset_top = 488.0
 offset_right = 489.0
 offset_bottom = 876.0
 theme_override_font_sizes/font_size = 52
-text = "Give your bullets two (2) additional bounces!"
+text = "Burst fire!"
 autowrap_mode = 3
 
 [node name="Title" type="Label" parent="."]
@@ -119,11 +141,10 @@ offset_top = 11.0
 offset_right = 489.0
 offset_bottom = 94.0
 theme_override_font_sizes/font_size = 52
-text = "Bouncer"
+text = "Triple Burst"
 horizontal_alignment = 1
 
-[node name="Bouncy" parent="." instance=ExtResource("4_4iudv")]
-script = null
+[node name="Tripler" parent="." instance=ExtResource("4_4iudv")]
 
 [connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
 [connection signal="mouse_exited" from="Button" to="." method="_on_button_mouse_exited"]
