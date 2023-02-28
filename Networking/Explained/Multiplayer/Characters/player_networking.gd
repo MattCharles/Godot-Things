@@ -30,3 +30,4 @@ var sync_bullet_scale := 1.0
 var sync_bullets_per_shot := 1
 var sync_bullet_bounces := 0
 var sync_shots_per_burst := 1
+var sync_bullet_speed = 1000

@@ -15,6 +15,18 @@ const ORDERED_OPERATIONS := ["add", "multiply"]
 const DEFAULT_BULLET_BOUNCES := 0
 const DEFAULT_SHOTS_PER_BURST := 1
 const DEFAULT_BURST_GAP := .1
+const DEFAULT_BULLET_SPEED := 1000
+const DEFAULT_ROLL_TIME := 0.5
+
+# TODO: implement these
+const DEFAULT_RELOAD_TIME := 1
+const DEFAULT_CLIP_SIZE := 5
+const DEFAULT_BULLET_SLOW := 0
+const DEFAULT_CHARGE_TIME := 0
+const DEFAULT_POISON_DAMAGE := 0
+
+func reload(): pass
+func instant_reload(): pass
 
 signal i_die(id: int)
 
@@ -27,7 +39,7 @@ var default = "default"
 var roll = "Roll"
 
 var shot_cooldown
-var roll_time = 0.5
+var roll_time = DEFAULT_ROLL_TIME
 var player_bullet := DEFAULT_BULLET
 var health := DEFAULT_HEALTH
 var max_health := DEFAULT_HEALTH
@@ -44,14 +56,12 @@ var bullet_damage := DEFAULT_BULLET_DAMAGE
 var bullet_bounces := DEFAULT_BULLET_BOUNCES
 var shots_per_burst := DEFAULT_SHOTS_PER_BURST
 var shots_left_to_burst := shots_per_burst
+var bullet_speed := DEFAULT_BULLET_SPEED
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
 
 func _ready():
-	# int constructor taking a string is currently broken :(
-	# https://github.com/godotengine/godot/issues/44407
-	# https://github.com/godotengine/godot/issues/55284
 	$Networking/MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
 
 	$Networking.sync_health = health
@@ -249,7 +259,7 @@ func die():
 	
 func reset():
 	# First, set everything to defaults.
-	roll_time = 0.5
+	roll_time = DEFAULT_ROLL_TIME
 	health = DEFAULT_HEALTH
 	max_health = DEFAULT_HEALTH
 	speed = DEFAULT_SPEED
@@ -259,6 +269,7 @@ func reset():
 	bullet_scale = DEFAULT_BULLET_SCALE
 	bullet_bounces = DEFAULT_BULLET_BOUNCES
 	shots_per_burst = DEFAULT_SHOTS_PER_BURST
+	bullet_speed = DEFAULT_BULLET_SPEED
 	
 	modify()
 	bullet_damage = 1 if bullet_damage < 1 else bullet_damage
@@ -271,11 +282,13 @@ func reset():
 		rpc("set_bullet_damage", bullet_damage)
 		rpc("set_bullet_bounces", bullet_bounces)
 		rpc("set_shots_per_burst", shots_per_burst)
+		rpc("set_bullet_speed", bullet_speed)
 	$Networking.sync_bullet_scale = bullet_scale
 	$Networking.sync_bullets_per_shot = bullets_per_shot
 	$Networking.sync_max_health = max_health
 	$Networking.sync_health = health
 	$Networking.sync_shots_per_burst = shots_per_burst
+	$Networking.sync_bullet_speed = bullet_speed
 	dead = false
 	$Networking.sync_dead = false
 
@@ -352,6 +365,10 @@ func set_bullet_bounces(new_bounces):
 @rpc("reliable", "call_local", "any_peer")
 func set_shots_per_burst(new_shots_per_burst):
 	shots_per_burst = new_shots_per_burst
+
+@rpc("reliable", "call_local", "any_peer")
+func set_bullet_speed(new_bullet_speed):
+	bullet_speed = new_bullet_speed
 
 # Get a random number from negative max to max.
 func random_angle(max) -> float:

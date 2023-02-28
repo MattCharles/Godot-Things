@@ -1,0 +1,129 @@
+[gd_scene load_steps=12 format=3 uid="uid://dw1p0oc5eemol"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/BulletSpeed/choice.gd" id="1_iic2g"]
+[ext_resource type="Texture2D" uid="uid://cqcbn0ytw0ot7" path="res://Characters/Poochys/Poochy-Stander.png" id="2_73ptf"]
+[ext_resource type="Texture2D" uid="uid://11pswvtjxkmy" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_8mmam"]
+[ext_resource type="PackedScene" uid="uid://dgyjm7jaanthg" path="res://Items/Upgrades/BulletSpeed/power.tscn" id="4_4iudv"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bn4av"]
+atlas = ExtResource("3_8mmam")
+region = Rect2(0, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lw4kv"]
+atlas = ExtResource("3_8mmam")
+region = Rect2(17, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nx6h2"]
+atlas = ExtResource("3_8mmam")
+region = Rect2(34, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pr77c"]
+atlas = ExtResource("3_8mmam")
+region = Rect2(51, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jg5h2"]
+atlas = ExtResource("3_8mmam")
+region = Rect2(68, 0, 17, 23)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dk5ac"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_73ptf")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bn4av")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lw4kv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nx6h2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pr77c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jg5h2")
+}],
+"loop": true,
+"name": &"hover",
+"speed": 5.0
+}]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_sbe33"]
+properties/0/path = NodePath(".:picker")
+properties/0/spawn = true
+properties/0/sync = true
+properties/1/path = NodePath(".:remote_animation")
+properties/1/spawn = true
+properties/1/sync = true
+properties/2/path = NodePath(".:updated_animation")
+properties/2/spawn = true
+properties/2/sync = true
+properties/3/path = NodePath("Description:text")
+properties/3/spawn = true
+properties/3/sync = true
+properties/4/path = NodePath("Title:text")
+properties/4/spawn = true
+properties/4/sync = true
+properties/5/path = NodePath(".:card_id")
+properties/5/spawn = true
+properties/5/sync = true
+
+[node name="Bouncer" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+size_flags_horizontal = 3
+script = ExtResource("1_iic2g")
+
+[node name="Button" type="Button" parent="."]
+custom_minimum_size = Vector2(500, 888)
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+expand_icon = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Button"]
+position = Vector2(257, 244)
+rotation = 1.21824
+scale = Vector2(10, 5)
+sprite_frames = SubResource("SpriteFrames_dk5ac")
+animation = &"hover"
+
+[node name="Networking" type="Node" parent="."]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
+root_path = NodePath("../..")
+replication_config = SubResource("SceneReplicationConfig_sbe33")
+
+[node name="Description" type="Label" parent="."]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 488.0
+offset_right = 489.0
+offset_bottom = 876.0
+theme_override_font_sizes/font_size = 52
+text = "Give your bullets two (2) additional bounces!"
+autowrap_mode = 3
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 11.0
+offset_right = 489.0
+offset_bottom = 94.0
+theme_override_font_sizes/font_size = 52
+text = "Bouncer"
+horizontal_alignment = 1
+
+[node name="Bouncy" parent="." instance=ExtResource("4_4iudv")]
+
+[connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
+[connection signal="mouse_exited" from="Button" to="." method="_on_button_mouse_exited"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

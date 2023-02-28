@@ -6,35 +6,35 @@
 [ext_resource type="Script" path="res://Characters/player_networking.gd" id="4_4qpvw"]
 [ext_resource type="Texture2D" uid="uid://e3phaxjct6lj" path="res://Characters/Poochys/Shooter-hand.png" id="5_c0gyg"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_caepy"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_v0h6d"]
 atlas = ExtResource("2_lj62y")
 region = Rect2(0, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_20q56"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_0enoj"]
 atlas = ExtResource("3_f8meu")
 region = Rect2(0, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_mbfgc"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_l3nh4"]
 atlas = ExtResource("3_f8meu")
 region = Rect2(17, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ae8u6"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_g50y0"]
 atlas = ExtResource("3_f8meu")
 region = Rect2(34, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_76wg2"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_ly4da"]
 atlas = ExtResource("3_f8meu")
 region = Rect2(51, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_r3ahu"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_6sv3j"]
 atlas = ExtResource("3_f8meu")
 region = Rect2(68, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_e5f5b"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_l3vk0"]
 atlas = ExtResource("2_lj62y")
 region = Rect2(0, 0, 17, 23)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_kqufo"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_quc07"]
 animations = [{
 "frames": [],
 "loop": true,
@@ -43,7 +43,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_caepy")
+"texture": SubResource("AtlasTexture_v0h6d")
 }],
 "loop": true,
 "name": &"Roll",
@@ -51,19 +51,19 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_20q56")
+"texture": SubResource("AtlasTexture_0enoj")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_mbfgc")
+"texture": SubResource("AtlasTexture_l3nh4")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ae8u6")
+"texture": SubResource("AtlasTexture_g50y0")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_76wg2")
+"texture": SubResource("AtlasTexture_ly4da")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_r3ahu")
+"texture": SubResource("AtlasTexture_6sv3j")
 }],
 "loop": true,
 "name": &"Walk",
@@ -71,30 +71,30 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_e5f5b")
+"texture": SubResource("AtlasTexture_l3vk0")
 }],
 "loop": true,
 "name": &"default",
 "speed": 5.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_emqvs"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_auhqh"]
 radius = 18.2667
 height = 74.6667
 
-[sub_resource type="Gradient" id="Gradient_ik6cd"]
+[sub_resource type="Gradient" id="Gradient_0bc1k"]
 colors = PackedColorArray(0, 0.164706, 0.290196, 1, 0, 0.258824, 0.454902, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_pvr5k"]
-gradient = SubResource("Gradient_ik6cd")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_iyg45"]
+gradient = SubResource("Gradient_0bc1k")
 
-[sub_resource type="Gradient" id="Gradient_4ofkb"]
+[sub_resource type="Gradient" id="Gradient_ugj0t"]
 colors = PackedColorArray(0, 0.278431, 0.486275, 1, 0, 0.576471, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_vxvjx"]
-gradient = SubResource("Gradient_4ofkb")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_bjpi3"]
+gradient = SubResource("Gradient_ugj0t")
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_fyfj7"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_syycw"]
 properties/0/path = NodePath(":sync_position")
 properties/0/spawn = true
 properties/0/sync = true
@@ -151,13 +151,13 @@ script = ExtResource("1_uheab")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 scale = Vector2(5, 5)
-sprite_frames = SubResource("SpriteFrames_kqufo")
+sprite_frames = SubResource("SpriteFrames_quc07")
 animation = &"Roll"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-1, 13)
 scale = Vector2(1.5, -1.24493)
-shape = SubResource("CapsuleShape2D_emqvs")
+shape = SubResource("CapsuleShape2D_auhqh")
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -174,8 +174,8 @@ offset_bottom = 66.0
 value = 100.0
 fill_mode = 3
 nine_patch_stretch = true
-texture_under = SubResource("GradientTexture1D_pvr5k")
-texture_progress = SubResource("GradientTexture1D_vxvjx")
+texture_under = SubResource("GradientTexture1D_iyg45")
+texture_progress = SubResource("GradientTexture1D_bjpi3")
 
 [node name="PlayerNameLabel" type="Label" parent="UI"]
 layout_mode = 1
@@ -198,7 +198,7 @@ horizontal_alignment = 1
 script = ExtResource("4_4qpvw")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
-replication_config = SubResource("SceneReplicationConfig_fyfj7")
+replication_config = SubResource("SceneReplicationConfig_syycw")
 
 [node name="Hand" type="Node2D" parent="."]
 
