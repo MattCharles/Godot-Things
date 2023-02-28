@@ -56,7 +56,7 @@ func kill_player(id: int) -> void:
 	print(str(winner) + " has won " + str(wins[winner]) + " time(s)")
 	if one_left():
 		if multiplayer.is_server():
-			rpc("enter_picking_time", id)
+			rpc("enter_picking_time", id, choose_random_indices(3, buttons.size()))
 	
 func destroy_player(id : int) -> void:
 	# Delete this peer's node.
@@ -94,37 +94,29 @@ func _get_spawn_position(i: int, num_playing:int) -> Vector2:
 	return result
 
 @rpc("reliable", "call_local")
-func enter_picking_time(picker_id) -> void:
+func enter_picking_time(picker_id:int, cards:Array) -> void:
 	remove_all_bullets()
 	if multiplayer.is_server():
 		$Networking.sync_game_state = PlayState.State.PICKING
 	hide_all_players()
 	$PickingTime.visible = true
-	add_buttons(picker_id)
+	add_buttons(picker_id, cards)
 	
-func add_buttons(picker_id):
-	var dup = buttons.duplicate()
-	var random_buttons := choose_unique_entries(dup, 3)
+func add_buttons(picker_id:int, entries:Array):
 	for i in 3:
-		var button = random_buttons[i].instantiate()
+		var button = buttons[entries[i]].instantiate()
 		button.name = str(i)
 		$PickingTime/HBoxContainer.add_child(button)
 		button.set_picker(picker_id)
 		button.picked.connect(card_picked)
 		
-func choose_unique_entries(arr:Array, n:int) -> Array:
-	var size := arr.size()
-	var result = []
-	if size < n or n <= 0:
-		print("All choices picked (or array too small)")
-		return result
-	var rand_index := randi() % size
-	var ele = arr[rand_index]
-	arr.erase(ele)
-	result.append(ele)
-	var others = choose_unique_entries(arr, n - 1)
-	result.append_array(others)
-	return result
+func choose_random_indices(n:int, max:int) -> Array:
+	var result = {}
+	while result.keys().size() < n:
+		var entry = randi() % max
+		if not result.has(entry):
+			result[entry] = true
+	return result.keys()
 		
 func card_picked(card_id, player_id) -> void:
 	print("Nice pick of " + str(card_id) +  " for " + str(player_id))
