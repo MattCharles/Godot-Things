@@ -17,6 +17,7 @@ const DEFAULT_SHOTS_PER_BURST := 1
 const DEFAULT_BURST_GAP := .1
 const DEFAULT_BULLET_SPEED := 1000
 const DEFAULT_ROLL_TIME := 0.5
+const NOSCOPE_SPIN_TIME := 1 #Time to complete a noscope spin for it to be considered valid
 
 # TODO: implement these
 const DEFAULT_RELOAD_TIME := 1
@@ -30,6 +31,7 @@ func instant_reload(): pass
 
 signal i_die(id: int)
 
+@onready var no_scope_spin_timer := $NoScopeTimer
 @onready var _animated_sprite = $AnimatedSprite2D
 @onready var shoot_point = $Hand/ShootPoint
 
@@ -57,12 +59,20 @@ var bullet_bounces := DEFAULT_BULLET_BOUNCES
 var shots_per_burst := DEFAULT_SHOTS_PER_BURST
 var shots_left_to_burst := shots_per_burst
 var bullet_speed := DEFAULT_BULLET_SPEED
+var previous_zones := [-1, -1, -1, -1, -1]
+var current_zone := 0
+var crit_stored := false
+var no_scope_crit_enabled := true
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
 
 func _ready():
 	$Networking/MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
+	no_scope_spin_timer.timeout.connect(zone_push_pop)
+	no_scope_spin_timer.one_shot = true
+	print("sanity check: " + str(detect_spin([0, 1, 2, 3, 4])))
+	print("sanity check: " + str(detect_spin([4, 3, 2, 1, 0])))
 
 	$Networking.sync_health = health
 	$UI/TextureProgressBar.value = health
@@ -84,6 +94,24 @@ func _process(_delta):
 		$Networking.sync_hand_rotation = $Hand.rotation
 		_animated_sprite.flip_h = $Hand/Sprite2d.flip_v
 		$Networking.sync_flip_sprite = _animated_sprite.flip_h
+		
+		if no_scope_crit_enabled and not crit_stored:
+			if previous_zones[0] == -1:
+				zone_push_pop()
+			var degrees_of_rotation = int(rad_to_deg($Hand.rotation))
+			var abs_rotation = abs(degrees_of_rotation)
+			var slice_size = 360 / previous_zones.size()
+			var reduced_rotation = abs_rotation % 360
+			current_zone = reduced_rotation / slice_size
+			if current_zone == previous_zones[0] and no_scope_spin_timer.is_stopped():
+				no_scope_spin_timer.start()
+			elif current_zone != previous_zones[0]:
+				no_scope_spin_timer.start()
+				zone_push_pop()
+			crit_stored = detect_spin(Array(previous_zones))
+			if crit_stored:
+				_animated_sprite.modulate = Color(2, 0, 0, .8)
+		
 		if Input.is_action_just_pressed("shoot"):
 			shoot()
 	else:
@@ -102,7 +130,40 @@ func _process(_delta):
 	$UI/TextureProgressBar.visible = health < max_health
 	$Networking.sync_hand_rotation = $Hand.rotation
 	$Networking.sync_hand_position = $Hand.position
-		
+
+func zone_push_pop():
+	previous_zones.push_front(current_zone)
+	previous_zones.pop_back()
+
+#func spin_check(hand_rotation:int) -> bool:
+	#var abs_rotation = abs(hand_rotation)
+	#var store_crit:bool = true
+	#var slice_size = 360 / previous_zones.size()
+	#var reduced_rotation = abs_rotation % 360
+	#current_zone = reduced_rotation / slice_size
+	##if current_zone == previous_zones[0]:
+#		return false#
+	#for i in previous_zones.size():
+		#var above_minimum:bool = reduced_rotation > i * slice_size
+		#var below_maximum:bool = reduced_rotation < (i + 1) * slice_size
+#		
+		#crit_seals[i] = crit_seals[i] or (above_minimum and below_maximum)
+		#store_crit = store_crit and crit_seals[i]
+	#return store_crit
+	
+func detect_spin(snapshot) -> bool:
+	var sorted_ascending = true
+	var sorted_descending = true
+
+	for i in range(snapshot.size() - 1):
+		var diff = snapshot[i+1] - snapshot[i]
+		if diff != 1 and diff != -4:
+			sorted_ascending = false
+		if diff != -1 and diff != 4:
+			sorted_descending = false
+
+	return sorted_ascending or sorted_descending
+
 func shoot():
 	var shot_id = randi()
 	for bullet_count in bullets_per_shot:
@@ -237,6 +298,9 @@ func process_shot(bname, id, look_at, distant_target):
 	get_node("/root/Level/SpawnRoot").add_child(instance, true)
 	instance.scale = instance.scale * bullet_scale # scale is a vector 2
 	instance.target = distant_target
+	if crit_stored:
+		crit_stored = false
+		_animated_sprite.modulate = Color(1, 1, 1, 1)
 	instance.damage = bullet_damage
 	instance.look_at(look_at)
 	instance.global_position = shoot_point.global_position
@@ -270,6 +334,7 @@ func reset():
 	bullet_bounces = DEFAULT_BULLET_BOUNCES
 	shots_per_burst = DEFAULT_SHOTS_PER_BURST
 	bullet_speed = DEFAULT_BULLET_SPEED
+	bullet_damage = DEFAULT_BULLET_DAMAGE
 	
 	modify()
 	bullet_damage = 1 if bullet_damage < 1 else bullet_damage

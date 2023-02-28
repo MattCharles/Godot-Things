@@ -5,27 +5,27 @@
 [ext_resource type="Texture2D" uid="uid://11pswvtjxkmy" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_8mmam"]
 [ext_resource type="PackedScene" uid="uid://dgyjm7jaanthg" path="res://Items/Upgrades/TripleBurst/power.tscn" id="4_4iudv"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_bn4av"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_0b7fj"]
 atlas = ExtResource("3_8mmam")
 region = Rect2(0, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_lw4kv"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_l640l"]
 atlas = ExtResource("3_8mmam")
 region = Rect2(17, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_nx6h2"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_fry2p"]
 atlas = ExtResource("3_8mmam")
 region = Rect2(34, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_pr77c"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_0q8wu"]
 atlas = ExtResource("3_8mmam")
 region = Rect2(51, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_jg5h2"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_u2l7s"]
 atlas = ExtResource("3_8mmam")
 region = Rect2(68, 0, 17, 23)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_dk5ac"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_i3am7"]
 animations = [{
 "frames": [{
 "duration": 1.0,
@@ -37,26 +37,26 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_bn4av")
+"texture": SubResource("AtlasTexture_0b7fj")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_lw4kv")
+"texture": SubResource("AtlasTexture_l640l")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_nx6h2")
+"texture": SubResource("AtlasTexture_fry2p")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_pr77c")
+"texture": SubResource("AtlasTexture_0q8wu")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_jg5h2")
+"texture": SubResource("AtlasTexture_u2l7s")
 }],
 "loop": true,
 "name": &"hover",
 "speed": 5.0
 }]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_sbe33"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_nahyx"]
 properties/0/path = NodePath(".:picker")
 properties/0/spawn = true
 properties/0/sync = true
@@ -93,14 +93,14 @@ expand_icon = true
 position = Vector2(257, 244)
 rotation = 1.21824
 scale = Vector2(10, 5)
-sprite_frames = SubResource("SpriteFrames_dk5ac")
+sprite_frames = SubResource("SpriteFrames_i3am7")
 animation = &"hover"
 
 [node name="Networking" type="Node" parent="."]
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
 root_path = NodePath("../..")
-replication_config = SubResource("SceneReplicationConfig_sbe33")
+replication_config = SubResource("SceneReplicationConfig_nahyx")
 
 [node name="Description" type="Label" parent="."]
 layout_mode = 0
