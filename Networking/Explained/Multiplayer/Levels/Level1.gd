@@ -94,19 +94,37 @@ func _get_spawn_position(i: int, num_playing:int) -> Vector2:
 	return result
 
 @rpc("reliable", "call_local")
-func enter_picking_time(id) -> void:
+func enter_picking_time(picker_id) -> void:
 	remove_all_bullets()
-	print("pick world,,, for " + str(id))
 	if multiplayer.is_server():
 		$Networking.sync_game_state = PlayState.State.PICKING
 	hide_all_players()
 	$PickingTime.visible = true
-	for n in 3:
-		var button = buttons[n + 1].instantiate()
-		button.name = str(n)
+	add_buttons(picker_id)
+	
+func add_buttons(picker_id):
+	var dup = buttons.duplicate()
+	var random_buttons := choose_unique_entries(dup, 3)
+	for i in 3:
+		var button = random_buttons[i].instantiate()
+		button.name = str(i)
 		$PickingTime/HBoxContainer.add_child(button)
-		button.set_picker(id)
+		button.set_picker(picker_id)
 		button.picked.connect(card_picked)
+		
+func choose_unique_entries(arr:Array, n:int) -> Array:
+	var size := arr.size()
+	var result = []
+	if size < n or n <= 0:
+		print("All choices picked (or array too small)")
+		return result
+	var rand_index := randi() % size
+	var ele = arr[rand_index]
+	arr.erase(ele)
+	result.append(ele)
+	var others = choose_unique_entries(arr, n - 1)
+	result.append_array(others)
+	return result
 		
 func card_picked(card_id, player_id) -> void:
 	print("Nice pick of " + str(card_id) +  " for " + str(player_id))
