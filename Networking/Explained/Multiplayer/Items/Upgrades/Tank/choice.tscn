@@ -4,35 +4,35 @@
 [ext_resource type="Texture2D" uid="uid://07ytbs8mg2j1" path="res://Items/Upgrades/Tank/Tank-Sheet.png" id="2_ypa4x"]
 [ext_resource type="PackedScene" uid="uid://cq8nwpvu5n74l" path="res://Items/Upgrades/Tank/power.tscn" id="4_86n73"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_orjq2"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_6mr2p"]
 atlas = ExtResource("2_ypa4x")
 region = Rect2(30, 0, 30, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ply7f"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_8rvdx"]
 atlas = ExtResource("2_ypa4x")
 region = Rect2(0, 0, 30, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_8mcsq"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_fnjn2"]
 atlas = ExtResource("2_ypa4x")
 region = Rect2(30, 0, 30, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_b0mkc"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_fo43b"]
 atlas = ExtResource("2_ypa4x")
 region = Rect2(60, 0, 30, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_psplc"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_h68uk"]
 atlas = ExtResource("2_ypa4x")
 region = Rect2(90, 0, 30, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_c5org"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_gounm"]
 atlas = ExtResource("2_ypa4x")
 region = Rect2(120, 0, 30, 30)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_gpms3"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_3oa3y"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_orjq2")
+"texture": SubResource("AtlasTexture_6mr2p")
 }],
 "loop": true,
 "name": &"default",
@@ -40,26 +40,26 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ply7f")
+"texture": SubResource("AtlasTexture_8rvdx")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_8mcsq")
+"texture": SubResource("AtlasTexture_fnjn2")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_b0mkc")
+"texture": SubResource("AtlasTexture_fo43b")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_psplc")
+"texture": SubResource("AtlasTexture_h68uk")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_c5org")
+"texture": SubResource("AtlasTexture_gounm")
 }],
 "loop": true,
 "name": &"hover",
 "speed": 5.0
 }]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_he6as"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_74ojt"]
 properties/0/path = NodePath(".:picker")
 properties/0/spawn = true
 properties/0/sync = true
@@ -95,7 +95,7 @@ expand_icon = true
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Button"]
 position = Vector2(257, 244)
 scale = Vector2(10, 10)
-sprite_frames = SubResource("SpriteFrames_gpms3")
+sprite_frames = SubResource("SpriteFrames_3oa3y")
 animation = &"hover"
 speed_scale = 3.0
 
@@ -103,7 +103,7 @@ speed_scale = 3.0
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
 root_path = NodePath("../..")
-replication_config = SubResource("SceneReplicationConfig_he6as")
+replication_config = SubResource("SceneReplicationConfig_74ojt")
 
 [node name="Description" type="Label" parent="."]
 layout_mode = 0

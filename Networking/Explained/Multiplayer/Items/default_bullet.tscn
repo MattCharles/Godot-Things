@@ -4,10 +4,10 @@
 [ext_resource type="Texture2D" uid="uid://clact0amw0ne6" path="res://Levels/shoot.png" id="2_7cd5r"]
 [ext_resource type="Script" path="res://Items/Networking.gd" id="3_5h0hf"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_e4xon"]
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_c57xu"]
 bounce = 1.0
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_vss3h"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_jlv37"]
 properties/0/path = NodePath("..:position")
 properties/0/spawn = true
 properties/0/sync = true
@@ -15,11 +15,11 @@ properties/1/path = NodePath(".:sync_num_bounces")
 properties/1/spawn = true
 properties/1/sync = true
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_k7nb7"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_4ev5b"]
 radius = 6.0
 
 [node name="default_bullet" type="RigidBody2D"]
-physics_material_override = SubResource("PhysicsMaterial_e4xon")
+physics_material_override = SubResource("PhysicsMaterial_c57xu")
 gravity_scale = 0.0
 continuous_cd = 1
 max_contacts_reported = 10
@@ -35,9 +35,9 @@ script = ExtResource("3_5h0hf")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
 replication_interval = 1.006
-replication_config = SubResource("SceneReplicationConfig_vss3h")
+replication_config = SubResource("SceneReplicationConfig_jlv37")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_k7nb7")
+shape = SubResource("CircleShape2D_4ev5b")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
