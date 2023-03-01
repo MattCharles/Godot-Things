@@ -32,6 +32,7 @@ func _ready():
 		create_player(peer)
 	# Listen to peer disconnections, and destroy their players
 	multiplayer.peer_disconnected.connect(self.destroy_player)
+	$WinnerDisplayTimer.timeout.connect(func hide_winner(): $WinnerDisplay.visible = false)
 
 func create_player(id):
 	var player = preload("res://Characters/Player.tscn").instantiate()
@@ -66,6 +67,9 @@ func kill_player(id: int) -> void:
 			rpc("enter_picking_time", id, choose_random_indices(3, buttons.size()))
 		else:
 			print("respawning_all")
+			$WinnerDisplay.text = get_node(str(winner)).player_name
+			$WinnerDisplay.visible = true
+			
 			respawn_all()
 	
 func destroy_player(id : int) -> void:
@@ -90,7 +94,8 @@ func get_all_matching(map, value) -> Array:
 	return result
 
 func respawn_all():
-	pass
+	reset_players()
+	unhide_all_players()
 
 func _get_spawn_position(i: int, num_playing:int) -> Vector2: 
 	var result:=Vector2(100 + (i * 1700), 0)

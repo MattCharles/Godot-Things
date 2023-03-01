@@ -108,3 +108,17 @@ rotation = 1.5708
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/North4"]
 position = Vector2(99, 1079)
 shape = SubResource("WorldBoundaryShape2D_s4phs")
+
+[node name="WinnerDisplay" type="Label" parent="."]
+visible = false
+offset_left = 899.0
+offset_top = 4.0
+offset_right = 1081.0
+offset_bottom = 79.0
+theme_override_font_sizes/font_size = 52
+text = "Winner"
+horizontal_alignment = 1
+
+[node name="WinnerDisplayTimer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true

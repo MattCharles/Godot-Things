@@ -71,11 +71,13 @@ var no_scope_crit_enabled := DEFAULT_NO_SCOPE_CRIT_ENABLED
 var crit_modifier := DEFAULT_CRIT_MODIFIER
 var clip_size := DEFAULT_CLIP_SIZE
 var bullets_left_in_clip := clip_size
+var initial_position := position
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
 
 func _ready():
+	initial_position = position
 	$Networking/MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
 	no_scope_spin_timer.timeout.connect(zone_push_pop)
 	no_scope_spin_timer.one_shot = true
@@ -349,6 +351,7 @@ func reset():
 	no_scope_crit_enabled = DEFAULT_NO_SCOPE_CRIT_ENABLED
 	crit_stored = DEFAULT_CRIT_STORED
 	clip_size = DEFAULT_CLIP_SIZE
+	#position = initial_position
 	
 	modify()
 	
@@ -366,6 +369,7 @@ func reset():
 		rpc("set_bullet_speed", bullet_speed)
 		rpc("set_no_scope_crit_enabled", no_scope_crit_enabled)
 		rpc("set_crit_stored", crit_stored)
+		rpc("remote_dictate_position", initial_position)
 	$Networking.sync_bullet_scale = bullet_scale
 	$Networking.sync_bullets_per_shot = bullets_per_shot
 	$Networking.sync_max_health = max_health
