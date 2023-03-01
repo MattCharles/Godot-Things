@@ -21,6 +21,9 @@ properties/2/sync = true
 properties/3/path = NodePath("../Sprite2D:modulate")
 properties/3/spawn = true
 properties/3/sync = true
+properties/4/path = NodePath(".:sync_damage")
+properties/4/spawn = true
+properties/4/sync = true
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kf7pi"]
 radius = 6.0

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dgyjm7jaanthg"]
 
-[ext_resource type="Script" path="res://Items/Upgrades/BouncyBullets/power.gd" id="1_qj7os"]
+[ext_resource type="Script" path="res://Items/Upgrades/BulletSpeed/power.gd" id="1_1txnp"]
 
 [node name="BulletSpeed" type="Node"]
-script = ExtResource("1_qj7os")
+script = ExtResource("1_1txnp")

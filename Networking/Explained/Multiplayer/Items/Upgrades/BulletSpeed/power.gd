@@ -1,10 +1,10 @@
 extends Node
 
 const modifiers := {
-	"bullet_bounces": {
-		"add": 2
+	"bullet_speed": {
+		"multiply": 2
 	},
 	"bullet_damage": {
-		"multiply": 1.2
+		"add": 15
 	}
 }

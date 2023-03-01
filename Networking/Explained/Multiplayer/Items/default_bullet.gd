@@ -3,13 +3,23 @@ class_name Bullet
 
 var target = Vector2(0, 0)
 var speed = 1000
-var damage = 35
+var damage := 35
 var num_bounces = 0
-
-var velocity = Vector2()
 
 func _ready():
 	$Networking.sync_num_bounces = num_bounces
+
+func set_damage(value):
+	if !multiplayer.is_server():
+		return
+	print("setting damage to " + str(value))
+	rpc("sync_set_damage", value)
+
+@rpc("reliable", "call_local")
+func sync_set_damage(value):
+	print("synching damage to " + str(value))
+	damage = value
+	$Networking.sync_damage = damage
 
 @rpc("call_local", "any_peer")
 func free():
@@ -29,7 +39,6 @@ func _on_body_entered(body):
 		
 	elif num_bounces <= 0:
 		rpc("free")
-	
 	
 	num_bounces = num_bounces - 1
 	$Networking.sync_num_bounces = num_bounces
