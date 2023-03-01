@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgyjm7jaanthg"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/360NoScope/power.gd" id="1_g43si"]
+
+[node name="360NoScope" type="Node"]
+script = ExtResource("1_g43si")

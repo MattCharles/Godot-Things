@@ -11,13 +11,15 @@ const DEFAULT_BULLETS_PER_SHOT := 1 # I clicked shoot. How many bullets come out
 const DEFAULT_BULLET := preload("res://Items/default_bullet.tscn")
 const DEFAULT_BULLET_SCALE := 1.0
 const DEFAULT_BULLET_DAMAGE := 35
-const ORDERED_OPERATIONS := ["add", "multiply"]
+const ORDERED_OPERATIONS := ["add", "multiply", "set"]
 const DEFAULT_BULLET_BOUNCES := 0
 const DEFAULT_SHOTS_PER_BURST := 1
 const DEFAULT_BURST_GAP := .1
 const DEFAULT_BULLET_SPEED := 1000
 const DEFAULT_ROLL_TIME := 0.5
 const NOSCOPE_SPIN_TIME := 1 #Time to complete a noscope spin for it to be considered valid
+const DEFAULT_NO_SCOPE_CRIT_ENABLED = false
+const DEFAULT_CRIT_STORED = false
 
 # TODO: implement these
 const DEFAULT_RELOAD_TIME := 1
@@ -61,8 +63,8 @@ var shots_left_to_burst := shots_per_burst
 var bullet_speed := DEFAULT_BULLET_SPEED
 var previous_zones := [-1, -1, -1, -1, -1]
 var current_zone := 0
-var crit_stored := false
-var no_scope_crit_enabled := true
+var crit_stored := DEFAULT_CRIT_STORED
+var no_scope_crit_enabled := DEFAULT_NO_SCOPE_CRIT_ENABLED
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -301,7 +303,9 @@ func process_shot(bname, id, look_at, distant_target):
 	if crit_stored:
 		crit_stored = false
 		_animated_sprite.modulate = Color(1, 1, 1, 1)
-	instance.damage = bullet_damage
+		instance.modulate = Color(2, 0, 0, .8)
+		instance.damage = bullet_damage
+		instance.damage = instance.damage * 2
 	instance.look_at(look_at)
 	instance.global_position = shoot_point.global_position
 	instance.num_bounces = bullet_bounces
@@ -335,6 +339,8 @@ func reset():
 	shots_per_burst = DEFAULT_SHOTS_PER_BURST
 	bullet_speed = DEFAULT_BULLET_SPEED
 	bullet_damage = DEFAULT_BULLET_DAMAGE
+	no_scope_crit_enabled = DEFAULT_NO_SCOPE_CRIT_ENABLED
+	crit_stored = DEFAULT_CRIT_STORED
 	
 	modify()
 	bullet_damage = 1 if bullet_damage < 1 else bullet_damage
@@ -348,6 +354,7 @@ func reset():
 		rpc("set_bullet_bounces", bullet_bounces)
 		rpc("set_shots_per_burst", shots_per_burst)
 		rpc("set_bullet_speed", bullet_speed)
+		rpc("set_no_scope_crit_enabled", no_scope_crit_enabled)
 	$Networking.sync_bullet_scale = bullet_scale
 	$Networking.sync_bullets_per_shot = bullets_per_shot
 	$Networking.sync_max_health = max_health
@@ -387,6 +394,7 @@ func modify():
 				grouped_mods[dictionary_name][operation].push_back(operation_details)
 	
 	for stat in grouped_mods.keys(): # will modify variables
+		print(stat)
 		var result = get(stat)
 		for ordered_operation in ORDERED_OPERATIONS:
 			if !grouped_mods[stat].has(ordered_operation):
@@ -397,6 +405,11 @@ func modify():
 			if ordered_operation == "multiply":
 				for add_value in grouped_mods[stat][ordered_operation]:
 					result = result * add_value["multiply"]
+			if ordered_operation == "set":
+				print("set")
+				for set_value in grouped_mods[stat][ordered_operation]:
+					result = set_value["set"]
+					print(result)
 		set(stat, result)
 	
 @rpc("call_local", "reliable")
@@ -434,6 +447,10 @@ func set_shots_per_burst(new_shots_per_burst):
 @rpc("reliable", "call_local", "any_peer")
 func set_bullet_speed(new_bullet_speed):
 	bullet_speed = new_bullet_speed
+
+@rpc("reliable", "call_local", "any_peer")
+func set_no_scope_crit_enabled(value):
+	no_scope_crit_enabled = value
 
 # Get a random number from negative max to max.
 func random_angle(max) -> float:

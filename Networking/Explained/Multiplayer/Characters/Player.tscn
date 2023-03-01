@@ -143,6 +143,12 @@ properties/14/sync = true
 properties/15/path = NodePath(".:sync_bullet_bounces")
 properties/15/spawn = true
 properties/15/sync = true
+properties/16/path = NodePath(".:sync_no_scope_crit_enabled")
+properties/16/spawn = true
+properties/16/sync = true
+properties/17/path = NodePath("../AnimatedSprite2D:modulate")
+properties/17/spawn = true
+properties/17/sync = true
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 3

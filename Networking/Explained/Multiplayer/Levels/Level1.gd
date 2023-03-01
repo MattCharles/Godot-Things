@@ -11,12 +11,14 @@ var choice_button = preload("res://Items/upgrade_choice.tscn")
 var buttons = [preload("res://Items/Upgrades/Tank/choice.tscn"),
 				preload("res://Items/Upgrades/Shotgun/choice.tscn"),
 				preload("res://Items/Upgrades/BouncyBullets/choice.tscn"),
-				preload("res://Items/Upgrades/TripleBurst/choice.tscn")]
+				preload("res://Items/Upgrades/TripleBurst/choice.tscn"),
+				preload("res://Items/Upgrades/360NoScope/choice.tscn")]
 
 var powers = [load("res://Items/Upgrades/Tank/power.tscn"), 
 				load("res://Items/Upgrades/Shotgun/power.tscn"),
 				load("res://Items/Upgrades/BouncyBullets/power.tscn"),
-				load("res://Items/Upgrades/TripleBurst/power.tscn")] #TODO - load the power node when choice is displayed
+				load("res://Items/Upgrades/TripleBurst/power.tscn"),
+				load("res://Items/Upgrades/360NoScope/power.tscn")] #TODO - load the power node when choice is displayed
 
 func _ready():
 	host_id = multiplayer.get_unique_id()

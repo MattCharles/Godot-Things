@@ -1,0 +1,133 @@
+[gd_scene load_steps=13 format=3 uid="uid://dw1p0oc5eemol"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/360NoScope/choice.gd" id="1_vh08l"]
+[ext_resource type="Texture2D" uid="uid://cqcbn0ytw0ot7" path="res://Characters/Poochys/Poochy-Stander.png" id="2_73ptf"]
+[ext_resource type="Texture2D" uid="uid://11pswvtjxkmy" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_8mmam"]
+[ext_resource type="PackedScene" uid="uid://dgyjm7jaanthg" path="res://Items/Upgrades/360NoScope/power.tscn" id="4_4iudv"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_l7epl"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xwqp2"]
+atlas = ExtResource("3_8mmam")
+region = Rect2(0, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gpvk8"]
+atlas = ExtResource("3_8mmam")
+region = Rect2(17, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4eava"]
+atlas = ExtResource("3_8mmam")
+region = Rect2(34, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fvaew"]
+atlas = ExtResource("3_8mmam")
+region = Rect2(51, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_66mup"]
+atlas = ExtResource("3_8mmam")
+region = Rect2(68, 0, 17, 23)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_h8b6t"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_73ptf")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xwqp2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gpvk8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4eava")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fvaew")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_66mup")
+}],
+"loop": true,
+"name": &"hover",
+"speed": 5.0
+}]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ercp3"]
+properties/0/path = NodePath(".:picker")
+properties/0/spawn = true
+properties/0/sync = true
+properties/1/path = NodePath(".:remote_animation")
+properties/1/spawn = true
+properties/1/sync = true
+properties/2/path = NodePath(".:updated_animation")
+properties/2/spawn = true
+properties/2/sync = true
+properties/3/path = NodePath("Description:text")
+properties/3/spawn = true
+properties/3/sync = true
+properties/4/path = NodePath("Title:text")
+properties/4/spawn = true
+properties/4/sync = true
+properties/5/path = NodePath(".:card_id")
+properties/5/spawn = true
+properties/5/sync = true
+
+[node name="360NoScope" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+size_flags_horizontal = 3
+script = ExtResource("1_vh08l")
+
+[node name="Button" type="Button" parent="."]
+custom_minimum_size = Vector2(500, 888)
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+expand_icon = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Button"]
+modulate = Color(0.388235, 0.717647, 0.235294, 1)
+material = SubResource("CanvasItemMaterial_l7epl")
+position = Vector2(257, 244)
+rotation = 1.03149
+scale = Vector2(10, 5)
+sprite_frames = SubResource("SpriteFrames_h8b6t")
+animation = &"hover"
+
+[node name="Networking" type="Node" parent="."]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
+root_path = NodePath("../..")
+replication_config = SubResource("SceneReplicationConfig_ercp3")
+
+[node name="Description" type="Label" parent="."]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 488.0
+offset_right = 489.0
+offset_bottom = 876.0
+theme_override_font_sizes/font_size = 52
+text = "Store a critical hit when you do a 360!"
+autowrap_mode = 3
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 11.0
+offset_right = 489.0
+offset_bottom = 94.0
+theme_override_font_sizes/font_size = 52
+text = "xX_Poochy360_Xx"
+horizontal_alignment = 1
+
+[node name="360NoScope" parent="." instance=ExtResource("4_4iudv")]
+
+[connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
+[connection signal="mouse_exited" from="Button" to="." method="_on_button_mouse_exited"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
