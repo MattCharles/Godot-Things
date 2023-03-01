@@ -4,6 +4,7 @@ var host_player = null
 var host_id
 var alive := {}
 var wins := {}
+var round_wins := {}
 var player_nodes := {}
 
 var choice_button = preload("res://Items/upgrade_choice.tscn")
@@ -46,6 +47,7 @@ func create_player(id):
 				player.change_name(new_name.rstrip("0123456789"))
 	alive[id] = true
 	wins[id] = 0
+	round_wins[id] = 0
 	player_nodes[id] = player
 	player.i_die.connect(self.kill_player)
 	
@@ -56,11 +58,15 @@ func kill_player(id: int) -> void:
 	alive[id] = false
 	print("Winner found!")
 	var winner = get_all_alive(alive)[0]
-	wins[winner] += 1
+	# wins[winner] += 1
+	round_wins[winner] += 1
 	print(str(winner) + " has won " + str(wins[winner]) + " time(s)")
-	if one_left():
-		if multiplayer.is_server():
+	if multiplayer.is_server() and one_left():
+		if round_wins[winner] == 2:
 			rpc("enter_picking_time", id, choose_random_indices(3, buttons.size()))
+		else:
+			print("respawning_all")
+			respawn_all()
 	
 func destroy_player(id : int) -> void:
 	# Delete this peer's node.
