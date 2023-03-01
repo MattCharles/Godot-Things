@@ -21,22 +21,24 @@ const NOSCOPE_SPIN_TIME := 1 #Time to complete a noscope spin for it to be consi
 const DEFAULT_NO_SCOPE_CRIT_ENABLED = false
 const DEFAULT_CRIT_STORED = false
 const DEFAULT_CRIT_MODIFIER = 2
+const DEFAULT_CLIP_SIZE := 5
+const DEFAULT_RELOAD_TIME := 1
+const DEFAULT_RELOAD_TIMER := 2
 
 # TODO: implement these
-const DEFAULT_RELOAD_TIME := 1
-const DEFAULT_CLIP_SIZE := 5
 const DEFAULT_BULLET_SLOW := 0
 const DEFAULT_CHARGE_TIME := 0
 const DEFAULT_POISON_DAMAGE := 0
 
-func reload(): pass
 func instant_reload(): pass
 
 signal i_die(id: int)
 
+@onready var reload_timer := $ReloadTimer
 @onready var no_scope_spin_timer := $NoScopeTimer
 @onready var _animated_sprite = $AnimatedSprite2D
 @onready var shoot_point = $Hand/ShootPoint
+@onready var reload_spinner = $UI/ReloadSpinner
 
 # animation names
 var walk = "Walk" 
@@ -67,6 +69,8 @@ var current_zone := 0
 var crit_stored := DEFAULT_CRIT_STORED
 var no_scope_crit_enabled := DEFAULT_NO_SCOPE_CRIT_ENABLED
 var crit_modifier := DEFAULT_CRIT_MODIFIER
+var clip_size := DEFAULT_CLIP_SIZE
+var bullets_left_in_clip := clip_size
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -75,11 +79,12 @@ func _ready():
 	$Networking/MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
 	no_scope_spin_timer.timeout.connect(zone_push_pop)
 	no_scope_spin_timer.one_shot = true
-	print("sanity check: " + str(detect_spin([0, 1, 2, 3, 4])))
-	print("sanity check: " + str(detect_spin([4, 3, 2, 1, 0])))
+	reload_timer.timeout.connect(reset_ammo)
+	reload_timer.one_shot = true
+	reload_spinner.max_value = clip_size
 
 	$Networking.sync_health = health
-	$UI/TextureProgressBar.value = health
+	$UI/PlayerHealth.value = health
 	$Networking.sync_max_health = max_health
 	$UI.visible = true
 	if is_local_authority():
@@ -118,8 +123,11 @@ func _process(_delta):
 				rpc("set_crit_stored", crit_stored)
 				_animated_sprite.modulate = Color(2, 0, 0, .8)
 		
-		if Input.is_action_just_pressed("shoot"):
+		if bullets_left_in_clip > 0 and Input.is_action_just_pressed("shoot"):
 			shoot()
+		elif reload_timer.is_stopped() and (Input.is_action_just_pressed("shoot") or Input.is_action_just_pressed("reload")):
+			print("started reload timer")
+			reload_timer.start()
 	else:
 		health = $Networking.sync_health
 		max_health = $Networking.sync_max_health
@@ -131,11 +139,15 @@ func _process(_delta):
 		_animated_sprite.flip_h = $Networking.sync_flip_sprite
 		move_state = $Networking.sync_move_state
 				
-	$UI/TextureProgressBar.value = health
-	$UI/TextureProgressBar.max_value = max_health
-	$UI/TextureProgressBar.visible = health < max_health
+	$UI/PlayerHealth.value = health
+	$UI/PlayerHealth.max_value = max_health
+	$UI/PlayerHealth.visible = health < max_health
 	$Networking.sync_hand_rotation = $Hand.rotation
 	$Networking.sync_hand_position = $Hand.position
+
+func reset_ammo():
+	bullets_left_in_clip = clip_size
+	reload_spinner.value = bullets_left_in_clip
 
 func zone_push_pop():
 	previous_zones.push_front(current_zone)
@@ -156,12 +168,16 @@ func detect_spin(snapshot) -> bool:
 
 func shoot():
 	var shot_id = randi()
-	for bullet_count in bullets_per_shot:
+	var bullets_to_fire = min(bullets_per_shot, bullets_left_in_clip)
+	for bullet_count in bullets_to_fire:
 		var distant_target = get_distant_target()
 		var bullet_angle = random_angle(spread)
 		var target = distant_target.rotated(bullet_angle)
 		var processed_damage = bullet_damage
 		rpc("process_shot", str(shot_id + bullet_count), multiplayer.get_unique_id(), self.get_global_mouse_position(), target)
+		bullets_left_in_clip = bullets_left_in_clip - 1
+		reload_spinner.value = bullets_left_in_clip
+		
 	shots_left_to_burst = shots_left_to_burst - 1
 	if shots_left_to_burst > 0:
 		var timer := Timer.new()
@@ -332,8 +348,11 @@ func reset():
 	bullet_damage = DEFAULT_BULLET_DAMAGE
 	no_scope_crit_enabled = DEFAULT_NO_SCOPE_CRIT_ENABLED
 	crit_stored = DEFAULT_CRIT_STORED
+	clip_size = DEFAULT_CLIP_SIZE
 	
 	modify()
+	
+	bullets_left_in_clip = clip_size
 	bullet_damage = 1 if bullet_damage < 1 else bullet_damage
 	health = max_health
 	shots_left_to_burst = shots_per_burst

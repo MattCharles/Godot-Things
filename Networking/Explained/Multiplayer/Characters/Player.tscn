@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://ds41tvyxujn2h"]
+[gd_scene load_steps=24 format=3 uid="uid://ds41tvyxujn2h"]
 
 [ext_resource type="Script" path="res://Characters/Player.gd" id="1_uheab"]
 [ext_resource type="Texture2D" uid="uid://cqcbn0ytw0ot7" path="res://Characters/Poochys/Poochy-Stander.png" id="2_lj62y"]
@@ -94,6 +94,18 @@ colors = PackedColorArray(0, 0.278431, 0.486275, 1, 0, 0.576471, 1, 1)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_xxf2o"]
 gradient = SubResource("Gradient_daiy3")
 
+[sub_resource type="Gradient" id="Gradient_o1eg3"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_td6f2"]
+gradient = SubResource("Gradient_o1eg3")
+
+[sub_resource type="Gradient" id="Gradient_6xnpy"]
+offsets = PackedFloat32Array(0, 0.87987, 1)
+colors = PackedColorArray(0.811765, 0, 0, 1, 0.584416, 0.584416, 0.584416, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_uvgyr"]
+gradient = SubResource("Gradient_6xnpy")
+
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_1g50u"]
 properties/0/path = NodePath(":sync_position")
 properties/0/spawn = true
@@ -173,7 +185,7 @@ offset_top = -29.0
 offset_right = -16.0
 offset_bottom = 11.0
 
-[node name="TextureProgressBar" type="TextureProgressBar" parent="UI"]
+[node name="PlayerHealth" type="TextureProgressBar" parent="UI"]
 layout_mode = 0
 offset_right = 15.0
 offset_bottom = 66.0
@@ -200,6 +212,16 @@ theme_override_font_sizes/font_size = 24
 text = "Poochy"
 horizontal_alignment = 1
 
+[node name="ReloadSpinner" type="TextureProgressBar" parent="UI"]
+offset_left = 84.0
+offset_top = -11.0
+offset_right = 124.0
+offset_bottom = 29.0
+fill_mode = 4
+nine_patch_stretch = true
+texture_under = SubResource("GradientTexture1D_td6f2")
+texture_progress = SubResource("GradientTexture1D_uvgyr")
+
 [node name="Networking" type="Node" parent="."]
 script = ExtResource("4_4qpvw")
 
@@ -220,3 +242,5 @@ position = Vector2(16, -3)
 [node name="NoScopeTimer" type="Timer" parent="."]
 wait_time = 0.3
 one_shot = true
+
+[node name="ReloadTimer" type="Timer" parent="."]
