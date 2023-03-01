@@ -140,22 +140,6 @@ func _process(_delta):
 func zone_push_pop():
 	previous_zones.push_front(current_zone)
 	previous_zones.pop_back()
-
-#func spin_check(hand_rotation:int) -> bool:
-	#var abs_rotation = abs(hand_rotation)
-	#var store_crit:bool = true
-	#var slice_size = 360 / previous_zones.size()
-	#var reduced_rotation = abs_rotation % 360
-	#current_zone = reduced_rotation / slice_size
-	##if current_zone == previous_zones[0]:
-#		return false#
-	#for i in previous_zones.size():
-		#var above_minimum:bool = reduced_rotation > i * slice_size
-		#var below_maximum:bool = reduced_rotation < (i + 1) * slice_size
-#		
-		#crit_seals[i] = crit_seals[i] or (above_minimum and below_maximum)
-		#store_crit = store_crit and crit_seals[i]
-	#return store_crit
 	
 func detect_spin(snapshot) -> bool:
 	var sorted_ascending = true
@@ -315,6 +299,7 @@ func process_shot(bname, id, look_at, distant_target):
 	instance.look_at(look_at)
 	instance.global_position = shoot_point.global_position
 	instance.num_bounces = bullet_bounces
+	instance.speed = bullet_speed
 	instance.fire()
 
 @rpc("call_local", "reliable")

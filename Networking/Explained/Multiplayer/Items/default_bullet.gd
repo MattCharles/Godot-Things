@@ -2,7 +2,7 @@ extends RigidBody2D
 class_name Bullet
 
 var target = Vector2(0, 0)
-var speed = 1000
+var speed := 1000
 var damage := 35
 var num_bounces = 0
 

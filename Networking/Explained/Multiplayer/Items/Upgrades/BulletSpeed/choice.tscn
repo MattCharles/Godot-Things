@@ -1,30 +1,33 @@
-[gd_scene load_steps=11 format=3 uid="uid://dw1p0oc5eemol"]
+[gd_scene load_steps=13 format=3 uid="uid://dw1p0oc5eemol"]
 
 [ext_resource type="Script" path="res://Items/Upgrades/BulletSpeed/choice.gd" id="1_iic2g"]
 [ext_resource type="Texture2D" uid="uid://cqcbn0ytw0ot7" path="res://Characters/Poochys/Poochy-Stander.png" id="2_73ptf"]
 [ext_resource type="Texture2D" uid="uid://11pswvtjxkmy" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_8mmam"]
+[ext_resource type="PackedScene" uid="uid://dgyjm7jaanthg" path="res://Items/Upgrades/TripleBurst/power.tscn" id="4_tmwm4"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_bn4av"]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_3ghov"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2jpv6"]
 atlas = ExtResource("3_8mmam")
 region = Rect2(0, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_lw4kv"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_pl55d"]
 atlas = ExtResource("3_8mmam")
 region = Rect2(17, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_nx6h2"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_2rf67"]
 atlas = ExtResource("3_8mmam")
 region = Rect2(34, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_pr77c"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_u2b4r"]
 atlas = ExtResource("3_8mmam")
 region = Rect2(51, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_jg5h2"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_hk2ya"]
 atlas = ExtResource("3_8mmam")
 region = Rect2(68, 0, 17, 23)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_dk5ac"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_j0iaf"]
 animations = [{
 "frames": [{
 "duration": 1.0,
@@ -36,26 +39,26 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_bn4av")
+"texture": SubResource("AtlasTexture_2jpv6")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_lw4kv")
+"texture": SubResource("AtlasTexture_pl55d")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_nx6h2")
+"texture": SubResource("AtlasTexture_2rf67")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_pr77c")
+"texture": SubResource("AtlasTexture_u2b4r")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_jg5h2")
+"texture": SubResource("AtlasTexture_hk2ya")
 }],
 "loop": true,
 "name": &"hover",
 "speed": 5.0
 }]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_sbe33"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_c87r0"]
 properties/0/path = NodePath(".:picker")
 properties/0/spawn = true
 properties/0/sync = true
@@ -89,17 +92,20 @@ offset_bottom = 8.0
 expand_icon = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Button"]
+modulate = Color(0, 0.345098, 1, 1)
+material = SubResource("CanvasItemMaterial_3ghov")
 position = Vector2(257, 244)
-rotation = 1.21824
+rotation = 0.225147
 scale = Vector2(10, 5)
-sprite_frames = SubResource("SpriteFrames_dk5ac")
+skew = 0.516617
+sprite_frames = SubResource("SpriteFrames_j0iaf")
 animation = &"hover"
 
 [node name="Networking" type="Node" parent="."]
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
 root_path = NodePath("../..")
-replication_config = SubResource("SceneReplicationConfig_sbe33")
+replication_config = SubResource("SceneReplicationConfig_c87r0")
 
 [node name="Description" type="Label" parent="."]
 layout_mode = 0
@@ -108,7 +114,7 @@ offset_top = 488.0
 offset_right = 489.0
 offset_bottom = 876.0
 theme_override_font_sizes/font_size = 52
-text = "Give your bullets two (2) additional bounces!"
+text = "Make the bullet go more speed"
 autowrap_mode = 3
 
 [node name="Title" type="Label" parent="."]
@@ -118,8 +124,10 @@ offset_top = 11.0
 offset_right = 489.0
 offset_bottom = 94.0
 theme_override_font_sizes/font_size = 52
-text = "Bouncer"
+text = "Bullet Speed"
 horizontal_alignment = 1
+
+[node name="BulletSpeed" parent="." instance=ExtResource("4_tmwm4")]
 
 [connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
 [connection signal="mouse_exited" from="Button" to="." method="_on_button_mouse_exited"]
