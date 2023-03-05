@@ -40,7 +40,9 @@ func create_player(id):
 	player.name = str(id)
 	add_child(player)
 	if multiplayer.is_server():
-		player.rpc("remote_dictate_position", _get_spawn_position($Networking.sync_num_connected, 2)) # TODO: support multiplayer games
+		var initial_position = _get_spawn_position($Networking.sync_num_connected, 2)
+		player.rpc("remote_dictate_position", initial_position) # TODO: support multiplayer games
+		player.initial_position = initial_position
 		$Networking.sync_num_connected = $Networking.sync_num_connected + 1
 		for entry in memory_node.contents:
 			if memory_node.contents[entry]["id"] == id:
@@ -161,6 +163,7 @@ func modify_player_visibility(value) -> void:
 func reset_players() -> void:
 	for player in alive.keys():
 		alive[player] = true
+		print("Resetting " + str(player))
 		player_nodes[player].reset()
 
 func remove_all_bullets() -> void:

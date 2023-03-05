@@ -369,6 +369,7 @@ func reset():
 		rpc("set_bullet_speed", bullet_speed)
 		rpc("set_no_scope_crit_enabled", no_scope_crit_enabled)
 		rpc("set_crit_stored", crit_stored)
+	if multiplayer.is_server():
 		rpc("remote_dictate_position", initial_position)
 	$Networking.sync_bullet_scale = bullet_scale
 	$Networking.sync_bullets_per_shot = bullets_per_shot
