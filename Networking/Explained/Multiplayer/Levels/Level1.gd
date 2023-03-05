@@ -6,6 +6,7 @@ var alive := {}
 var wins := {}
 var round_wins := {}
 var player_nodes := {}
+var already_got_host_win := false
 
 var choice_button = preload("res://Items/upgrade_choice.tscn")
 
@@ -44,13 +45,13 @@ func create_player(id):
 		player.rpc("remote_dictate_position", initial_position) # TODO: support multiplayer games
 		player.initial_position = initial_position
 		$Networking.sync_num_connected = $Networking.sync_num_connected + 1
+		round_wins[id] = 0
 		for entry in memory_node.contents:
 			if memory_node.contents[entry]["id"] == id:
 				var new_name = memory_node.contents[entry]["name"]
 				player.change_name(new_name.rstrip("0123456789"))
 	alive[id] = true
 	wins[id] = 0
-	round_wins[id] = 0
 	player_nodes[id] = player
 	player.i_die.connect(self.kill_player)
 	
@@ -62,17 +63,20 @@ func kill_player(id: int) -> void:
 	print("Winner found!")
 	var winner = get_all_alive(alive)[0]
 	# wins[winner] += 1
-	round_wins[winner] += 1
 	print(str(winner) + " has won " + str(wins[winner]) + " time(s)")
-	if multiplayer.is_server() and one_left():
+	if multiplayer.is_server() and one_left() and not already_got_host_win:
+		if winner == 1: already_got_host_win = true
+		print("already_got_host_win" + str(already_got_host_win))
+		round_wins[winner] += 1
 		if round_wins[winner] == 2:
+			wins[winner] = wins[winner] + 1
 			rpc("enter_picking_time", id, choose_random_indices(3, buttons.size()))
 		else:
 			print("respawning_all")
 			$WinnerDisplay.text = get_node(str(winner)).player_name
 			$WinnerDisplay.visible = true
 			
-			respawn_all()
+			rpc("respawn_all_rpc")
 	
 func destroy_player(id : int) -> void:
 	# Delete this peer's node.
@@ -95,7 +99,12 @@ func get_all_matching(map, value) -> Array:
 			result.append(gamer)
 	return result
 
+@rpc("call_local", "reliable")
+func respawn_all_rpc():
+	respawn_all()
+
 func respawn_all():
+	already_got_host_win = false
 	reset_players()
 	unhide_all_players()
 
@@ -118,6 +127,7 @@ func enter_picking_time(picker_id:int, cards:Array) -> void:
 	hide_all_players()
 	$PickingTime.visible = true
 	add_buttons(picker_id, cards)
+	already_got_host_win = false
 	
 func add_buttons(picker_id:int, entries:Array):
 	for i in 3:
@@ -146,6 +156,8 @@ func exit_picking_time() -> void:
 		$PickingTime/HBoxContainer.remove_child(choice)
 		choice.queue_free()
 	$PickingTime.visible = false
+	for i in round_wins.keys():
+		round_wins[i] = 0
 	unhide_all_players()
 	reset_players()
 

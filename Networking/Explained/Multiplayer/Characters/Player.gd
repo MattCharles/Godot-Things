@@ -369,6 +369,7 @@ func reset():
 		rpc("set_bullet_speed", bullet_speed)
 		rpc("set_no_scope_crit_enabled", no_scope_crit_enabled)
 		rpc("set_crit_stored", crit_stored)
+		rpc("set_bullets_left_in_clip", bullets_left_in_clip)
 	if multiplayer.is_server():
 		rpc("remote_dictate_position", initial_position)
 	$Networking.sync_bullet_scale = bullet_scale
@@ -377,6 +378,7 @@ func reset():
 	$Networking.sync_health = health
 	$Networking.sync_shots_per_burst = shots_per_burst
 	$Networking.sync_bullet_speed = bullet_speed
+	$Networking.sync_bullets_left_in_clip = bullets_left_in_clip
 	dead = false
 	$Networking.sync_dead = false
 
@@ -424,6 +426,11 @@ func modify():
 				for set_value in grouped_mods[stat][ordered_operation]:
 					result = set_value["set"]
 		set(stat, result)
+	
+@rpc("call_local", "reliable", "any_peer")
+func set_bullets_left_in_clip(value):
+	bullets_left_in_clip = value
+	reset_ammo()
 	
 @rpc("call_local", "reliable")
 func remote_change_name(_new_name):
