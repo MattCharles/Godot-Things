@@ -74,6 +74,8 @@ func kill_player(id: int) -> void:
 		else:
 			print("respawning_all")
 			$WinnerDisplay.text = get_node(str(winner)).player_name
+			if wins[winner] >= 3:
+				$WinnerDisplay.text = "Big Winner! " + get_node(str(winner)).player_name
 			$WinnerDisplay.visible = true
 			
 			rpc("respawn_all_rpc")
