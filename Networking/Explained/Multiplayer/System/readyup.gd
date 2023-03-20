@@ -13,6 +13,8 @@ func _process(delta):
 
 
 func _on_start_game_button_pressed():
+	if multiplayer.has_multiplayer_peer():
+		print("yo.... Its connected bro")
 	get_node("/root/main_menu/HolePunch").finalize_peers()
 
 func _on_cancel_button_pressed():
