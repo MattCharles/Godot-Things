@@ -1,0 +1,253 @@
+[gd_scene load_steps=24 format=3 uid="uid://ds41tvyxujn2h"]
+
+[ext_resource type="Script" path="res://Characters/Player.gd" id="1_uheab"]
+[ext_resource type="Texture2D" uid="uid://b6m5amcx22cae" path="res://Characters/Poochys/Poochy-Stander.png" id="2_lj62y"]
+[ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_f8meu"]
+[ext_resource type="Script" path="res://Characters/player_networking.gd" id="4_4qpvw"]
+[ext_resource type="Texture2D" uid="uid://50xpn4158q84" path="res://Characters/Poochys/Shooter-hand.png" id="5_c0gyg"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_plsxn"]
+atlas = ExtResource("2_lj62y")
+region = Rect2(0, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_57tiv"]
+atlas = ExtResource("3_f8meu")
+region = Rect2(0, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0vt2j"]
+atlas = ExtResource("3_f8meu")
+region = Rect2(17, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oyhrs"]
+atlas = ExtResource("3_f8meu")
+region = Rect2(34, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uqqyh"]
+atlas = ExtResource("3_f8meu")
+region = Rect2(51, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4g2mk"]
+atlas = ExtResource("3_f8meu")
+region = Rect2(68, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4c8gf"]
+atlas = ExtResource("2_lj62y")
+region = Rect2(0, 0, 17, 23)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_arx2i"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"Jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_plsxn")
+}],
+"loop": true,
+"name": &"Roll",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_57tiv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0vt2j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oyhrs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uqqyh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4g2mk")
+}],
+"loop": true,
+"name": &"Walk",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4c8gf")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ywa7r"]
+radius = 18.2667
+height = 74.6667
+
+[sub_resource type="Gradient" id="Gradient_tm8tq"]
+colors = PackedColorArray(0, 0.164706, 0.290196, 1, 0, 0.258824, 0.454902, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_k5aox"]
+gradient = SubResource("Gradient_tm8tq")
+
+[sub_resource type="Gradient" id="Gradient_bcxhm"]
+colors = PackedColorArray(0, 0.278431, 0.486275, 1, 0, 0.576471, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_2n036"]
+gradient = SubResource("Gradient_bcxhm")
+
+[sub_resource type="Gradient" id="Gradient_vc5fo"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_e3763"]
+gradient = SubResource("Gradient_vc5fo")
+
+[sub_resource type="Gradient" id="Gradient_pgksf"]
+offsets = PackedFloat32Array(0, 0.87987, 1)
+colors = PackedColorArray(0.811765, 0, 0, 1, 0.584416, 0.584416, 0.584416, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_c50dy"]
+gradient = SubResource("Gradient_pgksf")
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_abu06"]
+properties/0/path = NodePath(":sync_position")
+properties/0/spawn = true
+properties/0/sync = true
+properties/1/path = NodePath(":sync_velocity")
+properties/1/spawn = false
+properties/1/sync = true
+properties/2/path = NodePath(".:sync_hand_position")
+properties/2/spawn = true
+properties/2/sync = true
+properties/3/path = NodePath(".:sync_move_state")
+properties/3/spawn = false
+properties/3/sync = true
+properties/4/path = NodePath(".:sync_flip_sprite")
+properties/4/spawn = false
+properties/4/sync = true
+properties/5/path = NodePath(".:sync_hand_flip")
+properties/5/spawn = false
+properties/5/sync = true
+properties/6/path = NodePath(".:sync_hand_rotation")
+properties/6/spawn = true
+properties/6/sync = true
+properties/7/path = NodePath(".:sync_health")
+properties/7/spawn = true
+properties/7/sync = true
+properties/8/path = NodePath(".:sync_max_health")
+properties/8/spawn = true
+properties/8/sync = true
+properties/9/path = NodePath(".:sync_player_name")
+properties/9/spawn = true
+properties/9/sync = true
+properties/10/path = NodePath(".:sync_collidable")
+properties/10/spawn = true
+properties/10/sync = true
+properties/11/path = NodePath(".:sync_dead")
+properties/11/spawn = true
+properties/11/sync = true
+properties/12/path = NodePath("..:scale")
+properties/12/spawn = true
+properties/12/sync = true
+properties/13/path = NodePath(".:sync_bullets_per_shot")
+properties/13/spawn = true
+properties/13/sync = true
+properties/14/path = NodePath(".:sync_bullet_scale")
+properties/14/spawn = true
+properties/14/sync = true
+properties/15/path = NodePath(".:sync_bullet_bounces")
+properties/15/spawn = true
+properties/15/sync = true
+properties/16/path = NodePath(".:sync_no_scope_crit_enabled")
+properties/16/spawn = true
+properties/16/sync = true
+properties/17/path = NodePath("../AnimatedSprite2D:modulate")
+properties/17/spawn = true
+properties/17/sync = true
+properties/18/path = NodePath("../UI/ReloadSpinner:value")
+properties/18/spawn = true
+properties/18/sync = true
+properties/19/path = NodePath(".:sync_bullets_left_in_clip")
+properties/19/spawn = true
+properties/19/sync = true
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 3
+script = ExtResource("1_uheab")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(5, 5)
+sprite_frames = SubResource("SpriteFrames_arx2i")
+animation = &"Roll"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1, 13)
+scale = Vector2(1.5, -1.24493)
+shape = SubResource("CapsuleShape2D_ywa7r")
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -56.0
+offset_top = -29.0
+offset_right = -16.0
+offset_bottom = 11.0
+
+[node name="PlayerHealth" type="TextureProgressBar" parent="UI"]
+layout_mode = 0
+offset_right = 15.0
+offset_bottom = 66.0
+value = 100.0
+fill_mode = 3
+nine_patch_stretch = true
+texture_under = SubResource("GradientTexture1D_k5aox")
+texture_progress = SubResource("GradientTexture1D_2n036")
+
+[node name="PlayerNameLabel" type="Label" parent="UI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -53.0
+offset_top = -57.0
+offset_right = 124.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 24
+text = "Poochy"
+horizontal_alignment = 1
+
+[node name="ReloadSpinner" type="TextureProgressBar" parent="UI"]
+layout_mode = 0
+offset_left = 84.0
+offset_top = -11.0
+offset_right = 124.0
+offset_bottom = 29.0
+fill_mode = 4
+nine_patch_stretch = true
+texture_under = SubResource("GradientTexture1D_e3763")
+texture_progress = SubResource("GradientTexture1D_c50dy")
+
+[node name="Networking" type="Node" parent="."]
+script = ExtResource("4_4qpvw")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
+replication_config = SubResource("SceneReplicationConfig_abu06")
+
+[node name="Hand" type="Node2D" parent="."]
+
+[node name="Sprite2d" type="Sprite2D" parent="Hand"]
+texture_filter = 1
+texture = ExtResource("5_c0gyg")
+
+[node name="ShootPoint" type="Node2D" parent="Hand"]
+position = Vector2(16, -3)
+
+[node name="Powers" type="Node" parent="."]
+
+[node name="NoScopeTimer" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+
+[node name="ReloadTimer" type="Timer" parent="."]

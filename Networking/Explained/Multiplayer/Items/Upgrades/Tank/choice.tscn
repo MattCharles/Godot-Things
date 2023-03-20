@@ -1,0 +1,132 @@
+[gd_scene load_steps=12 format=3 uid="uid://q645ieeqxncj"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/Tank/choice.gd" id="1_3osfn"]
+[ext_resource type="Texture2D" uid="uid://b45u0odqpx6sl" path="res://Items/Upgrades/Tank/Tank-Sheet.png" id="2_ypa4x"]
+[ext_resource type="PackedScene" uid="uid://cq8nwpvu5n74l" path="res://Items/Upgrades/Tank/power.tscn" id="4_86n73"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i33i6"]
+atlas = ExtResource("2_ypa4x")
+region = Rect2(30, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rwysi"]
+atlas = ExtResource("2_ypa4x")
+region = Rect2(0, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0s27y"]
+atlas = ExtResource("2_ypa4x")
+region = Rect2(30, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1hn0q"]
+atlas = ExtResource("2_ypa4x")
+region = Rect2(60, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v3k45"]
+atlas = ExtResource("2_ypa4x")
+region = Rect2(90, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_07ks4"]
+atlas = ExtResource("2_ypa4x")
+region = Rect2(120, 0, 30, 30)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_w2v2h"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i33i6")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rwysi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0s27y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1hn0q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v3k45")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_07ks4")
+}],
+"loop": true,
+"name": &"hover",
+"speed": 5.0
+}]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_racyo"]
+properties/0/path = NodePath(".:picker")
+properties/0/spawn = true
+properties/0/sync = true
+properties/1/path = NodePath(".:remote_animation")
+properties/1/spawn = true
+properties/1/sync = true
+properties/2/path = NodePath(".:updated_animation")
+properties/2/spawn = true
+properties/2/sync = true
+properties/3/path = NodePath("Description:text")
+properties/3/spawn = true
+properties/3/sync = true
+properties/4/path = NodePath("Title:text")
+properties/4/spawn = true
+properties/4/sync = true
+properties/5/path = NodePath(".:card_id")
+properties/5/spawn = true
+properties/5/sync = true
+
+[node name="Tank" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+size_flags_horizontal = 3
+script = ExtResource("1_3osfn")
+
+[node name="Button" type="Button" parent="."]
+custom_minimum_size = Vector2(500, 888)
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+expand_icon = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Button"]
+position = Vector2(257, 244)
+scale = Vector2(10, 10)
+sprite_frames = SubResource("SpriteFrames_w2v2h")
+animation = &"hover"
+speed_scale = 3.0
+
+[node name="Networking" type="Node" parent="."]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
+root_path = NodePath("../..")
+replication_config = SubResource("SceneReplicationConfig_racyo")
+
+[node name="Description" type="Label" parent="."]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 488.0
+offset_right = 489.0
+offset_bottom = 876.0
+theme_override_font_sizes/font_size = 52
+text = "Get more Poochy Health!"
+autowrap_mode = 3
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 11.0
+offset_right = 489.0
+offset_bottom = 94.0
+theme_override_font_sizes/font_size = 52
+text = "Tank"
+horizontal_alignment = 1
+
+[node name="Tank" parent="." instance=ExtResource("4_86n73")]
+
+[connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
+[connection signal="mouse_exited" from="Button" to="." method="_on_button_mouse_exited"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
