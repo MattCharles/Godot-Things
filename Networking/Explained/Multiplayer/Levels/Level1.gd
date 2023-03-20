@@ -74,7 +74,7 @@ func kill_player(id: int) -> void:
 		else:
 			print("respawning_all")
 			$WinnerDisplay.text = get_node(str(winner)).player_name
-			if wins[winner] >= 1:
+			if wins[winner] >= 3:
 				get_tree().change_scene_to_file("res://System/readyup.tscn")
 			$WinnerDisplay.visible = true
 			

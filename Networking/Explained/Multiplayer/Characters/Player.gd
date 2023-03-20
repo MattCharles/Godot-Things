@@ -5,6 +5,7 @@ const DEFAULT_SPEED := 400
 const DEFAULT_ROLL_SPEED := 700
 const DEFAULT_HEALTH := 100
 const DISTANCE_FROM_CENTER_TO_HAND := 55
+const SQUARE_DISTANCE_FROM_CENTER_TO_HAND := DISTANCE_FROM_CENTER_TO_HAND * DISTANCE_FROM_CENTER_TO_HAND
 const DEFAULT_SCALE := Vector2(1, 1)
 const DEFAULT_SPREAD := 10 # Measured in degrees, in either direction
 const DEFAULT_BULLETS_PER_SHOT := 1 # I clicked shoot. How many bullets come out at once?
@@ -100,13 +101,17 @@ func _ready():
 
 func _process(_delta):
 	if is_local_authority():
-		$Hand.position = get_hand_position()
-		$Hand.look_at(self.get_global_mouse_position())
-		$Hand/Sprite2d.flip_v = $Hand.global_position.x < self.global_position.x
-		$Networking.sync_hand_flip = $Hand/Sprite2d.flip_v
-		$Networking.sync_hand_rotation = $Hand.rotation
-		_animated_sprite.flip_h = $Hand/Sprite2d.flip_v
-		$Networking.sync_flip_sprite = _animated_sprite.flip_h
+		# If the player cursor is between the hand and the player,
+		# stop processing hand movement. Use square distance to go
+		# more fast
+		if (self.get_global_mouse_position() - self.global_position).length_squared() >= SQUARE_DISTANCE_FROM_CENTER_TO_HAND:
+			$Hand.position = get_hand_position()
+			$Hand.look_at(self.get_global_mouse_position())
+			$Hand/Sprite2d.flip_v = $Hand.global_position.x < self.global_position.x
+			$Networking.sync_hand_flip = $Hand/Sprite2d.flip_v
+			$Networking.sync_hand_rotation = $Hand.rotation
+			_animated_sprite.flip_h = $Hand/Sprite2d.flip_v
+			$Networking.sync_flip_sprite = _animated_sprite.flip_h
 		
 		if no_scope_crit_enabled and not crits_stored >= max_crits:
 			if previous_zones[0] == -1:
