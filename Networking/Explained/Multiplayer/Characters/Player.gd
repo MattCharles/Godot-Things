@@ -19,11 +19,12 @@ const DEFAULT_BULLET_SPEED := 1000
 const DEFAULT_ROLL_TIME := 0.5
 const NOSCOPE_SPIN_TIME := 1 #Time to complete a noscope spin for it to be considered valid
 const DEFAULT_NO_SCOPE_CRIT_ENABLED = false
-const DEFAULT_CRIT_STORED = false
-const DEFAULT_CRIT_MODIFIER = 2
+const DEFAULT_NUM_CRITS_STORED := 0
+const DEFAULT_MAX_CRITS_STORED := 1
 const DEFAULT_CLIP_SIZE := 5
 const DEFAULT_RELOAD_TIME := 1
 const DEFAULT_RELOAD_TIMER := 2
+const DEFAULT_CRIT_MULTIPLIER := 2
 
 # TODO: implement these
 const DEFAULT_BULLET_SLOW := 0
@@ -66,12 +67,13 @@ var shots_left_to_burst := shots_per_burst
 var bullet_speed := DEFAULT_BULLET_SPEED
 var previous_zones := [-1, -1, -1, -1, -1]
 var current_zone := 0
-var crit_stored := DEFAULT_CRIT_STORED
+var crits_stored := DEFAULT_NUM_CRITS_STORED
 var no_scope_crit_enabled := DEFAULT_NO_SCOPE_CRIT_ENABLED
-var crit_modifier := DEFAULT_CRIT_MODIFIER
 var clip_size := DEFAULT_CLIP_SIZE
 var bullets_left_in_clip := clip_size
 var initial_position := position
+var crit_multiplier := DEFAULT_CRIT_MULTIPLIER
+var max_crits := DEFAULT_MAX_CRITS_STORED
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -106,7 +108,7 @@ func _process(_delta):
 		_animated_sprite.flip_h = $Hand/Sprite2d.flip_v
 		$Networking.sync_flip_sprite = _animated_sprite.flip_h
 		
-		if no_scope_crit_enabled and not crit_stored:
+		if no_scope_crit_enabled and not crits_stored >= max_crits:
 			if previous_zones[0] == -1:
 				zone_push_pop()
 			var degrees_of_rotation = int(rad_to_deg($Hand.rotation))
@@ -119,10 +121,10 @@ func _process(_delta):
 			elif current_zone != previous_zones[0]:
 				no_scope_spin_timer.start()
 				zone_push_pop()
-			crit_stored = detect_spin(Array(previous_zones))
-			if crit_stored:
+			if detect_spin(Array(previous_zones)):
 				print("Crit stored")
-				rpc("set_crit_stored", crit_stored)
+				crits_stored = min(crits_stored + 1, max_crits)
+				rpc("set_crits_stored", crits_stored)
 				_animated_sprite.modulate = Color(2, 0, 0, .8)
 		
 		if bullets_left_in_clip > 0 and Input.is_action_just_pressed("shoot"):
@@ -301,18 +303,18 @@ func damage(amount):
 
 @rpc("reliable", "call_local", "any_peer")
 func process_shot(bname, id, look_at, distant_target):
-	print("shooting, crit:" + str(crit_stored))
+	print("shooting, crit count:" + str(crits_stored))
 	var instance = player_bullet.instantiate()
 	instance.name = bname
 	get_node("/root/Level/SpawnRoot").add_child(instance, true)
 	instance.scale = instance.scale * bullet_scale # scale is a vector 2
 	instance.target = distant_target
-	if crit_stored:
-		crit_stored = false
-		rpc("set_crit_stored", false)
+	if crits_stored > 0:
+		print("firing crit")
+		rpc("set_crits_stored", crits_stored - 1)
 		_animated_sprite.modulate = Color(1, 1, 1, 1)
 		instance.modulate = Color(2, 0, 0, .8)
-		var crit_damage = bullet_damage * 2
+		var crit_damage = bullet_damage * crit_multiplier
 		instance.set_damage(crit_damage)
 	instance.look_at(look_at)
 	instance.global_position = shoot_point.global_position
@@ -349,7 +351,7 @@ func reset():
 	bullet_speed = DEFAULT_BULLET_SPEED
 	bullet_damage = DEFAULT_BULLET_DAMAGE
 	no_scope_crit_enabled = DEFAULT_NO_SCOPE_CRIT_ENABLED
-	crit_stored = DEFAULT_CRIT_STORED
+	crits_stored = DEFAULT_NUM_CRITS_STORED
 	clip_size = DEFAULT_CLIP_SIZE
 	#position = initial_position
 	
@@ -368,7 +370,7 @@ func reset():
 		rpc("set_shots_per_burst", shots_per_burst)
 		rpc("set_bullet_speed", bullet_speed)
 		rpc("set_no_scope_crit_enabled", no_scope_crit_enabled)
-		rpc("set_crit_stored", crit_stored)
+		rpc("set_crits_stored", crits_stored)
 		rpc("set_bullets_left_in_clip", bullets_left_in_clip)
 	if multiplayer.is_server():
 		rpc("remote_dictate_position", initial_position)
@@ -473,8 +475,8 @@ func set_no_scope_crit_enabled(value):
 	no_scope_crit_enabled = value
 
 @rpc("reliable", "call_local", "any_peer")
-func set_crit_stored(value):
-	crit_stored = value
+func set_crits_stored(value):
+	crits_stored = value
 
 # Get a random number from negative max to max.
 func random_angle(max) -> float:

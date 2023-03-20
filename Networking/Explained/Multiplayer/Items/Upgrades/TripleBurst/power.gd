@@ -6,5 +6,8 @@ const modifiers := {
 	},
 	"bullet_damage": {
 		"multiply": .7
+	},
+	"clip_size": {
+		"add": 1
 	}
 }
