@@ -16,7 +16,8 @@ var buttons = [preload("res://Items/Upgrades/Tank/choice.tscn"),
 				preload("res://Items/Upgrades/TripleBurst/choice.tscn"),
 				preload("res://Items/Upgrades/360NoScope/choice.tscn"),
 				preload("res://Items/Upgrades/BulletSpeed/choice.tscn"),
-				preload("res://Items/Upgrades/Teleporter/choice.tscn")]
+				preload("res://Items/Upgrades/Teleporter/choice.tscn"),
+				preload("res://Items/Upgrades/NarrowFocus/choice.tscn")]
 
 var powers = [load("res://Items/Upgrades/Tank/power.tscn"), 
 				load("res://Items/Upgrades/Shotgun/power.tscn"),
@@ -24,7 +25,8 @@ var powers = [load("res://Items/Upgrades/Tank/power.tscn"),
 				load("res://Items/Upgrades/TripleBurst/power.tscn"),
 				load("res://Items/Upgrades/360NoScope/power.tscn"),
 				load("res://Items/Upgrades/BulletSpeed/power.tscn"),
-				load("res://Items/Upgrades/Teleporter/power.tscn")] #TODO - load the power node when choice is displayed
+				load("res://Items/Upgrades/Teleporter/power.tscn"),
+				load("res://Items/Upgrades/NarrowFocus/power.tscn")] #TODO - load the power node when choice is displayed
 
 func _ready():
 	host_id = multiplayer.get_unique_id()
@@ -177,6 +179,7 @@ func modify_player_visibility(value) -> void:
 		player_nodes[player].set_process(value)
 		
 func reset_players() -> void:
+	remove_all_bullets()
 	for player in alive.keys():
 		alive[player] = true
 		print("Resetting " + str(player))

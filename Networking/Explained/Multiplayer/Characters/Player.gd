@@ -410,6 +410,7 @@ func reset():
 	$Networking.sync_shots_per_burst = shots_per_burst
 	$Networking.sync_bullet_speed = bullet_speed
 	$Networking.sync_bullets_left_in_clip = bullets_left_in_clip
+	reload_spinner.max_value = clip_size
 	dead = false
 	$Networking.sync_dead = false
 

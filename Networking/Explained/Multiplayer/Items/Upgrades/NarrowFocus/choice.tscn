@@ -1,33 +1,31 @@
-[gd_scene load_steps=13 format=3 uid="uid://dw1p0oc5eemol"]
+[gd_scene load_steps=12 format=3 uid="uid://dw1p0oc5eemol"]
 
-[ext_resource type="Script" path="res://Items/Upgrades/Teleporter/choice.gd" id="1_2dsk5"]
+[ext_resource type="Script" path="res://Items/Upgrades/NarrowFocus/choice.gd" id="1_s73ff"]
 [ext_resource type="Texture2D" uid="uid://cqcbn0ytw0ot7" path="res://Characters/Poochys/Poochy-Stander.png" id="2_73ptf"]
 [ext_resource type="Texture2D" uid="uid://11pswvtjxkmy" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_8mmam"]
 [ext_resource type="PackedScene" uid="uid://dgyjm7jaanthg" path="res://Items/Upgrades/TripleBurst/power.tscn" id="4_4iudv"]
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_l7epl"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_xwqp2"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_0b7fj"]
 atlas = ExtResource("3_8mmam")
 region = Rect2(0, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_gpvk8"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_l640l"]
 atlas = ExtResource("3_8mmam")
 region = Rect2(17, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_4eava"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_fry2p"]
 atlas = ExtResource("3_8mmam")
 region = Rect2(34, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_fvaew"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_0q8wu"]
 atlas = ExtResource("3_8mmam")
 region = Rect2(51, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_66mup"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_u2l7s"]
 atlas = ExtResource("3_8mmam")
 region = Rect2(68, 0, 17, 23)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_h8b6t"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_i3am7"]
 animations = [{
 "frames": [{
 "duration": 1.0,
@@ -39,26 +37,26 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_xwqp2")
+"texture": SubResource("AtlasTexture_0b7fj")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_gpvk8")
+"texture": SubResource("AtlasTexture_l640l")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_4eava")
+"texture": SubResource("AtlasTexture_fry2p")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_fvaew")
+"texture": SubResource("AtlasTexture_0q8wu")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_66mup")
+"texture": SubResource("AtlasTexture_u2l7s")
 }],
 "loop": true,
 "name": &"hover",
 "speed": 5.0
 }]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ercp3"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_nahyx"]
 properties/0/path = NodePath(".:picker")
 properties/0/spawn = true
 properties/0/sync = true
@@ -78,11 +76,11 @@ properties/5/path = NodePath(".:card_id")
 properties/5/spawn = true
 properties/5/sync = true
 
-[node name="Teleporter" type="Control"]
+[node name="NarrowFocus" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 size_flags_horizontal = 3
-script = ExtResource("1_2dsk5")
+script = ExtResource("1_s73ff")
 
 [node name="Button" type="Button" parent="."]
 custom_minimum_size = Vector2(500, 888)
@@ -92,19 +90,17 @@ offset_bottom = 8.0
 expand_icon = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Button"]
-modulate = Color(0.345098, 0, 0.376471, 1)
-material = SubResource("CanvasItemMaterial_l7epl")
-position = Vector2(274, 280)
-rotation = 0.438078
-scale = Vector2(14.8466, 11.0984)
-sprite_frames = SubResource("SpriteFrames_h8b6t")
+position = Vector2(478.985, 293.947)
+rotation = 1.21824
+scale = Vector2(24.5324, 21.6161)
+sprite_frames = SubResource("SpriteFrames_i3am7")
 animation = &"hover"
 
 [node name="Networking" type="Node" parent="."]
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
 root_path = NodePath("../..")
-replication_config = SubResource("SceneReplicationConfig_ercp3")
+replication_config = SubResource("SceneReplicationConfig_nahyx")
 
 [node name="Description" type="Label" parent="."]
 layout_mode = 0
@@ -113,7 +109,7 @@ offset_top = 488.0
 offset_right = 489.0
 offset_bottom = 876.0
 theme_override_font_sizes/font_size = 52
-text = "Right click to drop a teleporter!"
+text = "Shoot more accurately and increase clip size."
 autowrap_mode = 3
 
 [node name="Title" type="Label" parent="."]
@@ -123,10 +119,11 @@ offset_top = 11.0
 offset_right = 489.0
 offset_bottom = 94.0
 theme_override_font_sizes/font_size = 52
-text = "Teleporter"
+text = "Narrow Focus"
 horizontal_alignment = 1
 
-[node name="Teleporter" parent="." instance=ExtResource("4_4iudv")]
+[node name="NarrowFocus" parent="." instance=ExtResource("4_4iudv")]
+script = null
 
 [connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
 [connection signal="mouse_exited" from="Button" to="." method="_on_button_mouse_exited"]
