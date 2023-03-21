@@ -78,7 +78,7 @@ var bullets_left_in_clip := clip_size
 var initial_position := position
 var crit_multiplier := DEFAULT_CRIT_MULTIPLIER
 var max_crits := DEFAULT_MAX_CRITS_STORED
-var has_teleporter := true
+var has_teleporter := false
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -381,6 +381,8 @@ func reset():
 	no_scope_crit_enabled = DEFAULT_NO_SCOPE_CRIT_ENABLED
 	crits_stored = DEFAULT_NUM_CRITS_STORED
 	clip_size = DEFAULT_CLIP_SIZE
+	if current_teleporter != null:
+		rpc("free_teleporter")
 	
 	modify()
 	
@@ -507,7 +509,8 @@ func set_crits_stored(value):
 
 @rpc("reliable", "call_local", "any_peer")
 func free_teleporter():
-	current_teleporter.queue_free()
+	if current_teleporter != null:
+		current_teleporter.queue_free()
 
 # Get a random number from negative max to max.
 func random_angle(max) -> float:
