@@ -167,6 +167,9 @@ properties/18/sync = true
 properties/19/path = NodePath(".:sync_bullets_left_in_clip")
 properties/19/spawn = true
 properties/19/sync = true
+properties/20/path = NodePath(".:sync_bullet_damage")
+properties/20/spawn = true
+properties/20/sync = true
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 3

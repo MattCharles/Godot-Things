@@ -33,3 +33,4 @@ var sync_shots_per_burst := 1
 var sync_bullet_speed = 1000
 var sync_no_scope_crit_enabled := false
 var sync_bullets_left_in_clip := 5
+var sync_bullet_damage := 1

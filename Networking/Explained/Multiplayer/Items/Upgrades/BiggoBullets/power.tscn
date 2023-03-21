@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgyjm7jaanthg"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/BiggoBullets/power.gd" id="1_wc1qi"]
+
+[node name="Tripler" type="Node"]
+script = ExtResource("1_wc1qi")

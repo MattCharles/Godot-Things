@@ -14,12 +14,24 @@ func set_damage(value):
 		return
 	print("setting damage to " + str(value))
 	rpc("sync_set_damage", value)
+	
+func set_scale_for_all_clients(value):
+	if !multiplayer.is_server():
+		return
+	print("setting scale to " + str(value))
+	rpc("sync_set_scale", value)
 
 @rpc("reliable", "call_local")
 func sync_set_damage(value):
 	print("synching damage to " + str(value))
 	damage = value
 	$Networking.sync_damage = damage
+	
+@rpc("reliable", "call_local")
+func sync_set_scale(value):
+	print("synching scale to " + str(value))
+	scale = value
+	$Networking.sync_scale = scale
 
 @rpc("call_local", "any_peer")
 func free():
@@ -42,6 +54,10 @@ func _on_body_entered(body):
 	
 	num_bounces = num_bounces - 1
 	$Networking.sync_num_bounces = num_bounces
+
+func _physics_process(delta):
+	scale = $Networking.sync_scale
+	damage = $Networking.sync_damage
 
 func fire():
 	print("firing at " + str(target))
