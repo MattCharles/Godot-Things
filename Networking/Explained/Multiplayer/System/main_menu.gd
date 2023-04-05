@@ -32,7 +32,7 @@ func _on_create_lobby_button_pressed(): #TODO: only letters
 	var player_name = player_name_field.get_text() if player_name_field.get_text() != "" else "Poochy"
 	var id = player_name + str(multiplayer.get_unique_id())
 	$HolePunch.start_traversal("", true, id, player_name) #Attempt to connect to server as host
-	print(id + " joining")
+	print(id + " creating lobby")
 	$menu/Controls.visible = false
 	$menu/Connecting.visible = true
 	$readyup/Controls/PlayerNameValueLabel.text = player_name
@@ -76,7 +76,7 @@ func _on_HolePunch_hole_punched(my_port, hosts_port, hosts_address, num_plyrs):
 	$menu/FailTimer.stop()
 	print("Status: Connection successful")
 	players_joined = 0
-	GameState.ids.clear()
+	#GameState.ids.clear()
 	await get_tree().process_frame
 	
 	player_stuff.contents = $HolePunch.peers

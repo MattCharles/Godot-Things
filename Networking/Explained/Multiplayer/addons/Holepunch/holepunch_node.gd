@@ -105,7 +105,7 @@ func _process(delta):
 	#handle server messages
 	if server_udp.get_available_packet_count() > 0:
 		var array_bytes = server_udp.get_packet()
-		var packet_string = array_bytes.get_string_from_ascii()
+		var packet_string = array_bytes.get_string_from_utf8()
 		if packet_string.begins_with(SERVER_LOBBY):
 			var m = packet_string.split(":")
 			emit_signal('update_lobby',m[1].split(","),m[2])
@@ -133,7 +133,7 @@ func _process(delta):
 				server_udp.close()
 				packet_string = packet_string.right(-6) #after 'peers:'
 				if packet_string.length() > 2:
-					print(packet_string)
+					print("player info: " + packet_string)
 					var clientdata = packet_string.split(",") #this is formatted client:ip:port,client2:ip:port
 					for c in clientdata:
 						var m = c.split(":")

@@ -1,11 +1,54 @@
-[gd_scene load_steps=7 format=3 uid="uid://cvrwwd6i35ldv"]
+[gd_scene load_steps=14 format=3 uid="uid://cvrwwd6i35ldv"]
 
 [ext_resource type="Script" path="res://addons/Holepunch/holepunch_node.gd" id="1_aw5gd"]
 [ext_resource type="Script" path="res://System/main_menu.gd" id="1_qh1ql"]
+[ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_l8gyi"]
 [ext_resource type="Script" path="res://System/game_start.gd" id="4_bs6pn"]
 [ext_resource type="PackedScene" uid="uid://cb7ldofgws1ui" path="res://System/readyup.tscn" id="4_ca60h"]
+[ext_resource type="Script" path="res://System/PlayOnLoad.gd" id="4_rdy3q"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bjmj7"]
+atlas = ExtResource("3_l8gyi")
+region = Rect2(0, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_or2c4"]
+atlas = ExtResource("3_l8gyi")
+region = Rect2(17, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wec2u"]
+atlas = ExtResource("3_l8gyi")
+region = Rect2(34, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uusvt"]
+atlas = ExtResource("3_l8gyi")
+region = Rect2(51, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qugio"]
+atlas = ExtResource("3_l8gyi")
+region = Rect2(68, 0, 17, 23)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_n5y0o"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bjmj7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_or2c4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wec2u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uusvt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qugio")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_76t8u"]
 properties/0/path = NodePath(".:num_playing")
@@ -160,9 +203,12 @@ text = "Connecting to the server..."
 
 [node name="LoadingPoochy" type="AnimatedSprite2D" parent="menu/Connecting"]
 texture_filter = 1
-position = Vector2(-48, 88)
+position = Vector2(-44, 88)
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_n5y0o")
+animation = &"walk"
+frame_progress = 0.565341
+script = ExtResource("4_rdy3q")
 
 [node name="HolePunch" type="Node" parent="."]
 script = ExtResource("1_aw5gd")
