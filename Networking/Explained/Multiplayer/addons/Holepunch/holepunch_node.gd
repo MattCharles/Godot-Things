@@ -196,7 +196,7 @@ func _ping_peer():
 		if stage == 0: #received no contact, send greet
 			# When running tests on localhost, sometimes the host pings itself forever looking for the client.
 			# Use randomness to give it an out
-			if ping_cycles >= response_window or (randi() % 5 == 0 and peer.port == own_port):
+			if ping_cycles >= response_window or (randi() % 5 == 0 and str(peer.port) == str(own_port)):
 				_cascade_peer(peer.address,peer.port)
 			else:
 				print("> send greet!")

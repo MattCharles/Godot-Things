@@ -47,6 +47,9 @@ var walk = "Walk"
 var default = "default"
 var roll = "Roll"
 
+var teleporter_scene := preload("res://Items/teleporter.tscn")
+var current_teleporter = null
+
 var shot_cooldown
 var roll_time = DEFAULT_ROLL_TIME
 var player_bullet := DEFAULT_BULLET
@@ -75,6 +78,7 @@ var bullets_left_in_clip := clip_size
 var initial_position := position
 var crit_multiplier := DEFAULT_CRIT_MULTIPLIER
 var max_crits := DEFAULT_MAX_CRITS_STORED
+var has_teleporter := false
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -132,6 +136,12 @@ func _process(_delta):
 				rpc("set_crits_stored", crits_stored)
 				_animated_sprite.modulate = Color(2, 0, 0, .8)
 		
+		if Input.is_action_just_pressed("power"):
+			if current_teleporter == null:
+				power()
+			else:
+				position = current_teleporter.position
+				rpc("free_teleporter")
 		if bullets_left_in_clip > 0 and Input.is_action_just_pressed("shoot"):
 			shoot()
 		elif reload_timer.is_stopped() and (Input.is_action_just_pressed("shoot") or Input.is_action_just_pressed("reload")):
@@ -153,6 +163,11 @@ func _process(_delta):
 	$UI/PlayerHealth.visible = health < max_health
 	$Networking.sync_hand_rotation = $Hand.rotation
 	$Networking.sync_hand_position = $Hand.position
+
+func power():
+	if not has_teleporter: return
+	rpc("process_power", str(randi()), multiplayer.get_unique_id(), global_position, get_distant_target())
+	
 
 func reset_ammo():
 	bullets_left_in_clip = clip_size
@@ -307,21 +322,30 @@ func damage(amount):
 		rpc("take_damage", amount)
 
 @rpc("reliable", "call_local", "any_peer")
-func process_shot(bname, id, look_at, distant_target):
+func process_power(bname, id, look_target, distant_target):
+	var instance = teleporter_scene.instantiate()
+	instance.name = bname
+	instance.position = position
+	get_node("/root/Level/SpawnRoot").add_child(instance, true)
+	current_teleporter = instance
+
+@rpc("reliable", "call_local", "any_peer")
+func process_shot(bname, id, look_target, distant_target):
 	print("shooting, crit count:" + str(crits_stored))
 	var instance = player_bullet.instantiate()
 	instance.name = bname
 	get_node("/root/Level/SpawnRoot").add_child(instance, true)
-	instance.scale = instance.scale * bullet_scale # scale is a vector 2
+	instance.set_scale_for_all_clients(instance.scale * bullet_scale) # scale is a vector 2
 	instance.target = distant_target
+	var crit_damage = bullet_damage
 	if crits_stored > 0:
 		print("firing crit")
 		rpc("set_crits_stored", crits_stored - 1)
 		_animated_sprite.modulate = Color(1, 1, 1, 1)
 		instance.modulate = Color(2, 0, 0, .8)
-		var crit_damage = bullet_damage * crit_multiplier
-		instance.set_damage(crit_damage)
-	instance.look_at(look_at)
+		crit_damage = bullet_damage * crit_multiplier
+	instance.set_damage(crit_damage)
+	instance.look_at(look_target)
 	instance.global_position = shoot_point.global_position
 	instance.num_bounces = bullet_bounces
 	instance.speed = bullet_speed
@@ -358,12 +382,13 @@ func reset():
 	no_scope_crit_enabled = DEFAULT_NO_SCOPE_CRIT_ENABLED
 	crits_stored = DEFAULT_NUM_CRITS_STORED
 	clip_size = DEFAULT_CLIP_SIZE
-	#position = initial_position
+	if current_teleporter != null:
+		rpc("free_teleporter")
 	
 	modify()
 	
 	bullets_left_in_clip = clip_size
-	bullet_damage = 1 if bullet_damage < 1 else bullet_damage
+	bullet_damage = max(1, bullet_damage)
 	health = max_health
 	shots_left_to_burst = shots_per_burst
 	# Finally, some stuff will want to go over the network explicitly.
@@ -386,6 +411,8 @@ func reset():
 	$Networking.sync_shots_per_burst = shots_per_burst
 	$Networking.sync_bullet_speed = bullet_speed
 	$Networking.sync_bullets_left_in_clip = bullets_left_in_clip
+	$Networking.sync_bullet_damage = bullet_damage
+	reload_spinner.max_value = clip_size
 	dead = false
 	$Networking.sync_dead = false
 
@@ -483,8 +510,13 @@ func set_no_scope_crit_enabled(value):
 func set_crits_stored(value):
 	crits_stored = value
 
+@rpc("reliable", "call_local", "any_peer")
+func free_teleporter():
+	if current_teleporter != null:
+		current_teleporter.queue_free()
+
 # Get a random number from negative max to max.
 func random_angle(max) -> float:
-	var result = (randi() % max) * -1 if randi() % 2 == 1 else 1
+	var result = (randi() % max(max, 1)) * -1 if randi() % 2 == 1 else 1
 	result = deg_to_rad(result)
 	return result

@@ -40,7 +40,7 @@ position = Vector2(960, 540)
 [node name="SpawnRoot" type="Node" parent="."]
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="SpawnRoot"]
-_spawnable_scenes = PackedStringArray("res://Items/default_bullet.tscn")
+_spawnable_scenes = PackedStringArray("res://Items/default_bullet.tscn", "res://Items/teleporter.tscn")
 spawn_path = NodePath("..")
 
 [node name="PlayerData" type="Node" parent="."]

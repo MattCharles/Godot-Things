@@ -15,14 +15,20 @@ var buttons = [preload("res://Items/Upgrades/Tank/choice.tscn"),
 				preload("res://Items/Upgrades/BouncyBullets/choice.tscn"),
 				preload("res://Items/Upgrades/TripleBurst/choice.tscn"),
 				preload("res://Items/Upgrades/360NoScope/choice.tscn"),
-				preload("res://Items/Upgrades/BulletSpeed/choice.tscn")]
+				preload("res://Items/Upgrades/BulletSpeed/choice.tscn"),
+				preload("res://Items/Upgrades/Teleporter/choice.tscn"),
+				preload("res://Items/Upgrades/NarrowFocus/choice.tscn"),
+				preload("res://Items/Upgrades/BiggoBullets/choice.tscn")]
 
 var powers = [load("res://Items/Upgrades/Tank/power.tscn"), 
 				load("res://Items/Upgrades/Shotgun/power.tscn"),
 				load("res://Items/Upgrades/BouncyBullets/power.tscn"),
 				load("res://Items/Upgrades/TripleBurst/power.tscn"),
 				load("res://Items/Upgrades/360NoScope/power.tscn"),
-				load("res://Items/Upgrades/BulletSpeed/power.tscn")] #TODO - load the power node when choice is displayed
+				load("res://Items/Upgrades/BulletSpeed/power.tscn"),
+				load("res://Items/Upgrades/Teleporter/power.tscn"),
+				load("res://Items/Upgrades/NarrowFocus/power.tscn"),
+				load("res://Items/Upgrades/BiggoBullets/power.tscn")] #TODO - load the power node when choice is displayed
 
 func _ready():
 	host_id = multiplayer.get_unique_id()
@@ -62,11 +68,13 @@ func kill_player(id: int) -> void:
 	alive[id] = false
 	print("Winner found!")
 	var winner = get_all_alive(alive)[0]
-	# wins[winner] += 1
 	print(str(winner) + " has won " + str(wins[winner]) + " time(s)")
 	if multiplayer.is_server() and one_left() and not already_got_host_win:
 		if winner == 1: already_got_host_win = true
 		print("already_got_host_win" + str(already_got_host_win))
+		if wins[winner] >= 3:
+			print("Big winner!")
+			#get_tree().change_scene_to_file("res://System/readyup.tscn")
 		round_wins[winner] += 1
 		if round_wins[winner] == 2:
 			wins[winner] = wins[winner] + 1
@@ -74,11 +82,9 @@ func kill_player(id: int) -> void:
 		else:
 			print("respawning_all")
 			$WinnerDisplay.text = get_node(str(winner)).player_name
-			if wins[winner] >= 3:
-				get_tree().change_scene_to_file("res://System/readyup.tscn")
 			$WinnerDisplay.visible = true
-			
 			rpc("respawn_all_rpc")
+			
 	
 func destroy_player(id : int) -> void:
 	# Delete this peer's node.
@@ -175,6 +181,7 @@ func modify_player_visibility(value) -> void:
 		player_nodes[player].set_process(value)
 		
 func reset_players() -> void:
+	remove_all_bullets()
 	for player in alive.keys():
 		alive[player] = true
 		print("Resetting " + str(player))

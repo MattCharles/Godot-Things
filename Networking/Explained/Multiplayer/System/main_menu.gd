@@ -1,7 +1,7 @@
 extends Node
 
 var room_code
-var max_connect_time = 20 #if this time is exceeded when joining a game, a fail message is displayed
+var max_connect_time = 5 #if this time is exceeded when joining a game, a fail message is displayed
 var is_host = false
 var nickname
 var own_port
@@ -156,7 +156,6 @@ func _on_HolePunch_return_room_code(_room_code):
 func _on_fail_timer_timeout():
 	print("Status: Connection timed out!")
 	reinit()
-	pass
 
 #Utility/UI
 
