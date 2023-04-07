@@ -217,6 +217,7 @@ rendevouz_port = 12939
 local_testing = true
 
 [node name="ConnectTimer" type="Timer" parent="."]
+one_shot = true
 
 [node name="game_start" type="Control" parent="."]
 anchors_preset = 0

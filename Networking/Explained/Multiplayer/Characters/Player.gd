@@ -166,7 +166,7 @@ func _process(_delta):
 
 func power():
 	if not has_teleporter: return
-	rpc("process_power", str(randi()), multiplayer.get_unique_id(), global_position, get_distant_target())
+	rpc("process_power", str(randi()))
 	
 
 func reset_ammo():
@@ -197,8 +197,7 @@ func shoot():
 		var distant_target = get_distant_target()
 		var bullet_angle = random_angle(spread)
 		var target = distant_target.rotated(bullet_angle)
-		var processed_damage = bullet_damage
-		rpc("process_shot", str(shot_id + bullet_count), multiplayer.get_unique_id(), self.get_global_mouse_position(), target)
+		rpc("process_shot", str(shot_id + bullet_count), self.get_global_mouse_position(), target)
 		bullets_left_in_clip = bullets_left_in_clip - 1
 		reload_spinner.value = bullets_left_in_clip
 		
@@ -222,7 +221,7 @@ func _physics_process(delta):
 		Movement.states.ROLL:
 			process_roll(delta)
 			
-func process_move(delta) -> void:
+func process_move(_delta) -> void:
 	if !is_local_authority(): # this is somebody else's player character
 		if not $Networking.processed_position:
 			position = $Networking.sync_position
@@ -271,7 +270,7 @@ func process_move(delta) -> void:
 	$Networking.sync_velocity = velocity
 	
 
-func process_roll(delta) -> void:
+func process_roll(_delta) -> void:
 	_animated_sprite.play(roll)
 	if !is_local_authority(): # this is somebody else's player character
 		$CollisionShape2D.set_deferred("disabled", !$Networking.sync_collidable)
@@ -322,7 +321,7 @@ func damage(amount):
 		rpc("take_damage", amount)
 
 @rpc("reliable", "call_local", "any_peer")
-func process_power(bname, id, look_target, distant_target):
+func process_power(bname):
 	var instance = teleporter_scene.instantiate()
 	instance.name = bname
 	instance.position = position
@@ -330,7 +329,7 @@ func process_power(bname, id, look_target, distant_target):
 	current_teleporter = instance
 
 @rpc("reliable", "call_local", "any_peer")
-func process_shot(bname, id, look_target, distant_target):
+func process_shot(bname, look_target, distant_target):
 	print("shooting, crit count:" + str(crits_stored))
 	var instance = player_bullet.instantiate()
 	instance.name = bname
@@ -516,7 +515,7 @@ func free_teleporter():
 		current_teleporter.queue_free()
 
 # Get a random number from negative max to max.
-func random_angle(max) -> float:
-	var result = (randi() % max(max, 1)) * -1 if randi() % 2 == 1 else 1
+func random_angle(max_angle) -> float:
+	var result = (randi() % max(max_angle, 1)) * -1 if randi() % 2 == 1 else 1
 	result = deg_to_rad(result)
 	return result

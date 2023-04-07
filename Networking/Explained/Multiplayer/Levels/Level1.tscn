@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Levels/Level1.gd" id="1_i62b0"]
 [ext_resource type="Script" path="res://Levels/Networking.gd" id="2_2ei3q"]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_6k4xq"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_kkvey"]
 properties/0/path = NodePath(".:sync_num_connected")
 properties/0/spawn = true
 properties/0/sync = true
@@ -11,12 +11,12 @@ properties/1/path = NodePath(".:sync_game_state")
 properties/1/spawn = true
 properties/1/sync = true
 
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_q4nu7"]
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_fdsa1"]
 normal = Vector2(0, 1)
 
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_uixha"]
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_5togw"]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_dfp0u"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_loedr"]
 properties/0/path = NodePath(".:text")
 properties/0/spawn = true
 properties/0/sync = true
@@ -44,6 +44,7 @@ _spawnable_scenes = PackedStringArray("res://Items/default_bullet.tscn", "res://
 spawn_path = NodePath("..")
 
 [node name="PlayerData" type="Node" parent="."]
+unique_name_in_owner = true
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="PlayerData"]
 _spawnable_scenes = PackedStringArray("res://System/memory.tscn")
@@ -84,7 +85,7 @@ alignment = 1
 script = ExtResource("2_2ei3q")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
-replication_config = SubResource("SceneReplicationConfig_6k4xq")
+replication_config = SubResource("SceneReplicationConfig_kkvey")
 
 [node name="Walls" type="Node" parent="."]
 
@@ -92,14 +93,14 @@ replication_config = SubResource("SceneReplicationConfig_6k4xq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/North"]
 position = Vector2(100, 0)
-shape = SubResource("WorldBoundaryShape2D_q4nu7")
+shape = SubResource("WorldBoundaryShape2D_fdsa1")
 
 [node name="North2" type="StaticBody2D" parent="Walls"]
 position = Vector2(-1, 1079)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/North2"]
 position = Vector2(100, 0)
-shape = SubResource("WorldBoundaryShape2D_uixha")
+shape = SubResource("WorldBoundaryShape2D_5togw")
 
 [node name="North3" type="StaticBody2D" parent="Walls"]
 position = Vector2(0, 400)
@@ -107,7 +108,7 @@ rotation = 4.71239
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/North3"]
 position = Vector2(100, 0)
-shape = SubResource("WorldBoundaryShape2D_q4nu7")
+shape = SubResource("WorldBoundaryShape2D_fdsa1")
 
 [node name="North4" type="StaticBody2D" parent="Walls"]
 position = Vector2(2998, 360)
@@ -115,7 +116,7 @@ rotation = 1.5708
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/North4"]
 position = Vector2(99, 1079)
-shape = SubResource("WorldBoundaryShape2D_q4nu7")
+shape = SubResource("WorldBoundaryShape2D_fdsa1")
 
 [node name="WinnerDisplay" type="Label" parent="."]
 visible = false
@@ -129,7 +130,7 @@ horizontal_alignment = 1
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="WinnerDisplay"]
 replication_interval = 2.0
-replication_config = SubResource("SceneReplicationConfig_dfp0u")
+replication_config = SubResource("SceneReplicationConfig_loedr")
 
 [node name="WinnerDisplayTimer" type="Timer" parent="."]
 wait_time = 5.0

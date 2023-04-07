@@ -9,6 +9,9 @@ var num_playing: int:
 
 var num_connected: int = 1: # one because host starts connected
 	set(value):
+		if num_connected == value:
+			print("setting num_connected")
+			return
 		num_connected = value
 		print(str(value) + " players connected")
 		if num_connected == num_playing:

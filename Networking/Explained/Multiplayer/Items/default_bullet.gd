@@ -55,7 +55,7 @@ func _on_body_entered(body):
 	num_bounces = num_bounces - 1
 	$Networking.sync_num_bounces = num_bounces
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	scale = $Networking.sync_scale
 	damage = $Networking.sync_damage
 

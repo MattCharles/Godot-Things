@@ -31,6 +31,7 @@ var powers = [load("res://Items/Upgrades/Tank/power.tscn"),
 				load("res://Items/Upgrades/BiggoBullets/power.tscn")] #TODO - load the power node when choice is displayed
 
 func _ready():
+	print("Level ready")
 	host_id = multiplayer.get_unique_id()
 	host_player = create_player(host_id)
 	var peers = multiplayer.get_peers()
@@ -43,7 +44,7 @@ func _ready():
 
 func create_player(id):
 	var player = preload("res://Characters/Player.tscn").instantiate()
-	var memory_node = $PlayerData.get_node("Players")
+	var memory_node = %PlayerData.get_node("Players")
 	player.name = str(id)
 	add_child(player)
 	if multiplayer.is_server():
@@ -55,6 +56,8 @@ func create_player(id):
 		for entry in memory_node.contents:
 			if memory_node.contents[entry]["id"] == id:
 				var new_name = memory_node.contents[entry]["name"]
+				print("about to set name to " + str(new_name))
+				print("new_name contains char(31): " + str(new_name.contains(char(31))))
 				player.change_name(new_name.rstrip("0123456789"))
 	alive[id] = true
 	wins[id] = 0
@@ -72,8 +75,9 @@ func kill_player(id: int) -> void:
 	if multiplayer.is_server() and one_left() and not already_got_host_win:
 		if winner == 1: already_got_host_win = true
 		print("already_got_host_win" + str(already_got_host_win))
-		if wins[winner] >= 3:
+		if wins[winner] >= 1:
 			print("Big winner!")
+			rpc("_back_to_menu")
 			#get_tree().change_scene_to_file("res://System/readyup.tscn")
 		round_wins[winner] += 1
 		if round_wins[winner] == 2:
@@ -86,6 +90,16 @@ func kill_player(id: int) -> void:
 			rpc("respawn_all_rpc")
 			
 	
+@rpc("call_local", "any_peer")
+func _back_to_menu():
+	get_tree().change_scene_to_file("res://System/main_menu.tscn")
+	var level = get_node("/root/Level")
+	var menu = get_node("/root/main_menu")
+	level.set_visible(false)
+	level.set_process(false)
+	level.call_deferred("queue_free")
+	menu.set_visible(true)
+
 func destroy_player(id : int) -> void:
 	# Delete this peer's node.
 	print("destroying " + str(id))
@@ -100,7 +114,7 @@ func get_all_alive(map) -> Array:
 func get_all_dead(map) -> Array:
 	return get_all_matching(map, false)
 
-func get_all_matching(map, value) -> Array:
+func get_all_matching(_map, value) -> Array:
 	var result:=[]
 	for gamer in alive.keys():
 		if alive[gamer] == value:
@@ -145,10 +159,10 @@ func add_buttons(picker_id:int, entries:Array):
 		button.set_picker(picker_id)
 		button.picked.connect(card_picked)
 		
-func choose_random_indices(n:int, max:int) -> Array:
+func choose_random_indices(n:int, max_index:int) -> Array:
 	var result = {}
 	while result.keys().size() < n:
-		var entry = randi() % max
+		var entry = randi() % max_index
 		if not result.has(entry):
 			result[entry] = true
 	return result.keys()

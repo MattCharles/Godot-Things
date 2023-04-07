@@ -33,8 +33,8 @@ func sync_picker(value):
 	picker = value
 	
 @rpc("call_local", "reliable", "any_peer")
-func update_animation(animation):
-	remote_animation = animation
+func update_animation(new_animation):
+	remote_animation = new_animation
 	updated_animation = false
 	$Button/AnimatedSprite2D.play(animation)
 

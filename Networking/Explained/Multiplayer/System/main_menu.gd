@@ -30,7 +30,7 @@ func _on_create_lobby_button_pressed(): #TODO: only letters
 	is_host=true
 	connection_setup()
 	var player_name = player_name_field.get_text() if player_name_field.get_text() != "" else "Poochy"
-	var id = player_name + str(multiplayer.get_unique_id())
+	var id = str(multiplayer.get_unique_id())
 	$HolePunch.start_traversal("", true, id, player_name) #Attempt to connect to server as host
 	print(id + " creating lobby")
 	$menu/Controls.visible = false
@@ -39,17 +39,17 @@ func _on_create_lobby_button_pressed(): #TODO: only letters
 	$game_start.num_playing = 2
 
 func _on_join_lobby_button_pressed(): #TODO: only letters
-	var room_code = $menu/Controls/RoomCodeContainer/LineEdit.text.to_upper()
-	room_code = room_code if room_code != "" else $menu/Controls/RoomCodeContainer/LineEdit.placeholder_text.to_upper()
+	var cap_room_code = $menu/Controls/RoomCodeContainer/LineEdit.text.to_upper()
+	cap_room_code = cap_room_code if cap_room_code != "" else $menu/Controls/RoomCodeContainer/LineEdit.placeholder_text.to_upper()
 	var player_name = player_name_field.get_text() if player_name_field.get_text() != "" else "Poochy"
 	print(room_code)
 	$readyup/Controls/PlayerNameValueLabel.text = player_name
-	if room_code.length() == ROOM_CODE_LENGTH:
+	if cap_room_code.length() == ROOM_CODE_LENGTH:
 		is_host = false
 		connection_setup()
 		var id = player_name + str(randi())
 		print(id + " joining")
-		$HolePunch.start_traversal(room_code, false, id, player_name) #Attempt to connect to server as client
+		$HolePunch.start_traversal(cap_room_code, false, id, player_name) #Attempt to connect to server as client
 		print("Status: Connecting to session...")
 		$menu/Connecting.visible = true
 		$menu/Controls.visible = false
@@ -80,7 +80,7 @@ func _on_HolePunch_hole_punched(my_port, hosts_port, hosts_address, num_plyrs):
 	await get_tree().process_frame
 	
 	player_stuff.contents = $HolePunch.peers
-	player_stuff.contents[$HolePunch.client_name] = {"id": 1, "name": $HolePunch.client_name}
+	player_stuff.contents[$HolePunch.client_name] = {"id": 1, "name": $HolePunch.nickname}
 	player_stuff.name = "Players"
 	GameScene.get_node("PlayerData").add_child(player_stuff)
 	if $HolePunch.is_host:
@@ -93,9 +93,9 @@ func _on_HolePunch_update_lobby(nicknames, max_players):
 	var lobby_message = "Lobby "+str(nicknames.size())+"/"+str(max_players)+"\n"
 	var i = 0
 	GameState.names.append_array(nicknames)
-	for nickname in nicknames:
+	for entry in nicknames:
 		var placeholder = PlaceholderScene.instantiate()
-		placeholder.nickname = nickname
+		placeholder.nickname = entry
 		placeholder.set_position(player_positions[i].position)
 		i += 1
 		add_child(placeholder)
@@ -127,9 +127,11 @@ func _load_level():
 func _load_fr():
 	var root = get_node("/root/")
 	var now = get_node("/root/main_menu")
-	root.remove_child(now)
-	now.call_deferred("free")
-	root.add_child(GameScene)
+	#root.remove_child(now)
+	now.visible = false
+	#now.call_deferred("free")
+	if GameScene.get_parent() == null:
+		root.add_child(GameScene)
 
 func _update_counter(id):
 	if $HolePunch.is_host:
