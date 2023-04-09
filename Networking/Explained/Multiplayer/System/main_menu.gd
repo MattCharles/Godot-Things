@@ -30,7 +30,7 @@ func _on_create_lobby_button_pressed(): #TODO: only letters
 	is_host=true
 	connection_setup()
 	var player_name = player_name_field.get_text() if player_name_field.get_text() != "" else "Poochy"
-	var id = str(multiplayer.get_unique_id())
+	var id = str(randi())
 	$HolePunch.start_traversal("", true, id, player_name) #Attempt to connect to server as host
 	print(id + " creating lobby")
 	$menu/Controls.visible = false

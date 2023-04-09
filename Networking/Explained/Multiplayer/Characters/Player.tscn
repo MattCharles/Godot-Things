@@ -170,6 +170,9 @@ properties/19/sync = true
 properties/20/path = NodePath(".:sync_bullet_damage")
 properties/20/spawn = true
 properties/20/sync = true
+properties/21/path = NodePath("../UI/ReloadSpinner:max_value")
+properties/21/spawn = true
+properties/21/sync = true
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 3

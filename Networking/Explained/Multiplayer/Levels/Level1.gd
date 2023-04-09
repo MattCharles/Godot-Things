@@ -8,6 +8,9 @@ var round_wins := {}
 var player_nodes := {}
 var already_got_host_win := false
 
+const ROUNDS_PER_GAME = 5
+const WINS_PER_ROUND = 2
+
 var choice_button = preload("res://Items/upgrade_choice.tscn")
 
 var buttons = [preload("res://Items/Upgrades/Tank/choice.tscn"),
@@ -75,12 +78,12 @@ func kill_player(id: int) -> void:
 	if multiplayer.is_server() and one_left() and not already_got_host_win:
 		if winner == 1: already_got_host_win = true
 		print("already_got_host_win" + str(already_got_host_win))
-		if wins[winner] >= 1:
-			print("Big winner!")
-			rpc("_back_to_menu")
 			#get_tree().change_scene_to_file("res://System/readyup.tscn")
 		round_wins[winner] += 1
-		if round_wins[winner] == 2:
+		if round_wins[winner] == WINS_PER_ROUND:
+			if wins[winner] >= ROUNDS_PER_GAME:
+				print("Big winner!")
+				rpc("_back_to_menu")
 			wins[winner] = wins[winner] + 1
 			rpc("enter_picking_time", id, choose_random_indices(3, buttons.size()))
 		else:

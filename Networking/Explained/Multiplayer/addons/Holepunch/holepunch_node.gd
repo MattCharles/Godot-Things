@@ -262,7 +262,7 @@ func checkout():
 	server_udp.put_packet(buffer)
 
 #call this function when you want to start the holepunch process
-func start_traversal(id, is_player_host, player_name, player_nickname):
+func start_traversal(room_id, is_player_host, player_name, player_nickname):
 	if server_udp.is_socket_connected():
 		server_udp.close()
 
@@ -284,7 +284,7 @@ func start_traversal(id, is_player_host, player_name, player_nickname):
 	peer_stages = {}
 
 	ping_cycles = 0
-	room_code = id
+	room_code = room_id
 	
 	if (is_host):
 		var buffer = PackedByteArray()
