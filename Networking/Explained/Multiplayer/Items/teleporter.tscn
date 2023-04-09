@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://ewn8u63bmo7b"]
 
-[ext_resource type="Texture2D" uid="uid://cx0r6wi4rcdb" path="res://Items/telerporter.png" id="1_5jaqw"]
+[ext_resource type="Texture2D" uid="uid://dxsubgyeaw8gg" path="res://Items/telerporter.png" id="1_5jaqw"]
 
 [node name="teleporter" type="Node2D"]
 

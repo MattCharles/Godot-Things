@@ -8,8 +8,13 @@ var round_wins := {}
 var player_nodes := {}
 var already_got_host_win := false
 
-const ROUNDS_PER_GAME = 5
-const WINS_PER_ROUND = 2
+const ROUNDS_PER_GAME := 5
+const WINS_PER_ROUND := 2
+
+const OBSTACLE_BUFFER := 100
+
+const OBSTACLE_MAX_X := 1920 - OBSTACLE_BUFFER
+const OBSTACLE_MAX_Y := 1080 - OBSTACLE_BUFFER
 
 var choice_button = preload("res://Items/upgrade_choice.tscn")
 
@@ -38,6 +43,7 @@ func _ready():
 	host_id = multiplayer.get_unique_id()
 	host_player = create_player(host_id)
 	var peers = multiplayer.get_peers()
+	if multiplayer.is_server(): rpc("generate_level")
 	for peer in peers:
 		print("peer found: " + str(peer))
 		create_player(peer)
@@ -91,6 +97,7 @@ func kill_player(id: int) -> void:
 			$WinnerDisplay.text = get_node(str(winner)).player_name
 			$WinnerDisplay.visible = true
 			rpc("respawn_all_rpc")
+			rpc("generate_level")
 			
 	
 @rpc("call_local", "any_peer")
@@ -185,6 +192,7 @@ func exit_picking_time() -> void:
 		round_wins[i] = 0
 	unhide_all_players()
 	reset_players()
+	if multiplayer.is_server(): rpc("generate_level")
 
 func hide_all_players() -> void:
 	modify_player_visibility(false)
@@ -208,3 +216,22 @@ func remove_all_bullets() -> void:
 	for node in $SpawnRoot.get_children():
 		if not node is MultiplayerSpawner:
 			node.call_deferred("free")
+
+@rpc("reliable", "call_local", "any_peer")
+func generate_level() -> void:
+	print("this is where i would generate a level")
+	print("I might put them in these places:")
+	for i in range(3):
+		var j := 0
+		for location in generate_symmetrical_object_coords():
+			print(str(location))
+			var placeholder = preload("res://Items/default_bullet.tscn").instantiate()
+			placeholder.position = location
+			$SpawnRoot.add_child(placeholder, true)
+			j += 1
+
+func generate_symmetrical_object_coords() -> Array:
+	var x := max(randi() % OBSTACLE_MAX_X, OBSTACLE_BUFFER)
+	var y := max(randi() % OBSTACLE_MAX_Y, OBSTACLE_BUFFER)
+	return [Vector2(x, y), Vector2(OBSTACLE_MAX_X - x, OBSTACLE_MAX_Y - y)]
+	

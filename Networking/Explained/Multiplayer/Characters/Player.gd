@@ -15,7 +15,7 @@ const DEFAULT_BULLET_DAMAGE := 35
 const ORDERED_OPERATIONS := ["add", "multiply", "set"]
 const DEFAULT_BULLET_BOUNCES := 0
 const DEFAULT_SHOTS_PER_BURST := 1
-const DEFAULT_BURST_GAP := .1
+const DEFAULT_BURST_GAP := .03
 const DEFAULT_BULLET_SPEED := 1000
 const DEFAULT_ROLL_TIME := 0.5
 const NOSCOPE_SPIN_TIME := 1 #Time to complete a noscope spin for it to be considered valid
@@ -79,6 +79,7 @@ var initial_position := position
 var crit_multiplier := DEFAULT_CRIT_MULTIPLIER
 var max_crits := DEFAULT_MAX_CRITS_STORED
 var has_teleporter := false
+var is_shooting := false
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -143,7 +144,7 @@ func _process(_delta):
 				position = current_teleporter.position
 				rpc("free_teleporter")
 		if bullets_left_in_clip > 0 and Input.is_action_just_pressed("shoot"):
-			shoot()
+			if not is_shooting: shoot()
 		elif reload_timer.is_stopped() and (Input.is_action_just_pressed("shoot") or Input.is_action_just_pressed("reload")):
 			print("started reload timer")
 			reload_timer.start()
@@ -191,6 +192,7 @@ func detect_spin(snapshot) -> bool:
 	return sorted_ascending or sorted_descending
 
 func shoot():
+	is_shooting = true
 	var shot_id = randi()
 	var bullets_to_fire = min(bullets_per_shot, bullets_left_in_clip)
 	for bullet_count in bullets_to_fire:
@@ -211,6 +213,7 @@ func shoot():
 		timer.start()
 	else:
 		shots_left_to_burst = shots_per_burst
+		is_shooting = false
 
 func _physics_process(delta):
 	if health <= 0 and not dead:
