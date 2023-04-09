@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://du57h1qo0d42p"]
+
+[ext_resource type="Texture2D" uid="uid://vhlnrd2xerr6" path="res://Items/Obstacles/hay.png" id="1_b7f83"]
+
+[node name="haystack" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_b7f83")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(155, 0, 155, 0, 240, 3, 240, 3, 238, 180, 238, 180, -231, 183, -231, 183, -232, 0, -232, 0, -148, 3, -148, 3, -143, -172, -143, -172, 155, -169, 155, -169)

@@ -38,6 +38,8 @@ var powers = [load("res://Items/Upgrades/Tank/power.tscn"),
 				load("res://Items/Upgrades/NarrowFocus/power.tscn"),
 				load("res://Items/Upgrades/BiggoBullets/power.tscn")] #TODO - load the power node when choice is displayed
 
+var obstacles = [preload("res://Items/Obstacles/haystack.tscn")]
+
 func _ready():
 	print("Level ready")
 	host_id = multiplayer.get_unique_id()
@@ -91,7 +93,7 @@ func kill_player(id: int) -> void:
 				print("Big winner!")
 				rpc("_back_to_menu")
 			wins[winner] = wins[winner] + 1
-			rpc("enter_picking_time", id, choose_random_indices(3, buttons.size()))
+			rpc("enter_picking_time", id, choose_random_unique_indices(3, buttons.size()))
 		else:
 			print("respawning_all")
 			$WinnerDisplay.text = get_node(str(winner)).player_name
@@ -169,13 +171,20 @@ func add_buttons(picker_id:int, entries:Array):
 		button.set_picker(picker_id)
 		button.picked.connect(card_picked)
 		
-func choose_random_indices(n:int, max_index:int) -> Array:
+func choose_random_unique_indices(n:int, max_index:int) -> Array:
 	var result = {}
 	while result.keys().size() < n:
 		var entry = randi() % max_index
 		if not result.has(entry):
 			result[entry] = true
 	return result.keys()
+	
+func choose_random_indices(n:int, max_index:int) -> Array:
+	var result = []
+	while result.size() < n:
+		var entry = randi() % max_index
+		result.push_back(entry)
+	return result
 		
 func card_picked(card_id, player_id) -> void:
 	print("Nice pick of " + str(card_id) +  " for " + str(player_id))
@@ -221,11 +230,13 @@ func remove_all_bullets() -> void:
 func generate_level() -> void:
 	print("this is where i would generate a level")
 	print("I might put them in these places:")
-	for i in range(3):
+	var num_obstacles_on_each_side := 3
+	var indices := choose_random_indices(num_obstacles_on_each_side, obstacles.size())
+	for i in range(num_obstacles_on_each_side):
 		var j := 0
 		for location in generate_symmetrical_object_coords():
 			print(str(location))
-			var placeholder = preload("res://Items/default_bullet.tscn").instantiate()
+			var placeholder = obstacles[indices[i]].instantiate()
 			placeholder.position = location
 			$SpawnRoot.add_child(placeholder, true)
 			j += 1
