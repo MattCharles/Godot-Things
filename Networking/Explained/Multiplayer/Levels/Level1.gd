@@ -45,7 +45,7 @@ func _ready():
 	host_id = multiplayer.get_unique_id()
 	host_player = create_player(host_id)
 	var peers = multiplayer.get_peers()
-	if multiplayer.is_server(): rpc("generate_level")
+	if multiplayer.is_server(): generate_level()
 	for peer in peers:
 		print("peer found: " + str(peer))
 		create_player(peer)
@@ -99,7 +99,7 @@ func kill_player(id: int) -> void:
 			$WinnerDisplay.text = get_node(str(winner)).player_name
 			$WinnerDisplay.visible = true
 			rpc("respawn_all_rpc")
-			rpc("generate_level")
+			generate_level()
 			
 	
 @rpc("call_local", "any_peer")
@@ -201,7 +201,7 @@ func exit_picking_time() -> void:
 		round_wins[i] = 0
 	unhide_all_players()
 	reset_players()
-	if multiplayer.is_server(): rpc("generate_level")
+	if multiplayer.is_server(): generate_level()
 
 func hide_all_players() -> void:
 	modify_player_visibility(false)
@@ -226,7 +226,7 @@ func remove_all_bullets() -> void:
 		if not node is MultiplayerSpawner:
 			node.call_deferred("free")
 
-@rpc("reliable", "call_local", "any_peer")
+
 func generate_level() -> void:
 	print("this is where i would generate a level")
 	print("I might put them in these places:")
