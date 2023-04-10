@@ -4,11 +4,11 @@
 [ext_resource type="Texture2D" uid="uid://cmr57l8n8lgci" path="res://Levels/shoot.png" id="2_7cd5r"]
 [ext_resource type="Script" path="res://Items/Networking.gd" id="3_5h0hf"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ai4oo"]
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ab2gw"]
 friction = 0.0
 bounce = 1.0
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_adwgb"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_afvnl"]
 properties/0/path = NodePath("..:position")
 properties/0/spawn = true
 properties/0/sync = true
@@ -28,11 +28,11 @@ properties/5/path = NodePath(".:sync_scale")
 properties/5/spawn = true
 properties/5/sync = true
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_xryca"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_ebtyu"]
 radius = 6.0
 
 [node name="default_bullet" type="RigidBody2D"]
-physics_material_override = SubResource("PhysicsMaterial_ai4oo")
+physics_material_override = SubResource("PhysicsMaterial_ab2gw")
 gravity_scale = 0.0
 continuous_cd = 1
 max_contacts_reported = 10
@@ -48,9 +48,9 @@ texture = ExtResource("2_7cd5r")
 script = ExtResource("3_5h0hf")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
-replication_config = SubResource("SceneReplicationConfig_adwgb")
+replication_config = SubResource("SceneReplicationConfig_afvnl")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_xryca")
+shape = SubResource("CircleShape2D_ebtyu")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

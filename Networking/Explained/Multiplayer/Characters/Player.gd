@@ -196,7 +196,7 @@ func _process(_delta):
 	$Networking.sync_hand_rotation = $Hand.rotation
 	$Networking.sync_hand_position = $Hand.position
 
-@rpc("call_local")
+@rpc("call_local", "any_peer")
 func set_teleport_shader_progress(progress:float) -> void:
 	teleport_shader.set_shader_parameter("progress", progress)
 
