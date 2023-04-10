@@ -26,6 +26,7 @@ const DEFAULT_CLIP_SIZE := 5
 const DEFAULT_RELOAD_TIME := 1
 const DEFAULT_RELOAD_TIMER := 2
 const DEFAULT_CRIT_MULTIPLIER := 2
+const TELEPORT_STUN_TIME := .3 # 1.000 = 1 second
 
 # TODO: implement these
 const DEFAULT_BULLET_SLOW := 0
@@ -78,8 +79,14 @@ var bullets_left_in_clip := clip_size
 var initial_position := position
 var crit_multiplier := DEFAULT_CRIT_MULTIPLIER
 var max_crits := DEFAULT_MAX_CRITS_STORED
-var has_teleporter := false
+var has_teleporter := true
 var is_shooting := false
+# Stunned means I can look around but not move, dash, shoot, or use powers
+var is_stunned := false
+var remaining_stun_time := 0.0
+var is_teleporting := false
+
+@onready var teleport_shader = $AnimatedSprite2D.material
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -106,6 +113,9 @@ func _ready():
 
 func _process(_delta):
 	if is_local_authority():
+		# floating point math doesn't like exactly 0
+		is_stunned = remaining_stun_time > 0.01
+		if(is_stunned): move_state = Movement.states.STUNNED
 		# If the player cursor is between the hand and the player,
 		# stop processing hand movement. Use square distance to go
 		# more fast
@@ -137,17 +147,39 @@ func _process(_delta):
 				rpc("set_crits_stored", crits_stored)
 				_animated_sprite.modulate = Color(2, 0, 0, .8)
 		
-		if Input.is_action_just_pressed("power"):
+		if not is_stunned and Input.is_action_just_pressed("power"):
 			if current_teleporter == null:
 				power()
 			else:
-				position = current_teleporter.position
-				rpc("free_teleporter")
-		if bullets_left_in_clip > 0 and Input.is_action_just_pressed("shoot"):
+				remaining_stun_time = TELEPORT_STUN_TIME
+				is_teleporting = true
+		if not is_stunned and bullets_left_in_clip > 0 and Input.is_action_just_pressed("shoot"):
 			if not is_shooting: shoot()
-		elif reload_timer.is_stopped() and (Input.is_action_just_pressed("shoot") or Input.is_action_just_pressed("reload")):
+		elif not is_stunned and reload_timer.is_stopped() and (Input.is_action_just_pressed("shoot") or Input.is_action_just_pressed("reload")):
 			print("started reload timer")
 			reload_timer.start()
+		if is_teleporting:
+			# The stun time describes the total time spent teleporting.
+			#  Halfway through, the player should be at their original position
+			#  and the shader progress should be at or near 1.0.
+			var percent_done := 1.0 - (remaining_stun_time / TELEPORT_STUN_TIME)
+			if percent_done < .5:
+				var teleport_out_progress := min(percent_done, 1.0)
+				#teleport_shader.set_shader_parameter("progress", percent_done * 2.0)
+				rpc("set_teleport_shader_progress", percent_done * 2.0)
+			elif percent_done > .5:
+				# After we have waited over 50% of the time, we should set the player
+				#  position. Then, we take the shader progress from 1.0 slowly down
+				#  back to 0.0, the default state.
+				rpc("remote_dictate_position", current_teleporter.position)
+				position = current_teleporter.position
+				$Networking.sync_position = position
+				var teleport_in_progress := max(2.0 - (percent_done * 2.0), 0.0)
+				#teleport_shader.set_shader_parameter("progress", teleport_in_progress)
+				rpc("set_teleport_shader_progress", teleport_in_progress)
+			if percent_done > .99:
+				is_teleporting = false
+				rpc("free_teleporter")
 	else:
 		health = $Networking.sync_health
 		max_health = $Networking.sync_max_health
@@ -164,6 +196,10 @@ func _process(_delta):
 	$UI/PlayerHealth.visible = health < max_health
 	$Networking.sync_hand_rotation = $Hand.rotation
 	$Networking.sync_hand_position = $Hand.position
+
+@rpc("call_local")
+func set_teleport_shader_progress(progress:float) -> void:
+	teleport_shader.set_shader_parameter("progress", progress)
 
 func power():
 	if not has_teleporter: return
@@ -223,6 +259,14 @@ func _physics_process(delta):
 			process_move(delta)
 		Movement.states.ROLL:
 			process_roll(delta)
+		Movement.states.STUNNED:
+			process_stunned(delta)
+			
+func process_stunned(delta) -> void:
+	remaining_stun_time -= delta
+	if remaining_stun_time <= 0.0:
+		remaining_stun_time = 0.0
+		move_state = Movement.states.MOVE
 			
 func process_move(_delta) -> void:
 	if !is_local_authority(): # this is somebody else's player character
@@ -322,6 +366,10 @@ func change_name(_new_name):
 func damage(amount):
 	if multiplayer.is_server():
 		rpc("take_damage", amount)
+		
+func stun(milliseconds:float) -> void:
+	if multiplayer.is_server():
+		rpc("stun_player", milliseconds)
 
 @rpc("reliable", "call_local", "any_peer")
 func process_power(bname):
@@ -357,6 +405,10 @@ func process_shot(bname, look_target, distant_target):
 func take_damage(amount):
 	health = health - amount
 	$Networking.sync_health = health
+
+@rpc("call_local", "reliable")
+func stun_player(milliseconds):
+	remaining_stun_time = max(remaining_stun_time, milliseconds)
 
 func die():
 	if !multiplayer.is_server():

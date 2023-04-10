@@ -1,40 +1,49 @@
-[gd_scene load_steps=24 format=3 uid="uid://ds41tvyxujn2h"]
+[gd_scene load_steps=26 format=3 uid="uid://ds41tvyxujn2h"]
 
 [ext_resource type="Script" path="res://Characters/Player.gd" id="1_uheab"]
+[ext_resource type="Shader" path="res://Characters/Player.gdshader" id="2_jas3l"]
 [ext_resource type="Texture2D" uid="uid://b6m5amcx22cae" path="res://Characters/Poochys/Poochy-Stander.png" id="2_lj62y"]
 [ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_f8meu"]
 [ext_resource type="Script" path="res://Characters/player_networking.gd" id="4_4qpvw"]
 [ext_resource type="Texture2D" uid="uid://50xpn4158q84" path="res://Characters/Poochys/Shooter-hand.png" id="5_c0gyg"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ldxnd"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4olcf"]
+resource_local_to_scene = true
+shader = ExtResource("2_jas3l")
+shader_parameter/progress = 0.0
+shader_parameter/noise_desnity = 60.0
+shader_parameter/beam_size = null
+shader_parameter/color = Color(0, 1.02, 1.2, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_imfan"]
 atlas = ExtResource("2_lj62y")
 region = Rect2(0, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_o2sbg"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_njija"]
 atlas = ExtResource("3_f8meu")
 region = Rect2(0, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_w456k"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_wfkvo"]
 atlas = ExtResource("3_f8meu")
 region = Rect2(17, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_invm7"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_rwwtt"]
 atlas = ExtResource("3_f8meu")
 region = Rect2(34, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_h37oq"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_4ngym"]
 atlas = ExtResource("3_f8meu")
 region = Rect2(51, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_oj6wu"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_n2kdn"]
 atlas = ExtResource("3_f8meu")
 region = Rect2(68, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_3luln"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_m76n1"]
 atlas = ExtResource("2_lj62y")
 region = Rect2(0, 0, 17, 23)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_e6khe"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_mpq0m"]
 animations = [{
 "frames": [],
 "loop": true,
@@ -43,7 +52,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ldxnd")
+"texture": SubResource("AtlasTexture_imfan")
 }],
 "loop": true,
 "name": &"Roll",
@@ -51,19 +60,19 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_o2sbg")
+"texture": SubResource("AtlasTexture_njija")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_w456k")
+"texture": SubResource("AtlasTexture_wfkvo")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_invm7")
+"texture": SubResource("AtlasTexture_rwwtt")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_h37oq")
+"texture": SubResource("AtlasTexture_4ngym")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_oj6wu")
+"texture": SubResource("AtlasTexture_n2kdn")
 }],
 "loop": true,
 "name": &"Walk",
@@ -71,42 +80,42 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_3luln")
+"texture": SubResource("AtlasTexture_m76n1")
 }],
 "loop": true,
 "name": &"default",
 "speed": 5.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_vq5h1"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4dgh3"]
 radius = 18.2667
 height = 74.6667
 
-[sub_resource type="Gradient" id="Gradient_2vswb"]
+[sub_resource type="Gradient" id="Gradient_grxry"]
 colors = PackedColorArray(0, 0.164706, 0.290196, 1, 0, 0.258824, 0.454902, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_svrsq"]
-gradient = SubResource("Gradient_2vswb")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_j17nq"]
+gradient = SubResource("Gradient_grxry")
 
-[sub_resource type="Gradient" id="Gradient_d8bj1"]
+[sub_resource type="Gradient" id="Gradient_6hgwd"]
 colors = PackedColorArray(0, 0.278431, 0.486275, 1, 0, 0.576471, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_crcmr"]
-gradient = SubResource("Gradient_d8bj1")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_0wy73"]
+gradient = SubResource("Gradient_6hgwd")
 
-[sub_resource type="Gradient" id="Gradient_knoyk"]
+[sub_resource type="Gradient" id="Gradient_s0ft2"]
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_ca0fl"]
-gradient = SubResource("Gradient_knoyk")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_x5hj0"]
+gradient = SubResource("Gradient_s0ft2")
 
-[sub_resource type="Gradient" id="Gradient_2202g"]
+[sub_resource type="Gradient" id="Gradient_a26el"]
 offsets = PackedFloat32Array(0, 0.87987, 1)
 colors = PackedColorArray(0.811765, 0, 0, 1, 0.584416, 0.584416, 0.584416, 1, 1, 1, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_15tjp"]
-gradient = SubResource("Gradient_2202g")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ty7ro"]
+gradient = SubResource("Gradient_a26el")
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_rr6hu"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_oaqff"]
 properties/0/path = NodePath(":sync_position")
 properties/0/spawn = true
 properties/0/sync = true
@@ -180,14 +189,15 @@ script = ExtResource("1_uheab")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
+material = SubResource("ShaderMaterial_4olcf")
 scale = Vector2(5, 5)
-sprite_frames = SubResource("SpriteFrames_e6khe")
+sprite_frames = SubResource("SpriteFrames_mpq0m")
 animation = &"Roll"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-1, 13)
 scale = Vector2(1.5, -1.24493)
-shape = SubResource("CapsuleShape2D_vq5h1")
+shape = SubResource("CapsuleShape2D_4dgh3")
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -204,8 +214,8 @@ offset_bottom = 66.0
 value = 100.0
 fill_mode = 3
 nine_patch_stretch = true
-texture_under = SubResource("GradientTexture1D_svrsq")
-texture_progress = SubResource("GradientTexture1D_crcmr")
+texture_under = SubResource("GradientTexture1D_j17nq")
+texture_progress = SubResource("GradientTexture1D_0wy73")
 
 [node name="PlayerNameLabel" type="Label" parent="UI"]
 layout_mode = 1
@@ -232,14 +242,14 @@ offset_right = 124.0
 offset_bottom = 29.0
 fill_mode = 4
 nine_patch_stretch = true
-texture_under = SubResource("GradientTexture1D_ca0fl")
-texture_progress = SubResource("GradientTexture1D_15tjp")
+texture_under = SubResource("GradientTexture1D_x5hj0")
+texture_progress = SubResource("GradientTexture1D_ty7ro")
 
 [node name="Networking" type="Node" parent="."]
 script = ExtResource("4_4qpvw")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
-replication_config = SubResource("SceneReplicationConfig_rr6hu")
+replication_config = SubResource("SceneReplicationConfig_oaqff")
 
 [node name="Hand" type="Node2D" parent="."]
 

@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Levels/Level1.gd" id="1_i62b0"]
 [ext_resource type="Script" path="res://Levels/Networking.gd" id="2_2ei3q"]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0c5og"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_b8oh3"]
 properties/0/path = NodePath(".:sync_num_connected")
 properties/0/spawn = true
 properties/0/sync = true
@@ -11,10 +11,10 @@ properties/1/path = NodePath(".:sync_game_state")
 properties/1/spawn = true
 properties/1/sync = true
 
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_aqewa"]
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_3tg81"]
 normal = Vector2(0, 1)
 
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_ri4b1"]
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_05u2d"]
 
 [node name="Level" type="Node2D"]
 script = ExtResource("1_i62b0")
@@ -77,7 +77,7 @@ alignment = 1
 script = ExtResource("2_2ei3q")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
-replication_config = SubResource("SceneReplicationConfig_0c5og")
+replication_config = SubResource("SceneReplicationConfig_b8oh3")
 
 [node name="Walls" type="Node" parent="."]
 
@@ -85,14 +85,14 @@ replication_config = SubResource("SceneReplicationConfig_0c5og")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/North"]
 position = Vector2(100, 0)
-shape = SubResource("WorldBoundaryShape2D_aqewa")
+shape = SubResource("WorldBoundaryShape2D_3tg81")
 
 [node name="North2" type="StaticBody2D" parent="Walls"]
 position = Vector2(-1, 1079)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/North2"]
 position = Vector2(100, 0)
-shape = SubResource("WorldBoundaryShape2D_ri4b1")
+shape = SubResource("WorldBoundaryShape2D_05u2d")
 
 [node name="North3" type="StaticBody2D" parent="Walls"]
 position = Vector2(0, 400)
@@ -100,7 +100,7 @@ rotation = 4.71239
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/North3"]
 position = Vector2(100, 0)
-shape = SubResource("WorldBoundaryShape2D_aqewa")
+shape = SubResource("WorldBoundaryShape2D_3tg81")
 
 [node name="North4" type="StaticBody2D" parent="Walls"]
 position = Vector2(2998, 360)
@@ -108,7 +108,7 @@ rotation = 1.5708
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/North4"]
 position = Vector2(99, 1079)
-shape = SubResource("WorldBoundaryShape2D_aqewa")
+shape = SubResource("WorldBoundaryShape2D_3tg81")
 
 [node name="WinnerDisplay" type="Label" parent="."]
 visible = false
