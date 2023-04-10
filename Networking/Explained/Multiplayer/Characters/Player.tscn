@@ -12,7 +12,7 @@ resource_local_to_scene = true
 shader = ExtResource("2_jas3l")
 shader_parameter/progress = 0.0
 shader_parameter/noise_desnity = 60.0
-shader_parameter/beam_size = null
+shader_parameter/beam_size = 0.15
 shader_parameter/color = Color(0, 1.02, 1.2, 1)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_imfan"]

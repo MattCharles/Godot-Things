@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bfifxodn1uacu"]
+[gd_scene load_steps=7 format=3 uid="uid://bfifxodn1uacu"]
 
 [ext_resource type="Script" path="res://Levels/Level1.gd" id="1_i62b0"]
 [ext_resource type="Script" path="res://Levels/Networking.gd" id="2_2ei3q"]
@@ -15,6 +15,11 @@ properties/1/sync = true
 normal = Vector2(0, 1)
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_05u2d"]
+
+[sub_resource type="Environment" id="Environment_g0xyo"]
+background_mode = 3
+glow_enabled = true
+glow_blend_mode = 1
 
 [node name="Level" type="Node2D"]
 script = ExtResource("1_i62b0")
@@ -123,3 +128,6 @@ horizontal_alignment = 1
 [node name="WinnerDisplayTimer" type="Timer" parent="."]
 wait_time = 5.0
 one_shot = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_g0xyo")

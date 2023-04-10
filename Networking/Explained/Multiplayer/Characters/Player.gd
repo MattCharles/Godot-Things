@@ -171,7 +171,6 @@ func _process(_delta):
 				# After we have waited over 50% of the time, we should set the player
 				#  position. Then, we take the shader progress from 1.0 slowly down
 				#  back to 0.0, the default state.
-				rpc("remote_dictate_position", current_teleporter.position)
 				position = current_teleporter.position
 				$Networking.sync_position = position
 				var teleport_in_progress := max(2.0 - (percent_done * 2.0), 0.0)
