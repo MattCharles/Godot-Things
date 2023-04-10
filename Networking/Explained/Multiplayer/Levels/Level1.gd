@@ -51,7 +51,11 @@ func _ready():
 		create_player(peer)
 	# Listen to peer disconnections, and destroy their players
 	multiplayer.peer_disconnected.connect(self.destroy_player)
-	$WinnerDisplayTimer.timeout.connect(func hide_winner(): $WinnerDisplay.visible = false)
+	$WinnerDisplayTimer.timeout.connect(func hide_winner_display(): if multiplayer.is_server(): rpc("hide_winner"))
+
+@rpc("reliable", "call_local")
+func hide_winner():
+	$WinnerDisplay.visible = false
 
 func create_player(id):
 	var player = preload("res://Characters/Player.tscn").instantiate()
@@ -96,12 +100,15 @@ func kill_player(id: int) -> void:
 			rpc("enter_picking_time", id, choose_random_unique_indices(3, buttons.size()))
 		else:
 			print("respawning_all")
-			$WinnerDisplay.text = get_node(str(winner)).player_name
-			$WinnerDisplay.visible = true
+			if multiplayer.is_server: rpc("update_winner", get_node(str(winner)).player_name)
 			rpc("respawn_all_rpc")
 			generate_level()
 			
-	
+@rpc("call_local", "reliable")
+func update_winner(new_winner):
+	$WinnerDisplay.text = new_winner
+	$WinnerDisplay.visible = true
+
 @rpc("call_local", "any_peer")
 func _back_to_menu():
 	get_tree().change_scene_to_file("res://System/main_menu.tscn")

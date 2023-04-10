@@ -8,6 +8,7 @@ properties/0/spawn = true
 properties/0/sync = false
 
 [node name="haystack" type="Node2D"]
+scale = Vector2(0.2, 0.2)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_b7f83")
