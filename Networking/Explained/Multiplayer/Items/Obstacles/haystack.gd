@@ -4,7 +4,7 @@ class_name Haystack
 var max_health := 90
 var health := max_health
 var default_sprite := "res://Items/Obstacles/hay.png"
-var damaged_sprite := "res://Items/Obstacles/hay.png"
+var damaged_sprite := "res://Items/Obstacles/sad_hay.png"
 
 var DEFAULT_SPRITE := 0
 var DAMAGED_SPRITE := 1
