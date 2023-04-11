@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://ds41tvyxujn2h"]
+[gd_scene load_steps=29 format=3 uid="uid://ds41tvyxujn2h"]
 
 [ext_resource type="Script" path="res://Characters/Player.gd" id="1_uheab"]
 [ext_resource type="Shader" path="res://Characters/Player.gdshader" id="2_jas3l"]
@@ -6,8 +6,10 @@
 [ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_f8meu"]
 [ext_resource type="Script" path="res://Characters/player_networking.gd" id="4_4qpvw"]
 [ext_resource type="Texture2D" uid="uid://50xpn4158q84" path="res://Characters/Poochys/Shooter-hand.png" id="5_c0gyg"]
+[ext_resource type="Texture2D" uid="uid://cplaro4bd3khc" path="res://Characters/Shield.png" id="7_c13md"]
+[ext_resource type="Script" path="res://Characters/Shield.gd" id="7_w10cr"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6aoqd"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o5qn2"]
 resource_local_to_scene = true
 shader = ExtResource("2_jas3l")
 shader_parameter/progress = 0.0
@@ -15,35 +17,35 @@ shader_parameter/noise_desnity = 60.0
 shader_parameter/beam_size = 0.15
 shader_parameter/color = Color(0, 1.02, 1.2, 1)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_x3bgi"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_haj16"]
 atlas = ExtResource("2_lj62y")
 region = Rect2(0, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_2rlg8"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_4brg5"]
 atlas = ExtResource("3_f8meu")
 region = Rect2(0, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ig7kh"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_hnhbd"]
 atlas = ExtResource("3_f8meu")
 region = Rect2(17, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_hrt1m"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_n5m7a"]
 atlas = ExtResource("3_f8meu")
 region = Rect2(34, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_nbjro"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_htjgj"]
 atlas = ExtResource("3_f8meu")
 region = Rect2(51, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_hghil"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_ixbnr"]
 atlas = ExtResource("3_f8meu")
 region = Rect2(68, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_wg06h"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_7grpd"]
 atlas = ExtResource("2_lj62y")
 region = Rect2(0, 0, 17, 23)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_d52hp"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_g5rea"]
 animations = [{
 "frames": [],
 "loop": true,
@@ -52,7 +54,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_x3bgi")
+"texture": SubResource("AtlasTexture_haj16")
 }],
 "loop": true,
 "name": &"Roll",
@@ -60,19 +62,19 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_2rlg8")
+"texture": SubResource("AtlasTexture_4brg5")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ig7kh")
+"texture": SubResource("AtlasTexture_hnhbd")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_hrt1m")
+"texture": SubResource("AtlasTexture_n5m7a")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_nbjro")
+"texture": SubResource("AtlasTexture_htjgj")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_hghil")
+"texture": SubResource("AtlasTexture_ixbnr")
 }],
 "loop": true,
 "name": &"Walk",
@@ -80,42 +82,42 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_wg06h")
+"texture": SubResource("AtlasTexture_7grpd")
 }],
 "loop": true,
 "name": &"default",
 "speed": 5.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_phrxv"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_frwux"]
 radius = 18.2667
 height = 74.6667
 
-[sub_resource type="Gradient" id="Gradient_ec0se"]
+[sub_resource type="Gradient" id="Gradient_6kk83"]
 colors = PackedColorArray(0, 0.164706, 0.290196, 1, 0, 0.258824, 0.454902, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_43ufu"]
-gradient = SubResource("Gradient_ec0se")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_r6tks"]
+gradient = SubResource("Gradient_6kk83")
 
-[sub_resource type="Gradient" id="Gradient_w1yd8"]
+[sub_resource type="Gradient" id="Gradient_4pphi"]
 colors = PackedColorArray(0, 0.278431, 0.486275, 1, 0, 0.576471, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_2vpyh"]
-gradient = SubResource("Gradient_w1yd8")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_3d2i1"]
+gradient = SubResource("Gradient_4pphi")
 
-[sub_resource type="Gradient" id="Gradient_uvvt0"]
+[sub_resource type="Gradient" id="Gradient_q2p0l"]
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_wt2ja"]
-gradient = SubResource("Gradient_uvvt0")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_bujvf"]
+gradient = SubResource("Gradient_q2p0l")
 
-[sub_resource type="Gradient" id="Gradient_a0kel"]
+[sub_resource type="Gradient" id="Gradient_sj551"]
 offsets = PackedFloat32Array(0, 0.87987, 1)
 colors = PackedColorArray(0.811765, 0, 0, 1, 0.584416, 0.584416, 0.584416, 1, 1, 1, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_wl2pb"]
-gradient = SubResource("Gradient_a0kel")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_uano5"]
+gradient = SubResource("Gradient_sj551")
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_m8ct7"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_srqng"]
 properties/0/path = NodePath(":sync_position")
 properties/0/spawn = true
 properties/0/sync = true
@@ -183,21 +185,24 @@ properties/21/path = NodePath("../UI/ReloadSpinner:max_value")
 properties/21/spawn = true
 properties/21/sync = true
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bp587"]
+size = Vector2(32, 59)
+
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 3
 script = ExtResource("1_uheab")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
-material = SubResource("ShaderMaterial_6aoqd")
+material = SubResource("ShaderMaterial_o5qn2")
 scale = Vector2(5, 5)
-sprite_frames = SubResource("SpriteFrames_d52hp")
+sprite_frames = SubResource("SpriteFrames_g5rea")
 animation = &"Roll"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-1, 13)
 scale = Vector2(1.5, -1.24493)
-shape = SubResource("CapsuleShape2D_phrxv")
+shape = SubResource("CapsuleShape2D_frwux")
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -214,8 +219,8 @@ offset_bottom = 66.0
 value = 100.0
 fill_mode = 3
 nine_patch_stretch = true
-texture_under = SubResource("GradientTexture1D_43ufu")
-texture_progress = SubResource("GradientTexture1D_2vpyh")
+texture_under = SubResource("GradientTexture1D_r6tks")
+texture_progress = SubResource("GradientTexture1D_3d2i1")
 
 [node name="PlayerNameLabel" type="Label" parent="UI"]
 layout_mode = 1
@@ -242,14 +247,14 @@ offset_right = 124.0
 offset_bottom = 29.0
 fill_mode = 4
 nine_patch_stretch = true
-texture_under = SubResource("GradientTexture1D_wt2ja")
-texture_progress = SubResource("GradientTexture1D_wl2pb")
+texture_under = SubResource("GradientTexture1D_bujvf")
+texture_progress = SubResource("GradientTexture1D_uano5")
 
 [node name="Networking" type="Node" parent="."]
 script = ExtResource("4_4qpvw")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
-replication_config = SubResource("SceneReplicationConfig_m8ct7")
+replication_config = SubResource("SceneReplicationConfig_srqng")
 
 [node name="Hand" type="Node2D" parent="."]
 
@@ -259,6 +264,19 @@ texture = ExtResource("5_c0gyg")
 
 [node name="ShootPoint" type="Node2D" parent="Hand"]
 position = Vector2(16, -3)
+
+[node name="Shield" type="StaticBody2D" parent="."]
+collision_layer = 8
+collision_mask = 8
+script = ExtResource("7_w10cr")
+
+[node name="Sprite2D" type="Sprite2D" parent="Shield"]
+scale = Vector2(2, 2)
+texture = ExtResource("7_c13md")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Shield"]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_bp587")
 
 [node name="Powers" type="Node" parent="."]
 

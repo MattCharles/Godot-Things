@@ -79,12 +79,13 @@ var bullets_left_in_clip := clip_size
 var initial_position := position
 var crit_multiplier := DEFAULT_CRIT_MULTIPLIER
 var max_crits := DEFAULT_MAX_CRITS_STORED
-var has_teleporter := true
+var has_teleporter := false
 var is_shooting := false
 # Stunned means I can look around but not move, dash, shoot, or use powers
 var is_stunned := false
 var remaining_stun_time := 0.0
 var is_teleporting := false
+var has_shield := true
 
 @onready var teleport_shader = $AnimatedSprite2D.material
 
@@ -119,7 +120,8 @@ func _process(_delta):
 		# If the player cursor is between the hand and the player,
 		# stop processing hand movement. Use square distance to go
 		# more fast
-		if (self.get_global_mouse_position() - self.global_position).length_squared() >= SQUARE_DISTANCE_FROM_CENTER_TO_HAND:
+		var mouse_outside_player_hitbox = mouse_outside_player_hitbox()
+		if mouse_outside_player_hitbox:
 			$Hand.position = get_hand_position()
 			$Hand.look_at(self.get_global_mouse_position())
 			$Hand/Sprite2d.flip_v = $Hand.global_position.x < self.global_position.x
@@ -127,6 +129,13 @@ func _process(_delta):
 			$Networking.sync_hand_rotation = $Hand.rotation
 			_animated_sprite.flip_h = $Hand/Sprite2d.flip_v
 			$Networking.sync_flip_sprite = _animated_sprite.flip_h
+			if has_shield:
+				$Shield.visible = true
+				if mouse_outside_player_hitbox():
+					$Shield.position = - $Hand.position
+					$Shield.look_at(-self.get_global_mouse_position())
+					$Shield/Sprite2D.flip_v = $Hand.global_position.x < self.global_position.x
+					$Shield.rotation = $Hand.rotation
 		
 		if no_scope_crit_enabled and not crits_stored >= max_crits:
 			if previous_zones[0] == -1:
@@ -185,8 +194,12 @@ func _process(_delta):
 		if not $Networking.processed_hand_position:
 			$Hand.position = $Networking.sync_hand_position
 			$Networking.processed_hand_position = true
+			if has_shield: # TODO: Store this in $Networking
+				$Shield.position = -$Networking.sync_hand_position
 		$Hand.rotation = $Networking.sync_hand_rotation
 		$Hand/Sprite2d.flip_v = $Networking.sync_hand_flip
+		$Shield.rotation = $Networking.sync_hand_rotation
+		$Shield/Sprite2D.flip_v = $Networking.sync_hand_flip
 		_animated_sprite.flip_h = $Networking.sync_flip_sprite
 		move_state = $Networking.sync_move_state
 				
@@ -202,8 +215,10 @@ func set_teleport_shader_progress(progress:float) -> void:
 
 func power():
 	if not has_teleporter: return
-	rpc("process_power", str(randi()))
+	rpc("process_power")
 	
+func mouse_outside_player_hitbox() -> bool:
+	return (self.get_global_mouse_position() - self.global_position).length_squared() >= SQUARE_DISTANCE_FROM_CENTER_TO_HAND
 
 func reset_ammo():
 	bullets_left_in_clip = clip_size
@@ -371,9 +386,8 @@ func stun(milliseconds:float) -> void:
 		rpc("stun_player", milliseconds)
 
 @rpc("reliable", "call_local", "any_peer")
-func process_power(bname):
+func process_power():
 	var instance = teleporter_scene.instantiate()
-	instance.name = bname
 	instance.position = position
 	get_node("/root/Level/SpawnRoot").add_child(instance, true)
 	current_teleporter = instance
@@ -514,6 +528,10 @@ func modify():
 					result = set_value["set"]
 		set(stat, result)
 	
+@rpc("call_local", "reliable", "any_peer")
+func set_has_shield(value):
+	has_shield = value
+
 @rpc("call_local", "reliable", "any_peer")
 func set_bullets_left_in_clip(value):
 	bullets_left_in_clip = value

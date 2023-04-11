@@ -35,14 +35,14 @@ func sync_set_scale(value):
 
 @rpc("call_local", "any_peer")
 func free():
-	call_deferred("free")
+	queue_free()
 
 func _on_body_entered(body):
 	if !multiplayer.is_server():
 		return
 	print("collided")
 	
-	if body is Player:
+	if body is Player or body is Shield:
 		body.damage(damage)
 		rpc("free")
 		

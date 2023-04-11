@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://vhlnrd2xerr6" path="res://Items/Obstacles/hay.png" id="1_b7f83"]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_blm4x"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_u8nxo"]
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
 properties/0/sync = false
@@ -19,4 +19,4 @@ texture = ExtResource("1_b7f83")
 polygon = PackedVector2Array(155, 0, 155, 0, 240, 3, 240, 3, 238, 180, 238, 180, -231, 183, -231, 183, -232, 0, -232, 0, -148, 3, -148, 3, -143, -172, -143, -172, 155, -169, 155, -169)
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_blm4x")
+replication_config = SubResource("SceneReplicationConfig_u8nxo")

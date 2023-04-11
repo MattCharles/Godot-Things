@@ -240,13 +240,11 @@ func generate_level() -> void:
 	var num_obstacles_on_each_side := 3
 	var indices := choose_random_indices(num_obstacles_on_each_side, obstacles.size())
 	for i in range(num_obstacles_on_each_side):
-		var j := 0
 		for location in generate_symmetrical_object_coords():
 			print(str(location))
 			var placeholder = obstacles[indices[i]].instantiate()
 			placeholder.position = location
 			$SpawnRoot.add_child(placeholder, true)
-			j += 1
 
 func generate_symmetrical_object_coords() -> Array:
 	var x := max(randi() % OBSTACLE_MAX_X, OBSTACLE_BUFFER)
