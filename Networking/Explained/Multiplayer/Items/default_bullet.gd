@@ -42,7 +42,7 @@ func _on_body_entered(body):
 		return
 	print("collided")
 	
-	if body is Player or body is Shield:
+	if body is Player or body is Shield or body is Haystack:
 		body.damage(damage)
 		rpc("free")
 		
