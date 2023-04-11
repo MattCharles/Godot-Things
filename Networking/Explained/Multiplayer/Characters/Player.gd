@@ -125,7 +125,7 @@ func _process(_delta):
 		# If the player cursor is between the hand and the player,
 		# stop processing hand movement. Use square distance to go
 		# more fast
-		var mouse_outside_player_hitbox = mouse_outside_player_hitbox()
+		var mouse_outside_player_hitbox = is_mouse_outside_player_hitbox()
 		if mouse_outside_player_hitbox:
 			$Hand.position = get_hand_position()
 			$Hand.look_at(self.get_global_mouse_position())
@@ -136,7 +136,7 @@ func _process(_delta):
 			$Networking.sync_flip_sprite = _animated_sprite.flip_h
 			if has_shield:
 				$Shield.visible = true
-				if mouse_outside_player_hitbox():
+				if is_mouse_outside_player_hitbox():
 					$Shield.position = - $Hand.position
 					$Shield.look_at(-self.get_global_mouse_position())
 					$Shield/Sprite2D.flip_v = $Hand.global_position.x < self.global_position.x
@@ -147,6 +147,7 @@ func _process(_delta):
 				zone_push_pop()
 			var degrees_of_rotation = int(rad_to_deg($Hand.rotation))
 			var abs_rotation = abs(degrees_of_rotation)
+			@warning_ignore("integer_division")
 			var slice_size = 360 / previous_zones.size()
 			var reduced_rotation = abs_rotation % 360
 			current_zone = reduced_rotation / slice_size
@@ -178,8 +179,6 @@ func _process(_delta):
 			#  and the shader progress should be at or near 1.0.
 			var percent_done := 1.0 - (remaining_stun_time / TELEPORT_STUN_TIME)
 			if percent_done < .5:
-				var teleport_out_progress := min(percent_done, 1.0)
-				#teleport_shader.set_shader_parameter("progress", percent_done * 2.0)
 				rpc("set_teleport_shader_progress", percent_done * 2.0)
 			elif percent_done > .5:
 				# After we have waited over 50% of the time, we should set the player
@@ -222,7 +221,7 @@ func power():
 	if not has_teleporter: return
 	rpc("process_power")
 	
-func mouse_outside_player_hitbox() -> bool:
+func is_mouse_outside_player_hitbox() -> bool:
 	return (self.get_global_mouse_position() - self.global_position).length_squared() >= SQUARE_DISTANCE_FROM_CENTER_TO_HAND
 
 func reset_ammo():
@@ -465,6 +464,7 @@ func reset():
 	shots_left_to_burst = shots_per_burst
 	# Finally, some stuff will want to go over the network explicitly.
 	if is_local_authority():
+		rpc("set_sprite_modulate", 0)
 		rpc("set_bullets_per_shot", bullets_per_shot)
 		rpc("set_bullet_scale", bullet_scale)
 		rpc("set_bullet_damage", bullet_damage)
@@ -598,6 +598,7 @@ func set_has_shield(value:bool) -> void:
 func set_sprite_modulate(value:int) -> void:
 	print("setting sprite modulate to " + str(value))
 	_animated_sprite.modulate = CRIT_COLOR_MOD if value == CRIT_COLOR_INDEX else DEFAULT_COLOR_MOD
+	teleport_shader.set_shader_parameter("evil", value == CRIT_COLOR_INDEX)
 
 # Get a random number from negative max to max.
 func random_angle(max_angle) -> float:

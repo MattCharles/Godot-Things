@@ -100,7 +100,7 @@ func kill_player(id: int) -> void:
 				rpc("_back_to_menu")
 			wins[winner] = wins[winner] + 1
 			var random_indices = choose_random_unique_indices(3, buttons.size())
-			random_indices[0] = buttons.size() - 1 # debug - make sure the newest power shows up
+			#random_indices[0] = buttons.size() - 1 # debug - make sure the newest power shows up
 			rpc("enter_picking_time", id, random_indices)
 		else:
 			print("respawning_all")
