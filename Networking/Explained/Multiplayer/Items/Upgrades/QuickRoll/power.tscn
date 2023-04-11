@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cyig6cf53u08x"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/QuickRoll/power.gd" id="1_nhuti"]
+
+[node name="QuickRoll" type="Node"]
+script = ExtResource("1_nhuti")

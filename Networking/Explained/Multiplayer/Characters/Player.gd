@@ -485,6 +485,8 @@ func reset():
 		rpc("set_bullets_left_in_clip", bullets_left_in_clip)
 		rpc("set_has_shield", has_shield)
 		rpc("set_is_berserker", is_berserker)
+		rpc("set_roll_speed", roll_speed)
+		rpc("set_roll_time", roll_time)
 	if multiplayer.is_server():
 		rpc("remote_dictate_position", initial_position)
 	$Networking.sync_bullet_scale = bullet_scale
@@ -612,6 +614,14 @@ func set_has_shield(value:bool) -> void:
 func set_sprite_modulate(value:int) -> void:
 	teleport_shader.set_shader_parameter("evil", value == CRIT_COLOR_INDEX)
 
+@rpc("reliable", "call_local", "any_peer")
+func set_roll_time(value):
+	roll_time = value
+
+@rpc("reliable", "call_local", "any_peer")
+func set_roll_speed(value):
+	roll_speed = value
+	
 # Get a random number from negative max to max.
 func random_angle(max_angle) -> float:
 	var result = (randi() % max(max_angle, 1)) * -1 if randi() % 2 == 1 else 1

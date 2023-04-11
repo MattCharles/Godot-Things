@@ -1,37 +1,37 @@
-[gd_scene load_steps=13 format=3 uid="uid://dok1w4tfkwpq5"]
+[gd_scene load_steps=13 format=3 uid="uid://cf12cidb3klc"]
 
-[ext_resource type="Script" path="res://Items/Upgrades/Berserker/choice.gd" id="1_tag54"]
-[ext_resource type="Texture2D" uid="uid://b6m5amcx22cae" path="res://Characters/Poochys/Poochy-Stander.png" id="2_ern73"]
-[ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_8vkt0"]
-[ext_resource type="PackedScene" uid="uid://bgm5r4ut6sgp5" path="res://Items/Upgrades/Berserker/power.tscn" id="4_hmk0f"]
+[ext_resource type="Script" path="res://Items/Upgrades/QuickRoll/choice.gd" id="1_wpgxu"]
+[ext_resource type="Texture2D" uid="uid://b6m5amcx22cae" path="res://Characters/Poochys/Poochy-Stander.png" id="2_dm4xb"]
+[ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_kduwv"]
+[ext_resource type="PackedScene" uid="uid://cyig6cf53u08x" path="res://Items/Upgrades/QuickRoll/power.tscn" id="4_w6afv"]
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_i0ycd"]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_pw7hm"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_l3o7e"]
-atlas = ExtResource("3_8vkt0")
+[sub_resource type="AtlasTexture" id="AtlasTexture_srst0"]
+atlas = ExtResource("3_kduwv")
 region = Rect2(0, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_lbdlj"]
-atlas = ExtResource("3_8vkt0")
+[sub_resource type="AtlasTexture" id="AtlasTexture_h888q"]
+atlas = ExtResource("3_kduwv")
 region = Rect2(17, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_hmgik"]
-atlas = ExtResource("3_8vkt0")
+[sub_resource type="AtlasTexture" id="AtlasTexture_31frs"]
+atlas = ExtResource("3_kduwv")
 region = Rect2(34, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ou1k2"]
-atlas = ExtResource("3_8vkt0")
+[sub_resource type="AtlasTexture" id="AtlasTexture_m2dwp"]
+atlas = ExtResource("3_kduwv")
 region = Rect2(51, 0, 17, 23)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_opkh2"]
-atlas = ExtResource("3_8vkt0")
+[sub_resource type="AtlasTexture" id="AtlasTexture_svp3b"]
+atlas = ExtResource("3_kduwv")
 region = Rect2(68, 0, 17, 23)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_7m1j1"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_4tx7n"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_ern73")
+"texture": ExtResource("2_dm4xb")
 }],
 "loop": true,
 "name": &"default",
@@ -39,26 +39,26 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_l3o7e")
+"texture": SubResource("AtlasTexture_srst0")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_lbdlj")
+"texture": SubResource("AtlasTexture_h888q")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_hmgik")
+"texture": SubResource("AtlasTexture_31frs")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ou1k2")
+"texture": SubResource("AtlasTexture_m2dwp")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_opkh2")
+"texture": SubResource("AtlasTexture_svp3b")
 }],
 "loop": true,
 "name": &"hover",
 "speed": 5.0
 }]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0cfur"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_jexj6"]
 properties/0/path = NodePath(".:picker")
 properties/0/spawn = true
 properties/0/sync = true
@@ -78,11 +78,11 @@ properties/5/path = NodePath(".:card_id")
 properties/5/spawn = true
 properties/5/sync = true
 
-[node name="Berserker" type="Control"]
+[node name="QuickRoll" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 size_flags_horizontal = 3
-script = ExtResource("1_tag54")
+script = ExtResource("1_wpgxu")
 
 [node name="Button" type="Button" parent="."]
 custom_minimum_size = Vector2(500, 888)
@@ -92,19 +92,19 @@ offset_bottom = 8.0
 expand_icon = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Button"]
-modulate = Color(0.286275, 0.12549, 0.0196078, 1)
-material = SubResource("CanvasItemMaterial_i0ycd")
-position = Vector2(264, 301)
-rotation = 0.438078
-scale = Vector2(5.16967, 3.78509)
-sprite_frames = SubResource("SpriteFrames_7m1j1")
+modulate = Color(1, 0, 1, 1)
+material = SubResource("CanvasItemMaterial_pw7hm")
+position = Vector2(355, 379)
+rotation = -2.07869
+scale = Vector2(10.3389, 10.2772)
+sprite_frames = SubResource("SpriteFrames_4tx7n")
 animation = &"hover"
 
 [node name="Networking" type="Node" parent="."]
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
 root_path = NodePath("../..")
-replication_config = SubResource("SceneReplicationConfig_0cfur")
+replication_config = SubResource("SceneReplicationConfig_jexj6")
 
 [node name="Description" type="Label" parent="."]
 layout_mode = 0
@@ -113,7 +113,7 @@ offset_top = 488.0
 offset_right = 489.0
 offset_bottom = 876.0
 theme_override_font_sizes/font_size = 52
-text = "Store a crit when you take damage! Unlocks storing multiple crits."
+text = "Make your roll cover the same distance in half the time!"
 autowrap_mode = 3
 
 [node name="Title" type="Label" parent="."]
@@ -123,10 +123,10 @@ offset_top = 11.0
 offset_right = 489.0
 offset_bottom = 94.0
 theme_override_font_sizes/font_size = 52
-text = "Berserker"
+text = "Quick Roll"
 horizontal_alignment = 1
 
-[node name="Berserker" parent="." instance=ExtResource("4_hmk0f")]
+[node name="QuickRoll" parent="." instance=ExtResource("4_w6afv")]
 
 [connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
 [connection signal="mouse_exited" from="Button" to="." method="_on_button_mouse_exited"]
