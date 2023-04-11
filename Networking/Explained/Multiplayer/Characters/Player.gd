@@ -28,6 +28,11 @@ const DEFAULT_RELOAD_TIMER := 2
 const DEFAULT_CRIT_MULTIPLIER := 2
 const TELEPORT_STUN_TIME := .3 # 1.000 = 1 second
 
+const DEFAULT_COLOR_INDEX := 0
+const DEFAULT_COLOR_MOD := Color(1, 1, 1, 1)
+const CRIT_COLOR_INDEX := 1
+const CRIT_COLOR_MOD := Color(2, 0, 0, .8)
+
 # TODO: implement these
 const DEFAULT_BULLET_SLOW := 0
 const DEFAULT_CHARGE_TIME := 0
@@ -154,7 +159,7 @@ func _process(_delta):
 				print("Crit stored")
 				crits_stored = min(crits_stored + 1, max_crits)
 				rpc("set_crits_stored", crits_stored)
-				_animated_sprite.modulate = Color(2, 0, 0, .8)
+				rpc("set_sprite_modulate", CRIT_COLOR_INDEX)
 		
 		if not is_stunned and Input.is_action_just_pressed("power"):
 			if current_teleporter == null:
@@ -404,7 +409,7 @@ func process_shot(bname, look_target, distant_target):
 	if crits_stored > 0:
 		print("firing crit")
 		rpc("set_crits_stored", crits_stored - 1)
-		_animated_sprite.modulate = Color(1, 1, 1, 1)
+		rpc("set_sprite_modulate", DEFAULT_COLOR_INDEX)
 		instance.modulate = Color(2, 0, 0, .8)
 		crit_damage = bullet_damage * crit_multiplier
 	instance.set_damage(crit_damage)
@@ -588,6 +593,11 @@ func free_teleporter():
 func set_has_shield(value:bool) -> void:
 	has_shield = value
 	$Shield.visible = value
+	
+@rpc("reliable", "call_local", "any_peer")
+func set_sprite_modulate(value:int) -> void:
+	print("setting sprite modulate to " + str(value))
+	_animated_sprite.modulate = CRIT_COLOR_MOD if value == CRIT_COLOR_INDEX else DEFAULT_COLOR_MOD
 
 # Get a random number from negative max to max.
 func random_angle(max_angle) -> float:

@@ -169,21 +169,18 @@ properties/15/sync = true
 properties/16/path = NodePath(".:sync_no_scope_crit_enabled")
 properties/16/spawn = true
 properties/16/sync = true
-properties/17/path = NodePath("../AnimatedSprite2D:modulate")
+properties/17/path = NodePath("../UI/ReloadSpinner:value")
 properties/17/spawn = true
 properties/17/sync = true
-properties/18/path = NodePath("../UI/ReloadSpinner:value")
+properties/18/path = NodePath(".:sync_bullets_left_in_clip")
 properties/18/spawn = true
 properties/18/sync = true
-properties/19/path = NodePath(".:sync_bullets_left_in_clip")
+properties/19/path = NodePath(".:sync_bullet_damage")
 properties/19/spawn = true
 properties/19/sync = true
-properties/20/path = NodePath(".:sync_bullet_damage")
+properties/20/path = NodePath("../UI/ReloadSpinner:max_value")
 properties/20/spawn = true
 properties/20/sync = true
-properties/21/path = NodePath("../UI/ReloadSpinner:max_value")
-properties/21/spawn = true
-properties/21/sync = true
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bp587"]
 size = Vector2(32, 59)
