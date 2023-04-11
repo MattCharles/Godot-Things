@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://ccea43ab1gc4o"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/Shield/power.gd" id="1_b40td"]
+
+[node name="Shield" type="Node"]
+script = ExtResource("1_b40td")

@@ -12,7 +12,7 @@ var DAMAGED_SPRITE := 1
 
 func damage(amount:int) -> void:
 	if multiplayer.is_server():
-		health -= amount
+		rpc("set_health", health - amount)
 		if health <= 0:
 			rpc("set_active", false)
 			return
@@ -20,7 +20,7 @@ func damage(amount:int) -> void:
 
 func reset() -> void:
 	if multiplayer.is_server():
-		health = max_health
+		rpc("set_health", max_health)
 		rpc("set_active", true)
 		rpc("set_sprite", DEFAULT_SPRITE)
 
@@ -32,5 +32,9 @@ func set_active(value:bool) -> void:
 @rpc("call_local", "reliable")
 func set_sprite(value:int) -> void:
 	$Sprite2D.texture = load(default_sprite if value == DEFAULT_SPRITE else damaged_sprite)
-	var modified_alpha := 1.0 if value == DEFAULT_SPRITE else .5
+	var modified_alpha := 1.0 if value == DEFAULT_SPRITE else float(health) / float(max_health)
 	$Sprite2D.modulate = Color(1, 1, 1, modified_alpha)
+
+@rpc("call_local", "reliable")
+func set_health(value:int) -> void:
+	health = value

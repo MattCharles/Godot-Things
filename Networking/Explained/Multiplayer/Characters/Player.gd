@@ -85,7 +85,7 @@ var is_shooting := false
 var is_stunned := false
 var remaining_stun_time := 0.0
 var is_teleporting := false
-var has_shield := true
+var has_shield := false
 
 @onready var teleport_shader = $AnimatedSprite2D.material
 
@@ -469,6 +469,7 @@ func reset():
 		rpc("set_no_scope_crit_enabled", no_scope_crit_enabled)
 		rpc("set_crits_stored", crits_stored)
 		rpc("set_bullets_left_in_clip", bullets_left_in_clip)
+		rpc("set_has_shield", has_shield)
 	if multiplayer.is_server():
 		rpc("remote_dictate_position", initial_position)
 	$Networking.sync_bullet_scale = bullet_scale
@@ -482,6 +483,7 @@ func reset():
 	reload_spinner.max_value = clip_size
 	dead = false
 	$Networking.sync_dead = false
+	if has_shield: $Shield.reset()
 
 # Take modifier_nodes, a list of nodes which have a dictionary, .modifiers
 # on each node:
@@ -527,10 +529,6 @@ func modify():
 				for set_value in grouped_mods[stat][ordered_operation]:
 					result = set_value["set"]
 		set(stat, result)
-	
-@rpc("call_local", "reliable", "any_peer")
-func set_has_shield(value):
-	has_shield = value
 
 @rpc("call_local", "reliable", "any_peer")
 func set_bullets_left_in_clip(value):
@@ -585,6 +583,11 @@ func set_crits_stored(value):
 func free_teleporter():
 	if current_teleporter != null:
 		current_teleporter.queue_free()
+
+@rpc("reliable", "call_local", "any_peer")
+func set_has_shield(value:bool) -> void:
+	has_shield = value
+	$Shield.visible = value
 
 # Get a random number from negative max to max.
 func random_angle(max_angle) -> float:
