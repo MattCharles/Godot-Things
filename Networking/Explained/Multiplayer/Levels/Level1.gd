@@ -27,7 +27,8 @@ var buttons = [preload("res://Items/Upgrades/Tank/choice.tscn"),
 				preload("res://Items/Upgrades/Teleporter/choice.tscn"),
 				preload("res://Items/Upgrades/NarrowFocus/choice.tscn"),
 				preload("res://Items/Upgrades/BiggoBullets/choice.tscn"),
-				preload("res://Items/Upgrades/Shield/choice.tscn")]
+				preload("res://Items/Upgrades/Shield/choice.tscn"),
+				preload("res://Items/Upgrades/Berserker/choice.tscn")]
 
 var powers = [load("res://Items/Upgrades/Tank/power.tscn"), 
 				load("res://Items/Upgrades/Shotgun/power.tscn"),
@@ -38,7 +39,8 @@ var powers = [load("res://Items/Upgrades/Tank/power.tscn"),
 				load("res://Items/Upgrades/Teleporter/power.tscn"),
 				load("res://Items/Upgrades/NarrowFocus/power.tscn"),
 				load("res://Items/Upgrades/BiggoBullets/power.tscn"),
-				load("res://Items/Upgrades/Shield/power.tscn")] #TODO - load the power node when choice is displayed
+				load("res://Items/Upgrades/Shield/power.tscn"),
+				load("res://Items/Upgrades/Berserker/power.tscn")] #TODO - load the power node when choice is displayed
 
 var obstacles = [preload("res://Items/Obstacles/haystack.tscn")]
 
@@ -100,7 +102,7 @@ func kill_player(id: int) -> void:
 				rpc("_back_to_menu")
 			wins[winner] = wins[winner] + 1
 			var random_indices = choose_random_unique_indices(3, buttons.size())
-			#random_indices[0] = buttons.size() - 1 # debug - make sure the newest power shows up
+			random_indices[0] = buttons.size() - 1 # debug - make sure the newest power shows up
 			rpc("enter_picking_time", id, random_indices)
 		else:
 			print("respawning_all")

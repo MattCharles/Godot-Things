@@ -1,37 +1,37 @@
-[gd_scene load_steps=13 format=3 uid="uid://b4u7dv8sp1krt"]
+[gd_scene load_steps=13 format=3 uid="uid://dok1w4tfkwpq5"]
 
-[ext_resource type="Script" path="res://Items/Upgrades/Shield/choice.gd" id="1_a1q20"]
-[ext_resource type="Texture2D" uid="uid://b6m5amcx22cae" path="res://Characters/Poochys/Poochy-Stander.png" id="2_nryxa"]
-[ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_28dso"]
-[ext_resource type="PackedScene" uid="uid://ccea43ab1gc4o" path="res://Items/Upgrades/Shield/power.tscn" id="4_ie4gy"]
+[ext_resource type="Script" path="res://Items/Upgrades/Berserker/choice.gd" id="1_tag54"]
+[ext_resource type="Texture2D" uid="uid://b6m5amcx22cae" path="res://Characters/Poochys/Poochy-Stander.png" id="2_ern73"]
+[ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_8vkt0"]
+[ext_resource type="PackedScene" uid="uid://bgm5r4ut6sgp5" path="res://Items/Upgrades/Berserker/power.tscn" id="4_hmk0f"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_i0ycd"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_l3o7e"]
-atlas = ExtResource("3_28dso")
+atlas = ExtResource("3_8vkt0")
 region = Rect2(0, 0, 17, 23)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_lbdlj"]
-atlas = ExtResource("3_28dso")
+atlas = ExtResource("3_8vkt0")
 region = Rect2(17, 0, 17, 23)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hmgik"]
-atlas = ExtResource("3_28dso")
+atlas = ExtResource("3_8vkt0")
 region = Rect2(34, 0, 17, 23)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ou1k2"]
-atlas = ExtResource("3_28dso")
+atlas = ExtResource("3_8vkt0")
 region = Rect2(51, 0, 17, 23)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_opkh2"]
-atlas = ExtResource("3_28dso")
+atlas = ExtResource("3_8vkt0")
 region = Rect2(68, 0, 17, 23)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_7m1j1"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_nryxa")
+"texture": ExtResource("2_ern73")
 }],
 "loop": true,
 "name": &"default",
@@ -78,11 +78,11 @@ properties/5/path = NodePath(".:card_id")
 properties/5/spawn = true
 properties/5/sync = true
 
-[node name="Shield" type="Control"]
+[node name="Berserker" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 size_flags_horizontal = 3
-script = ExtResource("1_a1q20")
+script = ExtResource("1_tag54")
 
 [node name="Button" type="Button" parent="."]
 custom_minimum_size = Vector2(500, 888)
@@ -92,11 +92,11 @@ offset_bottom = 8.0
 expand_icon = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Button"]
-modulate = Color(0.345098, 0.976471, 0.109804, 1)
+modulate = Color(0.286275, 0.12549, 0.0196078, 1)
 material = SubResource("CanvasItemMaterial_i0ycd")
-position = Vector2(285, 319)
+position = Vector2(264, 301)
 rotation = 0.438078
-scale = Vector2(40.3041, 8.4331)
+scale = Vector2(5.16967, 3.78509)
 sprite_frames = SubResource("SpriteFrames_7m1j1")
 animation = &"hover"
 
@@ -113,7 +113,7 @@ offset_top = 488.0
 offset_right = 489.0
 offset_bottom = 876.0
 theme_override_font_sizes/font_size = 52
-text = "Get a shield on your back!"
+text = "Store a crit when you take damage!"
 autowrap_mode = 3
 
 [node name="Title" type="Label" parent="."]
@@ -123,10 +123,10 @@ offset_top = 11.0
 offset_right = 489.0
 offset_bottom = 94.0
 theme_override_font_sizes/font_size = 52
-text = "Turtle's Shield"
+text = "Berserker"
 horizontal_alignment = 1
 
-[node name="Shield" parent="." instance=ExtResource("4_ie4gy")]
+[node name="Berserker" parent="." instance=ExtResource("4_hmk0f")]
 
 [connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
 [connection signal="mouse_exited" from="Button" to="." method="_on_button_mouse_exited"]

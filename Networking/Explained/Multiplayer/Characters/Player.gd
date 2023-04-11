@@ -19,7 +19,8 @@ const DEFAULT_BURST_GAP := .03
 const DEFAULT_BULLET_SPEED := 1000
 const DEFAULT_ROLL_TIME := 0.5
 const NOSCOPE_SPIN_TIME := 1 #Time to complete a noscope spin for it to be considered valid
-const DEFAULT_NO_SCOPE_CRIT_ENABLED = false
+const DEFAULT_NO_SCOPE_CRIT_ENABLED := false
+const DEFAULT_IS_BERSERKER := false
 const DEFAULT_NUM_CRITS_STORED := 0
 const DEFAULT_MAX_CRITS_STORED := 1
 const DEFAULT_CLIP_SIZE := 5
@@ -29,9 +30,7 @@ const DEFAULT_CRIT_MULTIPLIER := 2
 const TELEPORT_STUN_TIME := .3 # 1.000 = 1 second
 
 const DEFAULT_COLOR_INDEX := 0
-const DEFAULT_COLOR_MOD := Color(1, 1, 1, 1)
 const CRIT_COLOR_INDEX := 1
-const CRIT_COLOR_MOD := Color(2, 0, 0, .8)
 
 # TODO: implement these
 const DEFAULT_BULLET_SLOW := 0
@@ -79,6 +78,7 @@ var previous_zones := [-1, -1, -1, -1, -1]
 var current_zone := 0
 var crits_stored := DEFAULT_NUM_CRITS_STORED
 var no_scope_crit_enabled := DEFAULT_NO_SCOPE_CRIT_ENABLED
+var is_berserker := DEFAULT_IS_BERSERKER
 var clip_size := DEFAULT_CLIP_SIZE
 var bullets_left_in_clip := clip_size
 var initial_position := position
@@ -91,6 +91,7 @@ var is_stunned := false
 var remaining_stun_time := 0.0
 var is_teleporting := false
 var has_shield := false
+var has_sword := false
 
 @onready var teleport_shader = $AnimatedSprite2D.material
 
@@ -384,10 +385,17 @@ func change_name(_new_name):
 func damage(amount):
 	if multiplayer.is_server():
 		rpc("take_damage", amount)
+		if is_berserker:
+			rpc("go_berserk")
+			rpc("set_sprite_modulate", CRIT_COLOR_INDEX)
 		
 func stun(milliseconds:float) -> void:
 	if multiplayer.is_server():
 		rpc("stun_player", milliseconds)
+
+@rpc("reliable", "call_local")
+func go_berserk():
+	rpc("set_crits_stored", crits_stored + 1)
 
 @rpc("reliable", "call_local", "any_peer")
 func process_power():
@@ -408,7 +416,8 @@ func process_shot(bname, look_target, distant_target):
 	if crits_stored > 0:
 		print("firing crit")
 		rpc("set_crits_stored", crits_stored - 1)
-		rpc("set_sprite_modulate", DEFAULT_COLOR_INDEX)
+		if crits_stored < 1:
+			rpc("set_sprite_modulate", DEFAULT_COLOR_INDEX)
 		instance.modulate = Color(2, 0, 0, .8)
 		crit_damage = bullet_damage * crit_multiplier
 	instance.set_damage(crit_damage)
@@ -475,6 +484,7 @@ func reset():
 		rpc("set_crits_stored", crits_stored)
 		rpc("set_bullets_left_in_clip", bullets_left_in_clip)
 		rpc("set_has_shield", has_shield)
+		rpc("set_is_berserker", is_berserker)
 	if multiplayer.is_server():
 		rpc("remote_dictate_position", initial_position)
 	$Networking.sync_bullet_scale = bullet_scale
@@ -534,6 +544,10 @@ func modify():
 				for set_value in grouped_mods[stat][ordered_operation]:
 					result = set_value["set"]
 		set(stat, result)
+
+@rpc("call_local", "reliable", "any_peer")
+func set_is_berserker(value:bool) -> void:
+	is_berserker = value
 
 @rpc("call_local", "reliable", "any_peer")
 func set_bullets_left_in_clip(value):
@@ -596,8 +610,6 @@ func set_has_shield(value:bool) -> void:
 	
 @rpc("reliable", "call_local", "any_peer")
 func set_sprite_modulate(value:int) -> void:
-	print("setting sprite modulate to " + str(value))
-	_animated_sprite.modulate = CRIT_COLOR_MOD if value == CRIT_COLOR_INDEX else DEFAULT_COLOR_MOD
 	teleport_shader.set_shader_parameter("evil", value == CRIT_COLOR_INDEX)
 
 # Get a random number from negative max to max.
