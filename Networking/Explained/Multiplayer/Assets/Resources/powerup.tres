@@ -1,0 +1,6 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://lhggmpbq4lnx"]
+
+[ext_resource type="Script" path="res://Assets/Resources/powerup.gd" id="1_qg8l7"]
+
+[resource]
+script = ExtResource("1_qg8l7")
