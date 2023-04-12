@@ -12,7 +12,7 @@ const DEFAULT_BULLETS_PER_SHOT := 1 # I clicked shoot. How many bullets come out
 const DEFAULT_BULLET := preload("res://Items/default_bullet.tscn")
 const DEFAULT_BULLET_SCALE := 1.0
 const DEFAULT_BULLET_DAMAGE := 35
-const ORDERED_OPERATIONS := ["add", "multiply", "set"]
+const ORDERED_OPERATIONS := ["add", "multiply", "set", "at_least", "at_most"]
 const DEFAULT_BULLET_BOUNCES := 0
 const DEFAULT_SHOTS_PER_BURST := 1
 const DEFAULT_BURST_GAP := .03
@@ -28,6 +28,7 @@ const DEFAULT_RELOAD_TIME := 1
 const DEFAULT_RELOAD_TIMER := 2
 const DEFAULT_CRIT_MULTIPLIER := 2
 const TELEPORT_STUN_TIME := .3 # 1.000 = 1 second
+const DEFAULT_MAX_POWER_COOLDOWN := 0.0
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -92,6 +93,9 @@ var remaining_stun_time := 0.0
 var is_teleporting := false
 var has_shield := false
 var has_sword := false
+var max_power_cooldown := DEFAULT_MAX_POWER_COOLDOWN
+var power_cooldown := max_power_cooldown
+var can_power := true
 
 @onready var teleport_shader = $AnimatedSprite2D.material
 
@@ -118,8 +122,13 @@ func _ready():
 	$UI/PlayerNameLabel.text = player_name
 	
 
-func _process(_delta):
+func _process(delta):
 	if is_local_authority():
+		if not can_power:
+			power_cooldown -= delta
+			if power_cooldown < .01: # .01 buffer for float comparison
+				can_power = true
+				power_cooldown = max_power_cooldown
 		# floating point math doesn't like exactly 0
 		is_stunned = remaining_stun_time > 0.01
 		if(is_stunned): move_state = Movement.states.STUNNED
@@ -163,9 +172,10 @@ func _process(_delta):
 				rpc("set_crits_stored", crits_stored)
 				rpc("set_sprite_modulate", CRIT_COLOR_INDEX)
 		
-		if not is_stunned and Input.is_action_just_pressed("power"):
+		if not is_stunned and can_power and Input.is_action_just_pressed("power"):
 			if current_teleporter == null:
 				power()
+				can_power = false
 			else:
 				remaining_stun_time = TELEPORT_STUN_TIME
 				is_teleporting = true
@@ -447,6 +457,7 @@ func die():
 	
 func reset():
 	# First, set everything to defaults.
+	can_power = true
 	roll_time = DEFAULT_ROLL_TIME
 	health = DEFAULT_HEALTH
 	max_health = DEFAULT_HEALTH
@@ -542,6 +553,12 @@ func modify():
 			if ordered_operation == "multiply":
 				for add_value in grouped_mods[stat][ordered_operation]:
 					result = result * add_value["multiply"]
+			if ordered_operation == "at_least":
+				for set_value in grouped_mods[stat][ordered_operation]:
+					result = max(set_value["at_least"], result)
+			if ordered_operation == "at_most":
+				for set_value in grouped_mods[stat][ordered_operation]:
+					result = min(set_value["at_most"], result)
 			if ordered_operation == "set":
 				for set_value in grouped_mods[stat][ordered_operation]:
 					result = set_value["set"]
