@@ -1,5 +1,7 @@
 extends Node
 
+const card_id := 8
+
 const modifiers := {
 	"bullet_scale": {
 		"multiply": 4

@@ -29,6 +29,8 @@ const float precision = 0.1;
 
 uniform bool evil = false;
 
+uniform bool hit_flash = false;
+
 
 vec4 swap_color(vec4 in_color){
 	vec4 original_colors[5] = vec4[5] (original_0, original_1, original_2, original_3, original_4);
@@ -64,7 +66,11 @@ float noise(vec2 uv) {
 
 void fragment()
 {
-	vec4 tex = evil ? swap_color(texture(TEXTURE, UV)) : texture(TEXTURE, UV);
+	vec4 tex = hit_flash ? 
+		vec4(1.0, 1.0, 1.0, texture(TEXTURE, UV).a) : 
+			(evil ? 
+				swap_color(texture(TEXTURE, UV)) : 
+				texture(TEXTURE, UV));
 	
 	float noise = noise(UV * noise_desnity) * UV.y;
 	

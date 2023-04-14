@@ -118,7 +118,9 @@ func kill_player(id: int) -> void:
 				print("Big winner!")
 				rpc("_back_to_menu")
 			wins[winner] = wins[winner] + 1
-			var random_indices = choose_random_unique_indices(3, buttons.size())
+			var exclusions := get_exclusions_for(id)
+			print("found exclusions: " + str(exclusions))
+			var random_indices = choose_random_unique_indices(3, buttons.size(), exclusions)
 			random_indices[0] = buttons.size() - 1 # debug - make sure the newest power shows up
 			rpc("enter_picking_time", id, random_indices)
 		else:
@@ -201,11 +203,11 @@ func add_buttons(picker_id:int, entries:Array):
 		button.set_picker(picker_id)
 		button.picked.connect(card_picked)
 		
-func choose_random_unique_indices(n:int, max_index:int) -> Array:
+func choose_random_unique_indices(n:int, max_index:int, exclusions:Array) -> Array:
 	var result = {}
 	while result.keys().size() < n:
 		var entry = randi() % max_index
-		if not result.has(entry):
+		if not result.has(entry) and not exclusions.has(entry):
 			result[entry] = true
 	return result.keys()
 	
@@ -218,8 +220,12 @@ func choose_random_indices(n:int, max_index:int) -> Array:
 		
 func card_picked(card_id, player_id) -> void:
 	print("Nice pick of " + str(card_id) +  " for " + str(player_id))
-	player_nodes[player_id].get_node("Powers").add_child(powers[card_id].instantiate())
+	rpc("inform_peers", card_id, player_id)
 	rpc("exit_picking_time")
+	
+@rpc("reliable", "call_local", "any_peer")
+func inform_peers(card_id, player_id):
+	player_nodes[player_id].get_node("Powers").add_child(powers[card_id].instantiate())
 
 @rpc("reliable", "call_local", "any_peer") #TODO: security here
 func exit_picking_time() -> void:
@@ -274,3 +280,21 @@ func generate_symmetrical_object_coords() -> Array:
 	var y := max(randi() % OBSTACLE_MAX_Y, OBSTACLE_BUFFER)
 	return [Vector2(x, y), Vector2(OBSTACLE_MAX_X - x, OBSTACLE_MAX_Y - y)]
 	
+func get_exclusions_for(id) -> Array:
+	print("getting exclusions for " + str(id))
+	var result := []
+	var current_ids := get_player_power_ids(id)
+	for power_id in current_ids:
+		print("excluding " + str(power_id))
+		var exclusions := AVOID_AFTER.get(power_id)
+		result.append_array(exclusions)
+	return result
+
+func get_player_power_ids(player_id) -> Array:
+	var result := []
+	var player = player_nodes[player_id]
+	var powers = player.get_node("Powers").get_children()
+	for child in powers:
+		result.append(child.card_id)
+
+	return result

@@ -29,11 +29,14 @@ const DEFAULT_RELOAD_TIMER := 2
 const DEFAULT_CRIT_MULTIPLIER := 2
 const TELEPORT_STUN_TIME := .3 # 1.000 = 1 second
 const DEFAULT_MAX_POWER_COOLDOWN := 0.0
+const DAMAGE_FLASH_TIMER := .1
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
+const DAMAGE_FLASH_INDEX := 2
+const END_DAMAGE_FLASH_INDEX := 3
 
-# TODO: implement these
+# TODO: implement these?
 const DEFAULT_BULLET_SLOW := 0
 const DEFAULT_CHARGE_TIME := 0
 const DEFAULT_POISON_DAMAGE := 0
@@ -395,6 +398,9 @@ func change_name(_new_name):
 func damage(amount):
 	if multiplayer.is_server():
 		rpc("take_damage", amount)
+		rpc("set_sprite_modulate", DAMAGE_FLASH_INDEX)
+		get_tree().create_timer(DAMAGE_FLASH_TIMER).timeout.connect(func ():
+			rpc("set_sprite_modulate", END_DAMAGE_FLASH_INDEX))
 		if is_berserker:
 			rpc("go_berserk")
 			rpc("set_sprite_modulate", CRIT_COLOR_INDEX)
@@ -629,7 +635,15 @@ func set_has_shield(value:bool) -> void:
 	
 @rpc("reliable", "call_local", "any_peer")
 func set_sprite_modulate(value:int) -> void:
-	teleport_shader.set_shader_parameter("evil", value == CRIT_COLOR_INDEX)
+	if value == CRIT_COLOR_INDEX:
+		teleport_shader.set_shader_parameter("evil", true)
+	if value == DAMAGE_FLASH_INDEX:
+		teleport_shader.set_shader_parameter("hit_flash", true)
+	if value == END_DAMAGE_FLASH_INDEX:
+		teleport_shader.set_shader_parameter("hit_flash", false)
+	if value == DEFAULT_COLOR_INDEX:
+		teleport_shader.set_shader_parameter("evil", false)
+		teleport_shader.set_shader_parameter("hit_flash", false)
 
 @rpc("reliable", "call_local", "any_peer")
 func set_roll_time(value):

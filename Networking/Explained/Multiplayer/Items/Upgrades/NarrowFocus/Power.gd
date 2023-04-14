@@ -1,5 +1,7 @@
 extends Node
 
+const card_id := 7
+
 const modifiers := {
 	"spread": {
 		"multiply": .4

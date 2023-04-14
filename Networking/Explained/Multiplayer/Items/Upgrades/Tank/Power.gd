@@ -1,5 +1,7 @@
 extends Node
 
+const card_id := 0
+
 const modifiers := {
 	"max_health": {
 		"multiply": 1.2

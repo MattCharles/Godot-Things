@@ -1,5 +1,7 @@
 extends Node
 
+const card_id := 2
+
 const modifiers := {
 	"bullet_bounces": {
 		"add": 2
