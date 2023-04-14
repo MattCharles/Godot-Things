@@ -18,11 +18,14 @@ const PlayerScene = preload("res://Characters/Player.tscn")
 @onready var GameScene = preload("res://Levels/Level1.tscn").instantiate()
 @onready var player_stuff = preload("res://System/memory.tscn").instantiate()
 
+@onready var empty_choice = preload("res://Items/upgrade_choice.tscn")
+
 var player_positions
 
 func _ready():
 	player_positions = [$readyup.get_node("P1Position"), $readyup.get_node("P2Position"), $readyup.get_node("P3Position"), $readyup.get_node("P4Position")]
 	player_name_field = $menu/Controls/PlayerNameContainer/LineEdit
+	
 
 #Handle player input
 

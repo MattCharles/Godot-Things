@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://cpufb58ucpy2n"]
+
+[ext_resource type="Script" path="res://Assets/Resources/CardData/tank_data.gd" id="1_pisje"]
+
+[resource]
+script = ExtResource("1_pisje")
+modifiers = null
+title = "Tank"
+description = "Get bigger and healthier - but slower!"
+image = NodePath("Button/AnimatedSprite2D")

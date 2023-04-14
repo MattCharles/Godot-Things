@@ -1,0 +1,58 @@
+[gd_resource type="SpriteFrames" load_steps=8 format=3 uid="uid://bur7qlkbxdht1"]
+
+[ext_resource type="Texture2D" uid="uid://b45u0odqpx6sl" path="res://Items/Upgrades/Tank/Tank-Sheet.png" id="1_61sk5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jbpop"]
+atlas = ExtResource("1_61sk5")
+region = Rect2(30, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6ygi6"]
+atlas = ExtResource("1_61sk5")
+region = Rect2(0, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8cfcj"]
+atlas = ExtResource("1_61sk5")
+region = Rect2(30, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x04w0"]
+atlas = ExtResource("1_61sk5")
+region = Rect2(60, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_43p1t"]
+atlas = ExtResource("1_61sk5")
+region = Rect2(90, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n5wo3"]
+atlas = ExtResource("1_61sk5")
+region = Rect2(120, 0, 30, 30)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jbpop")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6ygi6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8cfcj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x04w0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_43p1t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n5wo3")
+}],
+"loop": true,
+"name": &"hover",
+"speed": 5.0
+}]
