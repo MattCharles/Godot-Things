@@ -288,8 +288,8 @@ func generate_level() -> void:
 			$SpawnRoot.add_child(placeholder, true)
 
 func generate_symmetrical_object_coords() -> Array:
-	var x := max(randi() % OBSTACLE_MAX_X, OBSTACLE_BUFFER)
-	var y := max(randi() % OBSTACLE_MAX_Y, OBSTACLE_BUFFER)
+	var x = max(randi() % OBSTACLE_MAX_X, OBSTACLE_BUFFER)
+	var y = max(randi() % OBSTACLE_MAX_Y, OBSTACLE_BUFFER)
 	return [Vector2(x, y), Vector2(OBSTACLE_MAX_X - x, OBSTACLE_MAX_Y - y)]
 	
 func get_exclusions_for(id) -> Array:
@@ -298,7 +298,7 @@ func get_exclusions_for(id) -> Array:
 	var current_ids := get_player_power_ids(id)
 	for power_id in current_ids:
 		print("excluding " + str(power_id))
-		var exclusions := AVOID_AFTER.get(power_id)
+		var exclusions = AVOID_AFTER.get(power_id)
 		result.append_array(exclusions)
 	return result
 

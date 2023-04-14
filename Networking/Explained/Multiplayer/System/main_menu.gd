@@ -107,17 +107,18 @@ func _on_HolePunch_update_lobby(nicknames, max_players):
 		print("Status: Room open!")
 		
 func _on_connect_timer_timeout(): 
+	print("connect timer timed out")
 	$ConnectTimer.stop()
 	if $HolePunch.is_host:
 		var net = ENetMultiplayerPeer.new() #Create regular godot peer to peer server
-		net.create_server(own_port, 2) #You can follow regular godot networking tutorials to extend this
+		print("create server status code: " + str(net.create_server(own_port, 2))) #You can follow regular godot networking tutorials to extend this
 		multiplayer.set_multiplayer_peer(net)
 		multiplayer.peer_connected.connect(self._update_counter)
 		$game_start.start_game.connect(self._load_level)
 	else:
 		$game_start.start_game.connect(self._load_level)
 		var net = ENetMultiplayerPeer.new() #Connect to host
-		net.create_client(host_address, host_port, 0, 0, own_port)
+		print("client connection code: " + str(net.create_client(host_address, host_port, 0, 0, own_port)))
 		multiplayer.set_multiplayer_peer(net)
 
 func _load_level():
@@ -134,9 +135,11 @@ func _load_fr():
 		root.add_child(GameScene)
 
 func _update_counter(id):
+	print("updating counter")
 	if $HolePunch.is_host:
 		var this_player = player_stuff.contents.keys()[$game_start.num_connected-1]
 		player_stuff.contents[this_player]["id"] = id
+		print(str(player_stuff))
 		$game_start.num_connected = $game_start.num_connected + 1
 
 func _on_HolePunch_session_registered():

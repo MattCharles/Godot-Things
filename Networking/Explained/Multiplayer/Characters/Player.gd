@@ -234,7 +234,7 @@ func _process(delta):
 				#  back to 0.0, the default state.
 				position = current_teleporter.position
 				$Networking.sync_position = position
-				var teleport_in_progress := max(2.0 - (percent_done * 2.0), 0.0)
+				var teleport_in_progress = max(2.0 - (percent_done * 2.0), 0.0)
 				#teleport_shader.set_shader_parameter("progress", teleport_in_progress)
 				rpc("set_teleport_shader_progress", teleport_in_progress)
 			if percent_done > .99:
