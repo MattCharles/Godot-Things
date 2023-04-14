@@ -29,6 +29,8 @@ const DEFAULT_CRIT_MULTIPLIER := 2
 const TELEPORT_STUN_TIME := .3 # 1.000 = 1 second
 const DEFAULT_MAX_POWER_COOLDOWN := 0.0
 const DAMAGE_FLASH_TIMER := .1
+const DEFAULT_DIZZY_TURTLE := false
+const DEFAULT_HAS_SHIELD := false
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -58,6 +60,7 @@ var roll = "Roll"
 var teleporter_scene := preload("res://Items/teleporter.tscn")
 var current_teleporter = null
 
+var dizzy_turtle := DEFAULT_DIZZY_TURTLE
 var shot_cooldown
 var roll_time = DEFAULT_ROLL_TIME
 var player_bullet := DEFAULT_BULLET
@@ -93,7 +96,7 @@ var is_shooting := false
 var is_stunned := false
 var remaining_stun_time := 0.0
 var is_teleporting := false
-var has_shield := false
+var has_shield := DEFAULT_HAS_SHIELD
 var has_sword := false
 var max_power_cooldown := DEFAULT_MAX_POWER_COOLDOWN
 var power_cooldown := max_power_cooldown
@@ -156,7 +159,8 @@ func _process(delta):
 					$Shield/Sprite2D.flip_v = $Hand.global_position.x < self.global_position.x
 					$Shield.rotation = $Hand.rotation
 		
-		if no_scope_crit_enabled and not crits_stored >= max_crits:
+		var should_track_360_no_scopes := no_scope_crit_enabled and not crits_stored >= max_crits
+		if dizzy_turtle or should_track_360_no_scopes:
 			if previous_zones[0] == -1:
 				zone_push_pop()
 			var degrees_of_rotation = int(rad_to_deg($Hand.rotation))
@@ -171,10 +175,16 @@ func _process(delta):
 				no_scope_spin_timer.start()
 				zone_push_pop()
 			if detect_spin(Array(previous_zones)):
-				print("Crit stored")
-				crits_stored = min(crits_stored + 1, max_crits)
-				rpc("set_crits_stored", crits_stored)
-				rpc("set_sprite_modulate", CRIT_COLOR_INDEX)
+				if should_track_360_no_scopes:
+					print("Crit stored")
+					crits_stored = min(crits_stored + 1, max_crits)
+					rpc("set_crits_stored", crits_stored)
+					rpc("set_sprite_modulate", CRIT_COLOR_INDEX)
+				if dizzy_turtle and not $Shield.visible:
+					print("Turtle dizzied")
+					rpc("set_has_shield", true)
+					$Shield.reset()
+					
 		
 		if not is_stunned and can_power and Input.is_action_just_pressed("power"):
 			if current_teleporter == null:
@@ -213,7 +223,7 @@ func _process(delta):
 		if not $Networking.processed_hand_position:
 			$Hand.position = $Networking.sync_hand_position
 			$Networking.processed_hand_position = true
-			if has_shield: # TODO: Store this in $Networking
+			if has_shield:
 				$Shield.position = -$Networking.sync_hand_position
 		$Hand.rotation = $Networking.sync_hand_rotation
 		$Hand/Sprite2d.flip_v = $Networking.sync_hand_flip
@@ -480,6 +490,7 @@ func reset():
 	crits_stored = DEFAULT_NUM_CRITS_STORED
 	clip_size = DEFAULT_CLIP_SIZE
 	reload_time = DEFAULT_RELOAD_TIME
+	has_shield = DEFAULT_HAS_SHIELD
 	if current_teleporter != null:
 		rpc("free_teleporter")
 	
@@ -506,6 +517,7 @@ func reset():
 		rpc("set_roll_speed", roll_speed)
 		rpc("set_roll_time", roll_time)
 		rpc("set_reload_time", reload_time)
+		rpc("set_dizzy_turtle", dizzy_turtle)
 	if multiplayer.is_server():
 		rpc("remote_dictate_position", initial_position)
 	$Networking.sync_bullet_scale = bullet_scale
@@ -592,6 +604,12 @@ func remote_change_name(_new_name):
 func remote_dictate_position(new_position):
 	print("remote position set")
 	position = new_position
+	
+@rpc("reliable", "call_local", "any_peer")
+func set_dizzy_turtle(dizzy):
+	dizzy_turtle = dizzy
+	if dizzy:
+		has_shield = false
 	
 @rpc("reliable", "call_local", "any_peer")
 func set_bullets_per_shot(bpc):

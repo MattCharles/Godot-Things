@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bgpq7txp7u0ol"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/DizzyTurtle/power.gd" id="1_iy8g6"]
+
+[node name="DizzyTurtle" type="Node"]
+script = ExtResource("1_iy8g6")
