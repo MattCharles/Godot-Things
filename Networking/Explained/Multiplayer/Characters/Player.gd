@@ -33,6 +33,8 @@ const DEFAULT_DIZZY_TURTLE := false
 const DEFAULT_HAS_SHIELD := false
 const DEFAULT_ANGRY_TURTLE := false
 const ANGRY_TURTLE_THRESHOLD := 50
+const DEFAULT_CAN_SPRINT := false
+const SPRINT_POWER_COOLDOWN := 3.0
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -53,6 +55,7 @@ signal i_die(id: int)
 @onready var _animated_sprite = $AnimatedSprite2D
 @onready var shoot_point = $Hand/ShootPoint
 @onready var reload_spinner = $UI/ReloadSpinner
+@onready var sprint_timer := $SprintTimer
 
 # animation names
 var walk = "Walk" 
@@ -103,8 +106,9 @@ var has_shield := DEFAULT_HAS_SHIELD
 var has_sword := false
 var max_power_cooldown := DEFAULT_MAX_POWER_COOLDOWN
 var power_cooldown := max_power_cooldown
-var can_power := false
+var can_power := true
 var reload_time := DEFAULT_RELOAD_TIME
+var can_sprint := DEFAULT_CAN_SPRINT
 
 @onready var teleport_shader = $AnimatedSprite2D.material
 
@@ -190,12 +194,18 @@ func _process(delta):
 					
 		
 		if not is_stunned and can_power and Input.is_action_just_pressed("power"):
-			if current_teleporter == null:
-				power()
+			if has_teleporter: 
+				if current_teleporter == null:
+					rpc("create_teleporter")
+					can_power = false
+				else:
+					remaining_stun_time = TELEPORT_STUN_TIME
+					is_teleporting = true
+			if can_sprint:
+				rpc("sprint")
+				power_cooldown = SPRINT_POWER_COOLDOWN
 				can_power = false
-			else:
-				remaining_stun_time = TELEPORT_STUN_TIME
-				is_teleporting = true
+				
 		if not is_stunned and bullets_left_in_clip > 0 and Input.is_action_just_pressed("shoot"):
 			if not is_shooting: shoot()
 		elif not is_stunned and reload_timer.is_stopped() and (Input.is_action_just_pressed("shoot") or Input.is_action_just_pressed("reload")):
@@ -244,10 +254,6 @@ func _process(delta):
 @rpc("call_local", "any_peer")
 func set_teleport_shader_progress(progress:float) -> void:
 	teleport_shader.set_shader_parameter("progress", progress)
-
-func power():
-	if not has_teleporter: return
-	rpc("process_power")
 	
 func is_mouse_outside_player_hitbox() -> bool:
 	return (self.get_global_mouse_position() - self.global_position).length_squared() >= SQUARE_DISTANCE_FROM_CENTER_TO_HAND
@@ -433,7 +439,7 @@ func go_berserk():
 	rpc("set_crits_stored", crits_stored + 1)
 
 @rpc("reliable", "call_local", "any_peer")
-func process_power():
+func create_teleporter():
 	var instance = teleporter_scene.instantiate()
 	instance.position = position
 	get_node("/root/Level/SpawnRoot").add_child(instance, true)

@@ -214,6 +214,7 @@ scale = Vector2(1.5, -1.24493)
 shape = SubResource("CapsuleShape2D_prajl")
 
 [node name="UI" type="Control" parent="."]
+z_index = 1
 layout_mode = 3
 anchors_preset = 0
 offset_left = -56.0
