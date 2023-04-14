@@ -35,6 +35,9 @@ const DEFAULT_ANGRY_TURTLE := false
 const ANGRY_TURTLE_THRESHOLD := 50
 const DEFAULT_CAN_SPRINT := false
 const SPRINT_POWER_COOLDOWN := 3.0
+const SPRINT_SPEED_MULTIPLIER := 1.5
+const DEFAULT_SPRINT_ROLL_SPEED := DEFAULT_ROLL_SPEED * SPRINT_SPEED_MULTIPLIER
+const DEFAULT_SPRINT_SPEED := DEFAULT_SPEED * SPRINT_SPEED_MULTIPLIER
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -55,7 +58,6 @@ signal i_die(id: int)
 @onready var _animated_sprite = $AnimatedSprite2D
 @onready var shoot_point = $Hand/ShootPoint
 @onready var reload_spinner = $UI/ReloadSpinner
-@onready var sprint_timer := $SprintTimer
 
 # animation names
 var walk = "Walk" 
@@ -109,6 +111,11 @@ var power_cooldown := max_power_cooldown
 var can_power := true
 var reload_time := DEFAULT_RELOAD_TIME
 var can_sprint := DEFAULT_CAN_SPRINT
+var sprint_speed := DEFAULT_SPRINT_SPEED
+var sprint_roll_speed := DEFAULT_SPRINT_ROLL_SPEED
+
+# swap var so we can restore a user's original speed when they are done sprinting
+var speed_temp := sprint_speed
 
 @onready var teleport_shader = $AnimatedSprite2D.material
 
@@ -143,6 +150,8 @@ func _process(delta):
 			if power_cooldown < .01: # .01 buffer for float comparison
 				can_power = true
 				power_cooldown = max_power_cooldown
+				if can_sprint:
+					speed = speed_temp
 		# floating point math doesn't like exactly 0
 		is_stunned = remaining_stun_time > 0.01
 		if(is_stunned): move_state = Movement.states.STUNNED
@@ -202,6 +211,7 @@ func _process(delta):
 					remaining_stun_time = TELEPORT_STUN_TIME
 					is_teleporting = true
 			if can_sprint:
+				speed_temp = speed
 				rpc("sprint")
 				power_cooldown = SPRINT_POWER_COOLDOWN
 				can_power = false
@@ -694,6 +704,12 @@ func set_roll_time(value):
 func set_reload_time(value):
 	reload_time = value
 	$ReloadTimer.wait_time = reload_time
+
+@rpc("reliable", "call_local", "any_peer")
+func sprint():
+	speed_temp = speed
+	speed = sprint_speed
+	roll_speed = sprint_roll_speed
 
 @rpc("reliable", "call_local", "any_peer")
 func set_roll_speed(value):
