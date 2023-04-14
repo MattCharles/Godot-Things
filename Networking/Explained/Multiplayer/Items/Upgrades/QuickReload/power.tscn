@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://mijb4lk00wct"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/QuickReload/power.gd" id="1_f5v5w"]
+
+[node name="QuickReload" type="Node"]
+script = ExtResource("1_f5v5w")

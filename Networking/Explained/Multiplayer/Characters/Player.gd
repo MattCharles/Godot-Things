@@ -24,8 +24,7 @@ const DEFAULT_IS_BERSERKER := false
 const DEFAULT_NUM_CRITS_STORED := 0
 const DEFAULT_MAX_CRITS_STORED := 1
 const DEFAULT_CLIP_SIZE := 5
-const DEFAULT_RELOAD_TIME := 1
-const DEFAULT_RELOAD_TIMER := 2
+const DEFAULT_RELOAD_TIME := 1.0
 const DEFAULT_CRIT_MULTIPLIER := 2
 const TELEPORT_STUN_TIME := .3 # 1.000 = 1 second
 const DEFAULT_MAX_POWER_COOLDOWN := 0.0
@@ -98,7 +97,8 @@ var has_shield := false
 var has_sword := false
 var max_power_cooldown := DEFAULT_MAX_POWER_COOLDOWN
 var power_cooldown := max_power_cooldown
-var can_power := true
+var can_power := false
+var reload_time := DEFAULT_RELOAD_TIME
 
 @onready var teleport_shader = $AnimatedSprite2D.material
 
@@ -110,6 +110,7 @@ func _ready():
 	$Networking/MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
 	no_scope_spin_timer.timeout.connect(zone_push_pop)
 	no_scope_spin_timer.one_shot = true
+	reload_timer.wait_time = reload_time
 	reload_timer.timeout.connect(reset_ammo)
 	reload_timer.one_shot = true
 	reload_spinner.max_value = clip_size
@@ -434,7 +435,6 @@ func process_shot(bname, look_target, distant_target):
 		rpc("set_crits_stored", crits_stored - 1)
 		if crits_stored < 1:
 			rpc("set_sprite_modulate", DEFAULT_COLOR_INDEX)
-		instance.modulate = Color(2, 0, 0, .8)
 		crit_damage = bullet_damage * crit_multiplier
 	instance.set_damage(crit_damage)
 	instance.look_at(look_target)
@@ -479,6 +479,7 @@ func reset():
 	no_scope_crit_enabled = DEFAULT_NO_SCOPE_CRIT_ENABLED
 	crits_stored = DEFAULT_NUM_CRITS_STORED
 	clip_size = DEFAULT_CLIP_SIZE
+	reload_time = DEFAULT_RELOAD_TIME
 	if current_teleporter != null:
 		rpc("free_teleporter")
 	
@@ -504,6 +505,7 @@ func reset():
 		rpc("set_is_berserker", is_berserker)
 		rpc("set_roll_speed", roll_speed)
 		rpc("set_roll_time", roll_time)
+		rpc("set_reload_time", reload_time)
 	if multiplayer.is_server():
 		rpc("remote_dictate_position", initial_position)
 	$Networking.sync_bullet_scale = bullet_scale
@@ -648,6 +650,11 @@ func set_sprite_modulate(value:int) -> void:
 @rpc("reliable", "call_local", "any_peer")
 func set_roll_time(value):
 	roll_time = value
+
+@rpc("reliable", "call_local", "any_peer")
+func set_reload_time(value):
+	reload_time = value
+	$ReloadTimer.wait_time = reload_time
 
 @rpc("reliable", "call_local", "any_peer")
 func set_roll_speed(value):

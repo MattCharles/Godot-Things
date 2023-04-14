@@ -29,7 +29,8 @@ var buttons = [preload("res://Items/Upgrades/Tank/choice.tscn"),
 				preload("res://Items/Upgrades/BiggoBullets/choice.tscn"),
 				preload("res://Items/Upgrades/Shield/choice.tscn"),
 				preload("res://Items/Upgrades/Berserker/choice.tscn"),
-				preload("res://Items/Upgrades/QuickRoll/choice.tscn")]
+				preload("res://Items/Upgrades/QuickRoll/choice.tscn"),
+				preload("res://Items/Upgrades/QuickReload/choice.tscn")]
 
 var powers = [load("res://Items/Upgrades/Tank/power.tscn"), 
 				load("res://Items/Upgrades/Shotgun/power.tscn"),
@@ -42,7 +43,8 @@ var powers = [load("res://Items/Upgrades/Tank/power.tscn"),
 				load("res://Items/Upgrades/BiggoBullets/power.tscn"),
 				load("res://Items/Upgrades/Shield/power.tscn"),
 				load("res://Items/Upgrades/Berserker/power.tscn"),
-				load("res://Items/Upgrades/QuickRoll/power.tscn")] #TODO - load the power node when choice is displayed
+				load("res://Items/Upgrades/QuickRoll/power.tscn"),
+				load("res://Items/Upgrades/QuickReload/power.tscn")] #TODO - load the power node when choice is displayed
 
 var obstacles = [preload("res://Items/Obstacles/haystack.tscn")]
 
