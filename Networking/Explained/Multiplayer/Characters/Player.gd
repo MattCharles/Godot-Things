@@ -31,6 +31,8 @@ const DEFAULT_MAX_POWER_COOLDOWN := 0.0
 const DAMAGE_FLASH_TIMER := .1
 const DEFAULT_DIZZY_TURTLE := false
 const DEFAULT_HAS_SHIELD := false
+const DEFAULT_ANGRY_TURTLE := false
+const ANGRY_TURTLE_THRESHOLD := 50
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -61,6 +63,7 @@ var teleporter_scene := preload("res://Items/teleporter.tscn")
 var current_teleporter = null
 
 var dizzy_turtle := DEFAULT_DIZZY_TURTLE
+var angry_turtle := DEFAULT_ANGRY_TURTLE
 var shot_cooldown
 var roll_time = DEFAULT_ROLL_TIME
 var player_bullet := DEFAULT_BULLET
@@ -408,6 +411,7 @@ func change_name(_new_name):
 	
 func damage(amount):
 	if multiplayer.is_server():
+		var crossed_turtle_threshold = health >= ANGRY_TURTLE_THRESHOLD and health - amount <= ANGRY_TURTLE_THRESHOLD
 		rpc("take_damage", amount)
 		rpc("set_sprite_modulate", DAMAGE_FLASH_INDEX)
 		get_tree().create_timer(DAMAGE_FLASH_TIMER).timeout.connect(func ():
@@ -415,6 +419,10 @@ func damage(amount):
 		if is_berserker:
 			rpc("go_berserk")
 			rpc("set_sprite_modulate", CRIT_COLOR_INDEX)
+		if angry_turtle and crossed_turtle_threshold:
+			rpc("set_has_shield", true)
+			$Shield.reset()
+		
 		
 func stun(milliseconds:float) -> void:
 	if multiplayer.is_server():
@@ -518,6 +526,7 @@ func reset():
 		rpc("set_roll_time", roll_time)
 		rpc("set_reload_time", reload_time)
 		rpc("set_dizzy_turtle", dizzy_turtle)
+		rpc("set_angry_turtle", angry_turtle)
 	if multiplayer.is_server():
 		rpc("remote_dictate_position", initial_position)
 	$Networking.sync_bullet_scale = bullet_scale
@@ -609,6 +618,12 @@ func remote_dictate_position(new_position):
 func set_dizzy_turtle(dizzy):
 	dizzy_turtle = dizzy
 	if dizzy:
+		has_shield = false
+		
+@rpc("reliable", "call_local", "any_peer")
+func set_angry_turtle(angry):
+	angry_turtle = angry
+	if angry:
 		has_shield = false
 	
 @rpc("reliable", "call_local", "any_peer")

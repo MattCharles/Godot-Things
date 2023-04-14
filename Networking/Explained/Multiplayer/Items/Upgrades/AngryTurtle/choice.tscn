@@ -1,0 +1,133 @@
+[gd_scene load_steps=13 format=3 uid="uid://di6v2hx6m3oow"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/AngryTurtle/choice.gd" id="1_ssvg1"]
+[ext_resource type="Texture2D" uid="uid://b6m5amcx22cae" path="res://Characters/Poochys/Poochy-Stander.png" id="2_1d6qf"]
+[ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_1m5m5"]
+[ext_resource type="PackedScene" uid="uid://d2fumabn73i07" path="res://Items/Upgrades/AngryTurtle/power.tscn" id="4_p316u"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_3mvwi"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bv05w"]
+atlas = ExtResource("3_1m5m5")
+region = Rect2(0, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mli87"]
+atlas = ExtResource("3_1m5m5")
+region = Rect2(17, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ejdo0"]
+atlas = ExtResource("3_1m5m5")
+region = Rect2(34, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w0gdg"]
+atlas = ExtResource("3_1m5m5")
+region = Rect2(51, 0, 17, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fq7r8"]
+atlas = ExtResource("3_1m5m5")
+region = Rect2(68, 0, 17, 23)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1t77e"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_1d6qf")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bv05w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mli87")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ejdo0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w0gdg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fq7r8")
+}],
+"loop": true,
+"name": &"hover",
+"speed": 5.0
+}]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_hh40e"]
+properties/0/path = NodePath(".:picker")
+properties/0/spawn = true
+properties/0/sync = true
+properties/1/path = NodePath(".:remote_animation")
+properties/1/spawn = true
+properties/1/sync = true
+properties/2/path = NodePath(".:updated_animation")
+properties/2/spawn = true
+properties/2/sync = true
+properties/3/path = NodePath("Description:text")
+properties/3/spawn = true
+properties/3/sync = true
+properties/4/path = NodePath("Title:text")
+properties/4/spawn = true
+properties/4/sync = true
+properties/5/path = NodePath(".:card_id")
+properties/5/spawn = true
+properties/5/sync = true
+
+[node name="AngryTurtle" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+size_flags_horizontal = 3
+script = ExtResource("1_ssvg1")
+
+[node name="Button" type="Button" parent="."]
+custom_minimum_size = Vector2(500, 888)
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+expand_icon = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Button"]
+modulate = Color(1, 0, 1, 1)
+material = SubResource("CanvasItemMaterial_3mvwi")
+position = Vector2(191.164, 307.535)
+rotation = -2.07869
+scale = Vector2(0.942749, 30.8459)
+sprite_frames = SubResource("SpriteFrames_1t77e")
+animation = &"hover"
+
+[node name="Networking" type="Node" parent="."]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
+root_path = NodePath("../..")
+replication_config = SubResource("SceneReplicationConfig_hh40e")
+
+[node name="Description" type="Label" parent="."]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 488.0
+offset_right = 489.0
+offset_bottom = 876.0
+theme_override_font_sizes/font_size = 52
+text = "When you get to low health, gain a shield"
+autowrap_mode = 3
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 11.0
+offset_right = 489.0
+offset_bottom = 94.0
+theme_override_font_sizes/font_size = 52
+text = "Angry Turtle"
+horizontal_alignment = 1
+
+[node name="AngryTurtle" parent="." instance=ExtResource("4_p316u")]
+
+[connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
+[connection signal="mouse_exited" from="Button" to="." method="_on_button_mouse_exited"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
