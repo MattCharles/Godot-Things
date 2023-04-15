@@ -1,6 +1,8 @@
 extends CharacterBody2D
 class_name Player
 
+const OBSTACLE_COLLISION_LABEL := 2
+
 const DEFAULT_SPEED := 400
 const DEFAULT_ROLL_SPEED := 700
 const DEFAULT_HEALTH := 100
@@ -382,8 +384,7 @@ func process_move(_delta) -> void:
 func process_roll(_delta) -> void:
 	_animated_sprite.play(roll)
 	if !is_local_authority(): # this is somebody else's player character
-		$CollisionShape2D.set_deferred("disabled", !$Networking.sync_collidable)
-		print("Starting roll for " + str($Networking/MultiplayerSynchronizer.get_multiplayer_authority()) + ": collidable status = " + str($Networking.sync_collidable))
+		set_collision_mask_value(OBSTACLE_COLLISION_LABEL, $Networking.sync_collidable)
 		if not $Networking.processed_position:
 			position = $Networking.sync_position
 			$Networking.processed_position = true
@@ -391,7 +392,7 @@ func process_roll(_delta) -> void:
 		move_and_slide()
 		return
 	$Networking.sync_collidable = false
-	$CollisionShape2D.set_deferred("disabled", !$Networking.sync_collidable)
+	set_collision_mask_value(OBSTACLE_COLLISION_LABEL, $Networking.sync_collidable)
 	
 	velocity = roll_vector * roll_speed
 	move_and_slide()
@@ -402,7 +403,7 @@ func process_roll(_delta) -> void:
 @rpc("reliable", "any_peer", "call_local")
 func roll_finished() -> void:
 	$Networking.sync_collidable = true
-	$CollisionShape2D.set_deferred("disabled", !$Networking.sync_collidable)
+	set_collision_mask_value(OBSTACLE_COLLISION_LABEL, $Networking.sync_collidable)
 	$Networking.sync_move_state = Movement.states.MOVE
 	move_state = Movement.states.MOVE
 	
@@ -426,6 +427,7 @@ func change_name(_new_name):
 	rpc("remote_change_name", _new_name)
 	
 func damage(amount):
+	print("damaging player by " + str(amount))
 	if multiplayer.is_server():
 		var crossed_turtle_threshold = health >= ANGRY_TURTLE_THRESHOLD and health - amount <= ANGRY_TURTLE_THRESHOLD
 		rpc("take_damage", amount)
@@ -470,6 +472,7 @@ func process_shot(bname, look_target, distant_target):
 		if crits_stored < 1:
 			rpc("set_sprite_modulate", DEFAULT_COLOR_INDEX)
 		crit_damage = bullet_damage * crit_multiplier
+		instance.modulate = Color(.8, 0, 0, 1)
 	instance.set_damage(crit_damage)
 	instance.look_at(look_target)
 	instance.global_position = shoot_point.global_position

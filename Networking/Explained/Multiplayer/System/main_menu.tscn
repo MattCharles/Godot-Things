@@ -214,6 +214,7 @@ script = ExtResource("4_rdy3q")
 script = ExtResource("1_aw5gd")
 rendevouz_address = "20.163.99.165"
 rendevouz_port = 12939
+local_testing = true
 
 [node name="ConnectTimer" type="Timer" parent="."]
 one_shot = true
