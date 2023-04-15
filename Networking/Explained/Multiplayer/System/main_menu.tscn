@@ -229,8 +229,8 @@ replication_config = SubResource("SceneReplicationConfig_76t8u")
 
 [connection signal="pressed" from="menu/Controls/HBoxContainer/CreateLobbyButton" to="." method="_on_create_lobby_button_pressed"]
 [connection signal="pressed" from="menu/Controls/HBoxContainer/JoinLobbyButton" to="." method="_on_join_lobby_button_pressed"]
-[connection signal="timeout" from="menu/FailTimer" to="." method="_on_fail_timer_timeout"]
 [connection signal="timeout" from="menu/FailTimer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="menu/FailTimer" to="." method="_on_fail_timer_timeout"]
 [connection signal="hole_punched" from="HolePunch" to="." method="_on_HolePunch_hole_punched"]
 [connection signal="return_room_code" from="HolePunch" to="." method="_on_HolePunch_return_room_code"]
 [connection signal="return_unsuccessful" from="HolePunch" to="." method="_on_HolePunch_return_unsuccessful"]

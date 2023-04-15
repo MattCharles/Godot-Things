@@ -139,6 +139,8 @@ func _process(delta):
 					var clientdata = packet_string.split(",") #this is formatted client:ip:port,client2:ip:port
 					for c in clientdata:
 						var m = c.split(DELIMITER)
+						if m[3] == "True":
+							host_address = m[1]
 						peers[m[0]] = {"port":m[2], "address":("localhost" if local_testing else m[1]),"hosting":(m[3]=="True"),"name":m[0]}
 					recieved_peer_info = true
 					start_peer_contact()
