@@ -198,6 +198,7 @@ properties/20/sync = true
 size = Vector2(32, 59)
 
 [node name="Player" type="CharacterBody2D"]
+z_index = 2
 collision_layer = 8
 collision_mask = 3
 script = ExtResource("1_uheab")
