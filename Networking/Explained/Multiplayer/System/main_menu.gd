@@ -99,7 +99,7 @@ func _on_HolePunch_update_lobby(nicknames, max_players):
 		placeholder.set_position(player_positions[i].position)
 		i += 1
 		add_child(placeholder)
-		lobby_message+=nickname+"\n"
+		lobby_message+=entry+"\n"
 	if nicknames.size()>1: #you're not alone!
 		print("Status: Ready to play!")
 		print(lobby_message)

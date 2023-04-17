@@ -91,6 +91,7 @@ func _process(delta):
 		var packet_string = array_bytes.get_string_from_utf8()
 		if packet_string.begins_with(PEER_GREET):
 			print("< peer greet!")
+			print("packet_string: " + packet_string)
 			var m = packet_string.split(DELIMITER)
 			_handle_greet_message(m[1], m[2].to_int())
 		elif packet_string.begins_with(PEER_CONFIRM):
@@ -102,6 +103,7 @@ func _process(delta):
 			var m = packet_string.split(DELIMITER)
 			_handle_go_message(m[1], m[2].to_int())
 		else:
+			print("string: " + packet_string)
 			print("< unrecognized peer message!")
 
 	#handle server messages
@@ -133,6 +135,7 @@ func _process(delta):
 		if not recieved_peer_info:
 			if packet_string.begins_with(SERVER_INFO):
 				server_udp.close()
+				print("packet_string" + packet_string)
 				packet_string = packet_string.right(-6) #after 'peers:'
 				if packet_string.length() > 2:
 					print("player info: " + packet_string)
@@ -159,7 +162,7 @@ func _handle_greet_message(peer_name, peer_port):
 		host_address=peers[peer_name].address
 
 #message that a peer has received all other peer's info
-func _handle_confirm_message(peer_name,peer_port):
+func _handle_confirm_message(peer_name, peer_port):
 	if not peer_name in peer_stages:
 		peer_stages[peer_name] = 0
 	peer_stages[peer_name] = 2
@@ -198,15 +201,17 @@ func _ping_peer():
 		if stage < 1: all_info = false
 		if stage < 2: all_confirm = false
 		if stage == 0: #received no contact, send greet
+			print(str(peer.address) + " " + str(peer.port) + " ")
 			# When running tests on localhost, sometimes the host pings itself forever looking for the client.
 			# Use randomness to give it an out
 			if ping_cycles >= response_window or (randi() % 5 == 0 and str(peer.port) == str(own_port)):
-				_cascade_peer(peer.address,peer.port)
+				_cascade_peer(peer.address, peer.port)
 			else:
 				print("> send greet!")
 				peer_udp.set_dest_address(peer.address, peer.port if typeof(peer.port) == TYPE_INT else peer.port.to_int())
 				var buffer = PackedByteArray()
-				buffer.append_array((PEER_GREET + DELIMITER +client_name+DELIMITER+str(own_port)).to_utf8_buffer())
+				buffer.append_array((PEER_GREET + DELIMITER + client_name + DELIMITER + str(own_port)).to_utf8_buffer())
+				print("sending message: " + buffer.get_string_from_utf8())
 				peer_udp.put_packet(buffer)
 		if stage == 1 and recieved_peer_greets:
 			print("> send confirm!")
@@ -304,7 +309,7 @@ func _send_client_to_server():
 	var buffer = PackedByteArray()
 	print("registering client " + str(client_name))
 	print("nickname " + str(nickname))
-	buffer.append_array((REGISTER_CLIENT + DELIMITER +client_name+DELIMITER+room_code+DELIMITER+nickname).to_utf8_buffer())
+	buffer.append_array((REGISTER_CLIENT + DELIMITER + client_name + DELIMITER + room_code + DELIMITER+nickname).to_utf8_buffer())
 	server_udp.close()
 	server_udp.set_dest_address(rendevouz_address, rendevouz_port)
 	server_udp.put_packet(buffer)
