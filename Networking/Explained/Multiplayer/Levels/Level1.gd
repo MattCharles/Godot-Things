@@ -12,7 +12,6 @@ const ROUNDS_PER_GAME := 5
 const WINS_PER_ROUND := 2
 
 const OBSTACLE_BUFFER := 100
-
 const OBSTACLE_MAX_X := 1920 - OBSTACLE_BUFFER
 const OBSTACLE_MAX_Y := 1080 - OBSTACLE_BUFFER
 
@@ -35,7 +34,9 @@ var buttons = [preload("res://Items/Upgrades/Tank/choice.tscn"),
 				preload("res://Items/Upgrades/AngryTurtle/choice.tscn"),
 				preload("res://Items/Upgrades/Sprint/choice.tscn"),
 				preload("res://Items/Upgrades/NinjaRoll/choice.tscn"),
-				preload("res://Items/Upgrades/Poochzilla/choice.tscn")]
+				preload("res://Items/Upgrades/PizzaChef/choice.tscn"),
+				preload("res://Items/Upgrades/Poochzilla/choice.tscn"),
+				preload("res://Items/Upgrades/Hayroller/choice.tscn")]
 
 var powers = [load("res://Items/Upgrades/Tank/power.tscn"), 
 				load("res://Items/Upgrades/Shotgun/power.tscn"),
@@ -54,7 +55,9 @@ var powers = [load("res://Items/Upgrades/Tank/power.tscn"),
 				load("res://Items/Upgrades/AngryTurtle/power.tscn"),
 				load("res://Items/Upgrades/Sprint/power.tscn"),
 				load("res://Items/Upgrades/NinjaRoll/power.tscn"),
-				load("res://Items/Upgrades/Poochzilla/power.tscn")] #TODO - load the power node when choice is displayed
+				load("res://Items/Upgrades/PizzaChef/power.tscn")
+				load("res://Items/Upgrades/Poochzilla/power.tscn"),
+				load("res://Items/Upgrades/Hayroller/power.tscn")] #TODO - load the power node when choice is displayed
 
 var obstacles = [preload("res://Items/Obstacles/haystack.tscn")]
 
@@ -77,7 +80,8 @@ const AVOID_AFTER := {
 	15: [],
 	16: [16],
 	17: [17],
-	18: []
+	18: [19],
+	19: [18]
 }
 
 func _ready():

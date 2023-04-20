@@ -45,6 +45,7 @@ const DEFAULT_SPRINT_SPEED := DEFAULT_SPEED * SPRINT_SPEED_MULTIPLIER
 const DEFAULT_NINJA_ROLL := false
 const DEFAULT_ROLL_COOLDOWN := 1.0
 const DEFAULT_IS_POOCHZILLA := false
+const DEFAULT_IS_HAYROLLER := false
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -74,6 +75,7 @@ var default = "default"
 var roll = "Roll"
 
 var teleporter_scene := preload("res://Items/teleporter.tscn")
+var hay_scene := preload("res://Items/Obstacles/haystack.tscn")
 var pizza_scene := preload("res://Items/pizza.tscn")
 var current_teleporter = null
 
@@ -129,6 +131,7 @@ var has_ninja_roll := false
 var is_pizza_chef := false
 var roll_off_cooldown := true
 var is_poochzilla := DEFAULT_IS_POOCHZILLA
+var is_hayroller := DEFAULT_IS_HAYROLLER
 
 # swap var so we can restore a user's original speed when they are done sprinting
 var speed_temp := sprint_speed
@@ -412,6 +415,8 @@ func process_move(_delta) -> void:
 	
 
 func process_roll(_delta) -> void:
+	if is_hayroller:
+		rpc("create_hay")
 	time_until_can_roll = roll_cooldown
 	_animated_sprite.play(roll)
 	if !is_local_authority(): # this is somebody else's player character
@@ -505,6 +510,12 @@ func create_pizza():
 	get_node("/root/Level/SpawnRoot").add_child(instance, true)
 
 @rpc("reliable", "call_local", "any_peer")
+func create_hay():
+	var instance = hay_scene.instantiate()
+	instance.position = position
+	get_node("/root/Level/SpawnRoot").add_child(instance, true)
+
+@rpc("reliable", "call_local", "any_peer")
 func process_shot(bname, look_target, distant_target):
 	print("shooting, crit count:" + str(crits_stored))
 	var instance =  SWORD_BULLET.instantiate() if has_sword else player_bullet.instantiate()
@@ -547,6 +558,7 @@ func die():
 	
 func reset():
 	# First, set everything to defaults.
+	is_hayroller = DEFAULT_IS_HAYROLLER
 	can_power = true
 	roll_time = DEFAULT_ROLL_TIME
 	health = DEFAULT_HEALTH
@@ -597,6 +609,7 @@ func reset():
 		rpc("set_reload_time", reload_time)
 		rpc("set_dizzy_turtle", dizzy_turtle)
 		rpc("set_angry_turtle", angry_turtle)
+		rpc("set_is_hayroller", is_hayroller)
 	if multiplayer.is_server():
 		rpc("remote_dictate_position", initial_position)
 	$Networking.sync_bullet_scale = bullet_scale
@@ -666,6 +679,10 @@ func modify():
 @rpc("call_local", "reliable", "any_peer")
 func set_is_poochzilla(value:bool) -> void:
 	is_poochzilla = value
+	
+@rpc("call_local", "reliable", "any_peer")
+func set_is_hayroller(value:bool) -> void:
+	is_hayroller = value
 
 @rpc("call_local", "reliable", "any_peer")
 func set_is_berserker(value:bool) -> void:

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://rfr8tihox75g"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/Hayroller/power.gd" id="1_fo4c7"]
+
+[node name="Hayroller" type="Node"]
+script = ExtResource("1_fo4c7")
