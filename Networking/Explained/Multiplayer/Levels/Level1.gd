@@ -55,7 +55,7 @@ var powers = [load("res://Items/Upgrades/Tank/power.tscn"),
 				load("res://Items/Upgrades/AngryTurtle/power.tscn"),
 				load("res://Items/Upgrades/Sprint/power.tscn"),
 				load("res://Items/Upgrades/NinjaRoll/power.tscn"),
-				load("res://Items/Upgrades/PizzaChef/power.tscn")
+				load("res://Items/Upgrades/PizzaChef/power.tscn"),
 				load("res://Items/Upgrades/Poochzilla/power.tscn"),
 				load("res://Items/Upgrades/Hayroller/power.tscn")] #TODO - load the power node when choice is displayed
 
