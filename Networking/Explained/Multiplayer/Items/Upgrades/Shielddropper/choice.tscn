@@ -1,0 +1,133 @@
+[gd_scene load_steps=12 format=3 uid="uid://glv3fomdlkq2"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/Shielddropper/choice.gd" id="1_caayp"]
+[ext_resource type="Texture2D" uid="uid://b45u0odqpx6sl" path="res://Items/Upgrades/Tank/Tank-Sheet.png" id="2_ba0g6"]
+[ext_resource type="PackedScene" uid="uid://drfv81uia6vnj" path="res://Items/Upgrades/Shielddropper/power.tscn" id="3_a8rh5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3tocy"]
+atlas = ExtResource("2_ba0g6")
+region = Rect2(30, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f4jj8"]
+atlas = ExtResource("2_ba0g6")
+region = Rect2(0, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gdp2v"]
+atlas = ExtResource("2_ba0g6")
+region = Rect2(30, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5md2h"]
+atlas = ExtResource("2_ba0g6")
+region = Rect2(60, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mqf03"]
+atlas = ExtResource("2_ba0g6")
+region = Rect2(90, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cynwx"]
+atlas = ExtResource("2_ba0g6")
+region = Rect2(120, 0, 30, 30)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_an3yb"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3tocy")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f4jj8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gdp2v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5md2h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mqf03")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cynwx")
+}],
+"loop": true,
+"name": &"hover",
+"speed": 5.0
+}]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_yasn1"]
+properties/0/path = NodePath(".:picker")
+properties/0/spawn = true
+properties/0/sync = true
+properties/1/path = NodePath(".:remote_animation")
+properties/1/spawn = true
+properties/1/sync = true
+properties/2/path = NodePath(".:updated_animation")
+properties/2/spawn = true
+properties/2/sync = true
+properties/3/path = NodePath("Description:text")
+properties/3/spawn = true
+properties/3/sync = true
+properties/4/path = NodePath("Title:text")
+properties/4/spawn = true
+properties/4/sync = true
+properties/5/path = NodePath(".:card_id")
+properties/5/spawn = true
+properties/5/sync = true
+
+[node name="Shielddropper" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+size_flags_horizontal = 3
+script = ExtResource("1_caayp")
+
+[node name="Button" type="Button" parent="."]
+custom_minimum_size = Vector2(500, 888)
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+expand_icon = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Button"]
+modulate = Color(1, 0.0666667, 1, 1)
+position = Vector2(257, 244)
+scale = Vector2(10, 10)
+sprite_frames = SubResource("SpriteFrames_an3yb")
+animation = &"hover"
+speed_scale = 3.0
+
+[node name="Networking" type="Node" parent="."]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
+root_path = NodePath("../..")
+replication_config = SubResource("SceneReplicationConfig_yasn1")
+
+[node name="Description" type="Label" parent="."]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 488.0
+offset_right = 489.0
+offset_bottom = 876.0
+theme_override_font_sizes/font_size = 52
+text = "Right click to drop a shield"
+autowrap_mode = 3
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 11.0
+offset_right = 489.0
+offset_bottom = 94.0
+theme_override_font_sizes/font_size = 52
+text = "Shielddropper"
+horizontal_alignment = 1
+
+[node name="Hayroller" parent="." instance=ExtResource("3_a8rh5")]
+
+[connection signal="mouse_entered" from="Button" to="." method="_on_button_mouse_entered"]
+[connection signal="mouse_exited" from="Button" to="." method="_on_button_mouse_exited"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

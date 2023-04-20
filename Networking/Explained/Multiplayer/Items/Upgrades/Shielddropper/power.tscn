@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://drfv81uia6vnj"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/Shielddropper/power.gd" id="1_q5obk"]
+
+[node name="Hayroller" type="Node"]
+script = ExtResource("1_q5obk")

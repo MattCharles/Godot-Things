@@ -36,7 +36,9 @@ var buttons = [preload("res://Items/Upgrades/Tank/choice.tscn"),
 				preload("res://Items/Upgrades/NinjaRoll/choice.tscn"),
 				preload("res://Items/Upgrades/PizzaChef/choice.tscn"),
 				preload("res://Items/Upgrades/Poochzilla/choice.tscn"),
-				preload("res://Items/Upgrades/Hayroller/choice.tscn")]
+				preload("res://Items/Upgrades/Hayroller/choice.tscn"),
+				preload("res://Items/Upgrades/Shielddropper/choice.tscn"),
+				preload("res://Items/Upgrades/Panicker/choice.tscn")]
 
 var powers = [load("res://Items/Upgrades/Tank/power.tscn"), 
 				load("res://Items/Upgrades/Shotgun/power.tscn"),
@@ -57,7 +59,9 @@ var powers = [load("res://Items/Upgrades/Tank/power.tscn"),
 				load("res://Items/Upgrades/NinjaRoll/power.tscn"),
 				load("res://Items/Upgrades/PizzaChef/power.tscn"),
 				load("res://Items/Upgrades/Poochzilla/power.tscn"),
-				load("res://Items/Upgrades/Hayroller/power.tscn")] #TODO - load the power node when choice is displayed
+				load("res://Items/Upgrades/Hayroller/power.tscn"),
+				load("res://Items/Upgrades/Shielddropper/power.tscn"),
+				load("res://Items/Upgrades/Panicker/power.tscn")] #TODO - load the power node when choice is displayed
 
 var obstacles = [preload("res://Items/Obstacles/haystack.tscn")]
 
@@ -81,7 +85,9 @@ const AVOID_AFTER := {
 	16: [16],
 	17: [17],
 	18: [19],
-	19: [18]
+	19: [18],
+	20: [20],
+	21: []
 }
 
 func _ready():

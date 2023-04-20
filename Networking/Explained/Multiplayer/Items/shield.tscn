@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://016nhtdjrkty"]
+
+[ext_resource type="Script" path="res://Characters/Shield.gd" id="1_frjym"]
+[ext_resource type="Texture2D" uid="uid://cplaro4bd3khc" path="res://Characters/Shield.png" id="2_cq6sc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_youa3"]
+size = Vector2(32, 59)
+
+[node name="Shield" type="StaticBody2D"]
+collision_layer = 8
+collision_mask = 8
+script = ExtResource("1_frjym")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
+texture = ExtResource("2_cq6sc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_youa3")

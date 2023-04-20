@@ -25,6 +25,7 @@ const DEFAULT_ROLL_TIME := 0.5
 const NOSCOPE_SPIN_TIME := 1 # Maximum time to complete a noscope spin for it to be considered valid
 const DEFAULT_NO_SCOPE_CRIT_ENABLED := false
 const DEFAULT_IS_BERSERKER := false
+const DEFAULT_IS_PANICKER := false
 const DEFAULT_NUM_CRITS_STORED := 0
 const DEFAULT_MAX_CRITS_STORED := 1
 const DEFAULT_CLIP_SIZE := 5
@@ -46,6 +47,8 @@ const DEFAULT_NINJA_ROLL := false
 const DEFAULT_ROLL_COOLDOWN := 1.0
 const DEFAULT_IS_POOCHZILLA := false
 const DEFAULT_IS_HAYROLLER := false
+const DEFAULT_IS_SHIELDDROPPER := false
+const PANIC_MAX_BONUS_SPEED := 200.0
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -74,9 +77,10 @@ var walk = "Walk"
 var default = "default"
 var roll = "Roll"
 
-var teleporter_scene := preload("res://Items/teleporter.tscn")
-var hay_scene := preload("res://Items/Obstacles/haystack.tscn")
-var pizza_scene := preload("res://Items/pizza.tscn")
+const teleporter_scene := preload("res://Items/teleporter.tscn")
+const hay_scene := preload("res://Items/Obstacles/haystack.tscn")
+const shield_scene := preload("res://Items/shield.tscn")
+const pizza_scene := preload("res://Items/pizza.tscn")
 var current_teleporter = null
 
 var dizzy_turtle := DEFAULT_DIZZY_TURTLE
@@ -132,6 +136,8 @@ var is_pizza_chef := false
 var roll_off_cooldown := true
 var is_poochzilla := DEFAULT_IS_POOCHZILLA
 var is_hayroller := DEFAULT_IS_HAYROLLER
+var is_shielddropper := DEFAULT_IS_SHIELDDROPPER
+var is_panicker := DEFAULT_IS_PANICKER
 
 # swap var so we can restore a user's original speed when they are done sprinting
 var speed_temp := sprint_speed
@@ -168,6 +174,8 @@ func _ready():
 		player_name = $Networking.sync_player_name
 	$UI/PlayerNameLabel.text = player_name
 	
+func panic_speed_bonus() -> float:
+	return (health / max_health) * PANIC_MAX_BONUS_SPEED
 
 func _process(delta):
 	if is_local_authority():
@@ -181,7 +189,7 @@ func _process(delta):
 				can_power = true
 				power_cooldown = max_power_cooldown
 				if can_sprint:
-					speed = speed_temp
+					speed = sprint_speed
 		# floating point math doesn't like exactly 0
 		is_stunned = remaining_stun_time > 0.01
 		if(is_stunned): move_state = Movement.states.STUNNED
@@ -241,12 +249,14 @@ func _process(delta):
 					remaining_stun_time = TELEPORT_STUN_TIME
 					is_teleporting = true
 			if can_sprint:
-				speed_temp = speed
 				rpc("sprint")
 				power_cooldown = SPRINT_POWER_COOLDOWN
 				can_power = false
 			if is_pizza_chef:
 				rpc("create_pizza")
+				can_power = false
+			if is_shielddropper:
+				rpc("create_shield")
 				can_power = false
 				
 		if not is_stunned and bullets_left_in_clip > 0 and Input.is_action_just_pressed("shoot"):
@@ -479,6 +489,8 @@ func damage(amount):
 		if angry_turtle and crossed_turtle_threshold:
 			rpc("set_has_shield", true)
 			$Shield.reset()
+		if is_panicker:
+			rpc("set_speed", speed + panic_speed_bonus())
 		
 func heal(amount):
 	if multiplayer.is_server():
@@ -487,6 +499,8 @@ func heal(amount):
 		# reusing damage flash timer here - should be fine for this case
 		get_tree().create_timer(DAMAGE_FLASH_TIMER).timeout.connect(func ():
 			rpc("set_sprite_modulate", END_HEAL_FLASH_INDEX))
+		if is_panicker:
+			rpc("set_speed", speed + panic_speed_bonus())
 		
 func stun(milliseconds:float) -> void:
 	if multiplayer.is_server():
@@ -512,6 +526,12 @@ func create_pizza():
 @rpc("reliable", "call_local", "any_peer")
 func create_hay():
 	var instance = hay_scene.instantiate()
+	instance.position = position
+	get_node("/root/Level/SpawnRoot").add_child(instance, true)
+	
+@rpc("reliable", "call_local", "any_peer")
+func create_shield():
+	var instance = shield_scene.instantiate()
 	instance.position = position
 	get_node("/root/Level/SpawnRoot").add_child(instance, true)
 
@@ -610,6 +630,7 @@ func reset():
 		rpc("set_dizzy_turtle", dizzy_turtle)
 		rpc("set_angry_turtle", angry_turtle)
 		rpc("set_is_hayroller", is_hayroller)
+		rpc("set_is_panicker", is_panicker)
 	if multiplayer.is_server():
 		rpc("remote_dictate_position", initial_position)
 	$Networking.sync_bullet_scale = bullet_scale
@@ -679,6 +700,10 @@ func modify():
 @rpc("call_local", "reliable", "any_peer")
 func set_is_poochzilla(value:bool) -> void:
 	is_poochzilla = value
+	
+@rpc("call_local", "reliable", "any_peer")
+func set_is_panicker(value:bool) -> void:
+	is_panicker = value
 	
 @rpc("call_local", "reliable", "any_peer")
 func set_is_hayroller(value:bool) -> void:

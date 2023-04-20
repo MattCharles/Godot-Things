@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dle3yead75khn"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/Panicker/power.gd" id="1_35y6t"]
+
+[node name="Panicker" type="Node"]
+script = ExtResource("1_35y6t")
