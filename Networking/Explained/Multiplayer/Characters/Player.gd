@@ -49,6 +49,8 @@ const DEFAULT_IS_POOCHZILLA := false
 const DEFAULT_IS_HAYROLLER := false
 const DEFAULT_IS_SHIELDDROPPER := false
 const PANIC_MAX_BONUS_SPEED := 200.0
+const DEFAULT_HAS_BOOMERANG := false
+const BOOMERANG_STRENGTH := 10.0
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -138,6 +140,7 @@ var is_poochzilla := DEFAULT_IS_POOCHZILLA
 var is_hayroller := DEFAULT_IS_HAYROLLER
 var is_shielddropper := DEFAULT_IS_SHIELDDROPPER
 var is_panicker := DEFAULT_IS_PANICKER
+var has_boomerang := DEFAULT_HAS_BOOMERANG
 
 # swap var so we can restore a user's original speed when they are done sprinting
 var speed_temp := sprint_speed
@@ -556,6 +559,8 @@ func process_shot(bname, look_target, distant_target):
 	instance.global_position = shoot_point.global_position
 	instance.num_bounces = bullet_bounces
 	instance.speed = bullet_speed
+	if has_boomerang:
+		instance.add_constant_central_force((distant_target - instance.global_position).normalized() * BOOMERANG_STRENGTH)
 	instance.fire()
 
 @rpc("call_local", "reliable")
@@ -698,6 +703,10 @@ func modify():
 		set(stat, result)
 
 @rpc("call_local", "reliable", "any_peer")
+func remote_set(variable, value) -> void:
+	set(variable, value)
+
+@rpc("call_local", "reliable", "any_peer")
 func set_is_poochzilla(value:bool) -> void:
 	is_poochzilla = value
 	
@@ -727,7 +736,6 @@ func remote_change_name(_new_name):
 
 @rpc("call_local", "reliable")
 func remote_dictate_position(new_position):
-	print("remote position set")
 	position = new_position
 	
 @rpc("reliable", "call_local", "any_peer")
