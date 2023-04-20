@@ -1,0 +1,58 @@
+[gd_scene load_steps=7 format=3 uid="uid://c77frh1rta57h"]
+
+[ext_resource type="Script" path="res://Items/default_bullet.gd" id="1_cdtom"]
+[ext_resource type="Texture2D" uid="uid://c8vqfbgrrsmfn" path="res://Items/swipe.png" id="2_imtxr"]
+[ext_resource type="Script" path="res://Items/Networking.gd" id="3_aidlx"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_oda4u"]
+friction = 0.0
+bounce = 1.0
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_4ybvv"]
+properties/0/path = NodePath("..:position")
+properties/0/spawn = true
+properties/0/sync = true
+properties/1/path = NodePath(".:sync_num_bounces")
+properties/1/spawn = true
+properties/1/sync = true
+properties/2/path = NodePath("..:linear_velocity")
+properties/2/spawn = true
+properties/2/sync = true
+properties/3/path = NodePath("../Sprite2D:modulate")
+properties/3/spawn = true
+properties/3/sync = true
+properties/4/path = NodePath(".:sync_damage")
+properties/4/spawn = true
+properties/4/sync = true
+properties/5/path = NodePath(".:sync_scale")
+properties/5/spawn = true
+properties/5/sync = true
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wl464"]
+radius = 6.0
+height = 18.0
+
+[node name="sword_bullet" type="RigidBody2D"]
+collision_layer = 11
+collision_mask = 11
+physics_material_override = SubResource("PhysicsMaterial_oda4u")
+gravity_scale = 0.0
+continuous_cd = 1
+max_contacts_reported = 10
+contact_monitor = true
+lock_rotation = true
+script = ExtResource("1_cdtom")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_imtxr")
+
+[node name="Networking" type="Node" parent="."]
+script = ExtResource("3_aidlx")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
+replication_config = SubResource("SceneReplicationConfig_4ybvv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_wl464")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

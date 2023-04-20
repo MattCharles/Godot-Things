@@ -12,6 +12,7 @@ const DEFAULT_SCALE := Vector2(1, 1)
 const DEFAULT_SPREAD := 10 # Measured in degrees, in either direction
 const DEFAULT_BULLETS_PER_SHOT := 1 # I clicked shoot. How many bullets come out at once?
 const DEFAULT_BULLET := preload("res://Items/default_bullet.tscn")
+const SWORD_BULLET := preload("res://Items/sword_bullet.tscn")
 const DEFAULT_BULLET_SCALE := 1.0
 const DEFAULT_BULLET_DAMAGE := 35
 const ORDERED_OPERATIONS := ["add", "multiply", "set", "at_least", "at_most"]
@@ -126,7 +127,12 @@ var speed_temp := sprint_speed
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
 
-func _ready():		
+func _ready():
+	if has_sword:
+		hand = preload("res://Items/sword.tscn")
+		hand_sprite = hand.get_node("Sprite2D")
+		shoot_point = hand.get_node("ShootPoint")
+	
 	initial_position = position
 	$Networking/MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
 	no_scope_spin_timer.timeout.connect(zone_push_pop)
@@ -462,7 +468,7 @@ func create_teleporter():
 @rpc("reliable", "call_local", "any_peer")
 func process_shot(bname, look_target, distant_target):
 	print("shooting, crit count:" + str(crits_stored))
-	var instance = player_bullet.instantiate()
+	var instance =  SWORD_BULLET.instantiate() if has_sword else player_bullet.instantiate()
 	instance.name = bname
 	get_node("/root/Level/SpawnRoot").add_child(instance, true)
 	instance.set_scale_for_all_clients(instance.scale * bullet_scale) # scale is a vector 2

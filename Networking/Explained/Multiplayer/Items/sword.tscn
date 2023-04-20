@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://c0oe4ftgub6ni"]
+[gd_scene load_steps=5 format=3 uid="uid://c0oe4ftgub6ni"]
 
 [ext_resource type="Texture2D" uid="uid://fu6gxo8lbvph" path="res://Assets/sword.png" id="1_q8vwq"]
 [ext_resource type="Script" path="res://Items/Networking.gd" id="2_vpaks"]
@@ -17,6 +17,9 @@ properties/3/path = NodePath(".:sync_scale")
 properties/3/spawn = true
 properties/3/sync = true
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tk5eh"]
+size = Vector2(290, 20)
+
 [node name="Sword" type="Node2D"]
 position = Vector2(91, 13)
 scale = Vector2(0.5, 0.5)
@@ -30,3 +33,11 @@ script = ExtResource("2_vpaks")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking"]
 replication_config = SubResource("SceneReplicationConfig_4ybvv")
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(11, 0)
+shape = SubResource("RectangleShape2D_tk5eh")
+
+[node name="ShootPoint" type="Node2D" parent="."]
