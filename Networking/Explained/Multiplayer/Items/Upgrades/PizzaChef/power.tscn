@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://i618qkt7xekh"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/PizzaChef/power.gd" id="1_rrtwt"]
+
+[node name="PizzaChef" type="Node"]
+script = ExtResource("1_rrtwt")

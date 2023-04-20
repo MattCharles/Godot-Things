@@ -26,6 +26,8 @@ shader_parameter/replace_1 = Color(0.611765, 0.678431, 0.713726, 1)
 shader_parameter/replace_2 = Color(1, 1, 1, 1)
 shader_parameter/replace_3 = Color(0.184314, 0.133333, 0.188235, 1)
 shader_parameter/replace_4 = Color(0.654902, 0.219608, 0.211765, 1)
+shader_parameter/heal_color = Color(0.215686, 0.580392, 0.431373, 1)
+shader_parameter/heal_flash = false
 shader_parameter/evil = false
 shader_parameter/hit_flash = false
 
@@ -199,7 +201,7 @@ size = Vector2(32, 59)
 
 [node name="Player" type="CharacterBody2D"]
 z_index = 2
-collision_layer = 0
+collision_layer = 16
 collision_mask = 11
 script = ExtResource("1_uheab")
 
@@ -208,7 +210,6 @@ texture_filter = 1
 material = SubResource("ShaderMaterial_wwopo")
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_o15eu")
-animation = &"Roll"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-1, 13)

@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3 uid="uid://c1djqt7lpkjhk"]
+
+[ext_resource type="Script" path="res://Items/heal_bomb.gd" id="1_m35i0"]
+[ext_resource type="Texture2D" uid="uid://dw4y6pwbqlhwk" path="res://Items/pizza.png" id="1_q3ov7"]
+[ext_resource type="Texture2D" uid="uid://c2vrf4devmk10" path="res://Items/healing_background.png" id="2_00vh3"]
+[ext_resource type="Texture2D" uid="uid://daeamxuxpd0ea" path="res://Items/healing-field.png" id="2_lm2as"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ia7kb"]
+radius = 48.0
+
+[node name="pizza" type="Node2D"]
+script = ExtResource("1_m35i0")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_ia7kb")
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -48.0
+offset_top = -48.0
+offset_right = 16.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.5, 1.5)
+max_value = 3.0
+step = 0.1
+fill_mode = 5
+texture_under = ExtResource("2_00vh3")
+texture_progress = ExtResource("2_lm2as")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_q3ov7")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

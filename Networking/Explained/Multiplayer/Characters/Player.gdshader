@@ -25,6 +25,9 @@ uniform vec4 replace_2: source_color;
 uniform vec4 replace_3: source_color;
 uniform vec4 replace_4: source_color;
 
+uniform vec4 heal_color: source_color;
+uniform bool heal_flash = false;
+
 const float precision = 0.1;
 
 uniform bool evil = false;
@@ -67,10 +70,11 @@ float noise(vec2 uv) {
 void fragment()
 {
 	vec4 tex = hit_flash ? 
-		vec4(1.0, 1.0, 1.0, texture(TEXTURE, UV).a) : 
+		vec4(1.0, 1.0, 1.0, 1.0) :
+			(heal_flash ? heal_color : 
 			(evil ? 
 				swap_color(texture(TEXTURE, UV)) : 
-				texture(TEXTURE, UV));
+				texture(TEXTURE, UV)));
 	
 	float noise = noise(UV * noise_desnity) * UV.y;
 	

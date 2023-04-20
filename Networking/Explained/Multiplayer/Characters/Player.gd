@@ -50,6 +50,8 @@ const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
 const DAMAGE_FLASH_INDEX := 2
 const END_DAMAGE_FLASH_INDEX := 3
+const HEAL_FLASH_INDEX := 4
+const END_HEAL_FLASH_INDEX := 5
 
 # TODO: implement these?
 const DEFAULT_BULLET_SLOW := 0
@@ -72,6 +74,7 @@ var default = "default"
 var roll = "Roll"
 
 var teleporter_scene := preload("res://Items/teleporter.tscn")
+var pizza_scene := preload("res://Items/pizza.tscn")
 var current_teleporter = null
 
 var dizzy_turtle := DEFAULT_DIZZY_TURTLE
@@ -123,6 +126,8 @@ var can_sprint := DEFAULT_CAN_SPRINT
 var sprint_speed := DEFAULT_SPRINT_SPEED
 var sprint_roll_speed := DEFAULT_SPRINT_ROLL_SPEED
 var has_ninja_roll := false
+var is_pizza_chef := false
+var can_roll := true
 
 # swap var so we can restore a user's original speed when they are done sprinting
 var speed_temp := sprint_speed
@@ -234,6 +239,9 @@ func _process(delta):
 				speed_temp = speed
 				rpc("sprint")
 				power_cooldown = SPRINT_POWER_COOLDOWN
+				can_power = false
+			if is_pizza_chef:
+				rpc("create_pizza")
 				can_power = false
 				
 		if not is_stunned and bullets_left_in_clip > 0 and Input.is_action_just_pressed("shoot"):
@@ -388,7 +396,7 @@ func process_move(_delta) -> void:
 	move_and_slide()
 	
 	# time_until_can_roll can't equal = because float math
-	if Input.is_action_just_pressed("roll") and time_until_can_roll < .01:
+	if Input.is_action_just_pressed("roll") and time_until_can_roll < .01 and can_roll:
 		time_until_can_roll = roll_cooldown
 		roll_vector = Vector2(x_direction, y_direction).normalized()
 		move_state = Movement.states.ROLL
@@ -465,6 +473,13 @@ func damage(amount):
 			rpc("set_has_shield", true)
 			$Shield.reset()
 		
+func heal(amount):
+	if multiplayer.is_server():
+		rpc("take_damage", - amount)
+		rpc("set_sprite_modulate", HEAL_FLASH_INDEX)
+		# reusing damage flash timer here - should be fine for this case
+		get_tree().create_timer(DAMAGE_FLASH_TIMER).timeout.connect(func ():
+			rpc("set_sprite_modulate", END_HEAL_FLASH_INDEX))
 		
 func stun(milliseconds:float) -> void:
 	if multiplayer.is_server():
@@ -480,6 +495,12 @@ func create_teleporter():
 	instance.position = position
 	get_node("/root/Level/SpawnRoot").add_child(instance, true)
 	current_teleporter = instance
+
+@rpc("reliable", "call_local", "any_peer")
+func create_pizza():
+	var instance = pizza_scene.instantiate()
+	instance.position = position
+	get_node("/root/Level/SpawnRoot").add_child(instance, true)
 
 @rpc("reliable", "call_local", "any_peer")
 func process_shot(bname, look_target, distant_target):
@@ -724,6 +745,11 @@ func set_sprite_modulate(value:int) -> void:
 	if value == DEFAULT_COLOR_INDEX:
 		teleport_shader.set_shader_parameter("evil", false)
 		teleport_shader.set_shader_parameter("hit_flash", false)
+		teleport_shader.set_shader_parameter("heal_flash", false)
+	if value == HEAL_FLASH_INDEX:
+		teleport_shader.set_shader_parameter("heal_flash", true)
+	if value == END_HEAL_FLASH_INDEX:
+		teleport_shader.set_shader_parameter("heal_flash", false)
 
 @rpc("reliable", "call_local", "any_peer")
 func set_roll_time(value):
