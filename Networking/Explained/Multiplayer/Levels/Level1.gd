@@ -34,7 +34,8 @@ var buttons = [preload("res://Items/Upgrades/Tank/choice.tscn"),
 				preload("res://Items/Upgrades/DizzyTurtle/choice.tscn"),
 				preload("res://Items/Upgrades/AngryTurtle/choice.tscn"),
 				preload("res://Items/Upgrades/Sprint/choice.tscn"),
-				preload("res://Items/Upgrades/NinjaRoll/choice.tscn")]
+				preload("res://Items/Upgrades/NinjaRoll/choice.tscn"),
+				preload("res://Items/Upgrades/Poochzilla/choice.tscn")]
 
 var powers = [load("res://Items/Upgrades/Tank/power.tscn"), 
 				load("res://Items/Upgrades/Shotgun/power.tscn"),
@@ -52,7 +53,8 @@ var powers = [load("res://Items/Upgrades/Tank/power.tscn"),
 				load("res://Items/Upgrades/DizzyTurtle/power.tscn"),
 				load("res://Items/Upgrades/AngryTurtle/power.tscn"),
 				load("res://Items/Upgrades/Sprint/power.tscn"),
-				load("res://Items/Upgrades/NinjaRoll/power.tscn")] #TODO - load the power node when choice is displayed
+				load("res://Items/Upgrades/NinjaRoll/power.tscn"),
+				load("res://Items/Upgrades/Poochzilla/power.tscn")] #TODO - load the power node when choice is displayed
 
 var obstacles = [preload("res://Items/Obstacles/haystack.tscn")]
 
@@ -74,7 +76,8 @@ const AVOID_AFTER := {
 	14: [9, 14],
 	15: [],
 	16: [16],
-	17: [17]
+	17: [17],
+	18: []
 }
 
 func _ready():
@@ -277,7 +280,6 @@ func remove_spawnables() -> void:
 	for node in $SpawnRoot.get_children():
 		if not node is MultiplayerSpawner:
 			node.call_deferred("free")
-
 
 func generate_level() -> void:
 	print("this is where i would generate a level")

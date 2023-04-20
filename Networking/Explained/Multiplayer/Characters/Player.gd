@@ -44,7 +44,7 @@ const DEFAULT_SPRINT_ROLL_SPEED := DEFAULT_ROLL_SPEED * SPRINT_SPEED_MULTIPLIER
 const DEFAULT_SPRINT_SPEED := DEFAULT_SPEED * SPRINT_SPEED_MULTIPLIER
 const DEFAULT_NINJA_ROLL := false
 const DEFAULT_ROLL_COOLDOWN := 1.0
-
+const DEFAULT_IS_POOCHZILLA := false
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -127,7 +127,8 @@ var sprint_speed := DEFAULT_SPRINT_SPEED
 var sprint_roll_speed := DEFAULT_SPRINT_ROLL_SPEED
 var has_ninja_roll := false
 var is_pizza_chef := false
-var can_roll := true
+var roll_off_cooldown := true
+var is_poochzilla := DEFAULT_IS_POOCHZILLA
 
 # swap var so we can restore a user's original speed when they are done sprinting
 var speed_temp := sprint_speed
@@ -169,6 +170,7 @@ func _process(delta):
 	if is_local_authority():
 		if time_until_can_roll > .01:
 			time_until_can_roll -= delta
+		roll_off_cooldown = time_until_can_roll < .01
 			
 		if not can_power:
 			power_cooldown -= delta
@@ -396,7 +398,7 @@ func process_move(_delta) -> void:
 	move_and_slide()
 	
 	# time_until_can_roll can't equal = because float math
-	if Input.is_action_just_pressed("roll") and time_until_can_roll < .01 and can_roll:
+	if Input.is_action_just_pressed("roll") and time_until_can_roll < .01 and roll_off_cooldown and not is_poochzilla:
 		time_until_can_roll = roll_cooldown
 		roll_vector = Vector2(x_direction, y_direction).normalized()
 		move_state = Movement.states.ROLL
@@ -565,6 +567,7 @@ func reset():
 	has_shield = DEFAULT_HAS_SHIELD
 	roll_cooldown = DEFAULT_ROLL_COOLDOWN
 	time_until_can_roll = 0.0
+	is_poochzilla = DEFAULT_IS_POOCHZILLA
 	if current_teleporter != null:
 		rpc("free_teleporter")
 	
@@ -576,6 +579,7 @@ func reset():
 	shots_left_to_burst = shots_per_burst
 	# Finally, some stuff will want to go over the network explicitly.
 	if is_local_authority():
+		rpc("set_is_poochzilla", is_poochzilla)
 		rpc("set_sprite_modulate", 0)
 		rpc("set_bullets_per_shot", bullets_per_shot)
 		rpc("set_bullet_scale", bullet_scale)
@@ -658,6 +662,10 @@ func modify():
 				for set_value in grouped_mods[stat][ordered_operation]:
 					result = set_value["set"]
 		set(stat, result)
+
+@rpc("call_local", "reliable", "any_peer")
+func set_is_poochzilla(value:bool) -> void:
+	is_poochzilla = value
 
 @rpc("call_local", "reliable", "any_peer")
 func set_is_berserker(value:bool) -> void:
