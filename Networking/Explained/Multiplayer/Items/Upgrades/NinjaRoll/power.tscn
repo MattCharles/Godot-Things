@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cwvqqkhsp5get"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/NinjaRoll/power.gd" id="1_rwcjc"]
+
+[node name="NinjaRoll" type="Node"]
+script = ExtResource("1_rwcjc")

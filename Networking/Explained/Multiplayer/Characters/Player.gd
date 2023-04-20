@@ -2,6 +2,7 @@ extends CharacterBody2D
 class_name Player
 
 const OBSTACLE_COLLISION_LABEL := 2
+const BULLET_COLLISION_LABEL := 4
 
 const DEFAULT_SPEED := 400
 const DEFAULT_ROLL_SPEED := 700
@@ -41,6 +42,9 @@ const SPRINT_POWER_COOLDOWN := 3.0
 const SPRINT_SPEED_MULTIPLIER := 1.5
 const DEFAULT_SPRINT_ROLL_SPEED := DEFAULT_ROLL_SPEED * SPRINT_SPEED_MULTIPLIER
 const DEFAULT_SPRINT_SPEED := DEFAULT_SPEED * SPRINT_SPEED_MULTIPLIER
+const DEFAULT_NINJA_ROLL := false
+const DEFAULT_ROLL_COOLDOWN := 1.0
+
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -73,6 +77,8 @@ var current_teleporter = null
 var dizzy_turtle := DEFAULT_DIZZY_TURTLE
 var angry_turtle := DEFAULT_ANGRY_TURTLE
 var shot_cooldown
+var roll_cooldown := DEFAULT_ROLL_COOLDOWN
+var time_until_can_roll := 0.0
 var roll_time = DEFAULT_ROLL_TIME
 var player_bullet := DEFAULT_BULLET
 var health := DEFAULT_HEALTH
@@ -116,6 +122,7 @@ var reload_time := DEFAULT_RELOAD_TIME
 var can_sprint := DEFAULT_CAN_SPRINT
 var sprint_speed := DEFAULT_SPRINT_SPEED
 var sprint_roll_speed := DEFAULT_SPRINT_ROLL_SPEED
+var has_ninja_roll := false
 
 # swap var so we can restore a user's original speed when they are done sprinting
 var speed_temp := sprint_speed
@@ -155,6 +162,9 @@ func _ready():
 
 func _process(delta):
 	if is_local_authority():
+		if time_until_can_roll > .01:
+			time_until_can_roll -= delta
+			
 		if not can_power:
 			power_cooldown -= delta
 			if power_cooldown < .01: # .01 buffer for float comparison
@@ -377,7 +387,9 @@ func process_move(_delta) -> void:
 	# Move locally
 	move_and_slide()
 	
-	if Input.is_action_just_pressed("roll"):
+	# time_until_can_roll can't equal = because float math
+	if Input.is_action_just_pressed("roll") and time_until_can_roll < .01:
+		time_until_can_roll = roll_cooldown
 		roll_vector = Vector2(x_direction, y_direction).normalized()
 		move_state = Movement.states.ROLL
 		$Networking.sync_move_state = Movement.states.ROLL
@@ -390,9 +402,12 @@ func process_move(_delta) -> void:
 	
 
 func process_roll(_delta) -> void:
+	time_until_can_roll = roll_cooldown
 	_animated_sprite.play(roll)
 	if !is_local_authority(): # this is somebody else's player character
 		set_collision_mask_value(OBSTACLE_COLLISION_LABEL, $Networking.sync_collidable)
+		if has_ninja_roll:
+			set_collision_mask_value(BULLET_COLLISION_LABEL, $Networking.sync_collidable)
 		if not $Networking.processed_position:
 			position = $Networking.sync_position
 			$Networking.processed_position = true
@@ -401,6 +416,7 @@ func process_roll(_delta) -> void:
 		return
 	$Networking.sync_collidable = false
 	set_collision_mask_value(OBSTACLE_COLLISION_LABEL, $Networking.sync_collidable)
+	set_collision_mask_value(BULLET_COLLISION_LABEL, $Networking.sync_collidable)
 	
 	velocity = roll_vector * roll_speed
 	move_and_slide()
@@ -526,6 +542,8 @@ func reset():
 	clip_size = DEFAULT_CLIP_SIZE
 	reload_time = DEFAULT_RELOAD_TIME
 	has_shield = DEFAULT_HAS_SHIELD
+	roll_cooldown = DEFAULT_ROLL_COOLDOWN
+	time_until_can_roll = 0.0
 	if current_teleporter != null:
 		rpc("free_teleporter")
 	
