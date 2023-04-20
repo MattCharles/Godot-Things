@@ -120,11 +120,13 @@ var sprint_roll_speed := DEFAULT_SPRINT_ROLL_SPEED
 var speed_temp := sprint_speed
 
 @onready var teleport_shader = $AnimatedSprite2D.material
+@onready var hand = $Hand
+@onready var hand_sprite = $Hand/Sprite2d
 
 func is_local_authority():
 	return $Networking/MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
 
-func _ready():
+func _ready():		
 	initial_position = position
 	$Networking/MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
 	no_scope_spin_timer.timeout.connect(zone_push_pop)
@@ -162,12 +164,12 @@ func _process(delta):
 		# more fast
 		var mouse_outside_player_hitbox = is_mouse_outside_player_hitbox()
 		if mouse_outside_player_hitbox:
-			$Hand.position = get_hand_position()
-			$Hand.look_at(self.get_global_mouse_position())
-			$Hand/Sprite2d.flip_v = $Hand.global_position.x < self.global_position.x
-			$Networking.sync_hand_flip = $Hand/Sprite2d.flip_v
-			$Networking.sync_hand_rotation = $Hand.rotation
-			_animated_sprite.flip_h = $Hand/Sprite2d.flip_v
+			hand.position = get_hand_position()
+			hand.look_at(self.get_global_mouse_position())
+			hand_sprite.flip_v = hand.global_position.x < self.global_position.x
+			$Networking.sync_hand_flip = hand_sprite.flip_v
+			$Networking.sync_hand_rotation = hand.rotation
+			_animated_sprite.flip_h = hand_sprite.flip_v
 			$Networking.sync_flip_sprite = _animated_sprite.flip_h
 			if has_shield:
 				$Shield.visible = true
@@ -181,7 +183,7 @@ func _process(delta):
 		if dizzy_turtle or should_track_360_no_scopes:
 			if previous_zones[0] == -1:
 				zone_push_pop()
-			var degrees_of_rotation = int(rad_to_deg($Hand.rotation))
+			var degrees_of_rotation = int(rad_to_deg(hand.rotation))
 			var abs_rotation = abs(degrees_of_rotation)
 			@warning_ignore("integer_division")
 			var slice_size = 360 / previous_zones.size()
@@ -246,12 +248,12 @@ func _process(delta):
 		health = $Networking.sync_health
 		max_health = $Networking.sync_max_health
 		if not $Networking.processed_hand_position:
-			$Hand.position = $Networking.sync_hand_position
+			hand.position = $Networking.sync_hand_position
 			$Networking.processed_hand_position = true
 			if has_shield:
 				$Shield.position = -$Networking.sync_hand_position
-		$Hand.rotation = $Networking.sync_hand_rotation
-		$Hand/Sprite2d.flip_v = $Networking.sync_hand_flip
+		hand.rotation = $Networking.sync_hand_rotation
+		hand_sprite.flip_v = $Networking.sync_hand_flip
 		$Shield.rotation = $Networking.sync_hand_rotation
 		$Shield/Sprite2D.flip_v = $Networking.sync_hand_flip
 		_animated_sprite.flip_h = $Networking.sync_flip_sprite
@@ -260,8 +262,8 @@ func _process(delta):
 	$UI/PlayerHealth.value = health
 	$UI/PlayerHealth.max_value = max_health
 	$UI/PlayerHealth.visible = health < max_health
-	$Networking.sync_hand_rotation = $Hand.rotation
-	$Networking.sync_hand_position = $Hand.position
+	$Networking.sync_hand_rotation = hand.rotation
+	$Networking.sync_hand_position = hand.position
 
 @rpc("call_local", "any_peer")
 func set_teleport_shader_progress(progress:float) -> void:

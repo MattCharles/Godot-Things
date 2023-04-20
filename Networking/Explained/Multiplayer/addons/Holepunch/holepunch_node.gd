@@ -122,7 +122,7 @@ func _process(delta):
 			var m = packet_string.split(DELIMITER)
 			own_port = m[1].to_int()
 			room_code = m[2]
-			print("Server listening on port: ",own_port)
+			print("This client is listening on port: ",own_port)
 			print("Room Code: ", room_code)
 			emit_signal('session_registered')
 			emit_signal('return_room_code', room_code)
@@ -153,6 +153,7 @@ func _process(delta):
 
 #receive peer info, reset their port if you had it wrong
 func _handle_greet_message(peer_name, peer_port):
+	print("handling greet message from " + str(peer_name) + str(peer_port))
 	if not peer_name in peer_stages:
 		peer_stages[peer_name] = 0
 	if peer_stages[peer_name] == 0: peer_stages[peer_name] = 1
@@ -181,7 +182,7 @@ func _cascade_peer(peer_address, peer_port):
 	for i in range(int(peer_port) - port_cascade_range, int(peer_port) + port_cascade_range):
 		peer_udp.set_dest_address(peer_address, i)
 		var buffer = PackedByteArray()
-		buffer.append_array((PEER_GREET + DELIMITER +client_name+DELIMITER+str(own_port)).to_utf8_buffer()) #tell peer about your new port
+		buffer.append_array((PEER_GREET + DELIMITER + client_name + DELIMITER + str(own_port)).to_utf8_buffer()) #tell peer about your new port
 		peer_udp.put_packet(buffer)
 
 #contact other peers, repeatedly called by p_timer, started in start_peer_contact
@@ -217,7 +218,7 @@ func _ping_peer():
 			print("> send confirm!")
 			peer_udp.set_dest_address(peer.address, peer.port)
 			var buffer = PackedByteArray()
-			buffer.append_array((PEER_CONFIRM + DELIMITER +client_name+DELIMITER+str(own_port)).to_utf8_buffer())
+			buffer.append_array((PEER_CONFIRM + DELIMITER + client_name + DELIMITER + str(own_port)).to_utf8_buffer())
 			peer_udp.put_packet(buffer)
 		#initiate fail if peer can't connect to you (stage 0), or hasn't connected to all other peers (stage 1)
 		#in this case, all peers should have atleast one unsuccessful connection, and we will throw an error to the game
@@ -305,11 +306,11 @@ func start_traversal(room_id, is_player_host, player_name, player_nickname):
 
 #register a client with the server
 func _send_client_to_server():
-	await get_tree().create_timer(2.0).timeout #resume upon timeout of 2 second timer; aka wait 2s
+	await get_tree().create_timer(0.5).timeout #resume upon timeout of 2 second timer; aka wait 2s
 	var buffer = PackedByteArray()
 	print("registering client " + str(client_name))
 	print("nickname " + str(nickname))
-	buffer.append_array((REGISTER_CLIENT + DELIMITER + client_name + DELIMITER + room_code + DELIMITER+nickname).to_utf8_buffer())
+	buffer.append_array((REGISTER_CLIENT + DELIMITER + client_name + DELIMITER + room_code + DELIMITER + nickname).to_utf8_buffer())
 	server_udp.close()
 	server_udp.set_dest_address(rendevouz_address, rendevouz_port)
 	server_udp.put_packet(buffer)

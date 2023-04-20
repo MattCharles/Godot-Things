@@ -49,7 +49,7 @@ func _on_join_lobby_button_pressed(): #TODO: only letters
 		connection_setup()
 		var id = player_name + str(randi())
 		print(id + " joining")
-		$HolePunch.start_traversal(cap_room_code, false, id, player_name) #Attempt to connect to server as client
+		$HolePunch.start_traversal(cap_room_code, is_host, id, player_name) #Attempt to connect to server as client
 		print("Status: Connecting to session...")
 		$menu/Connecting.visible = true
 		$menu/Controls.visible = false
@@ -105,6 +105,7 @@ func _on_HolePunch_update_lobby(nicknames, max_players):
 		print(lobby_message)
 	else:
 		print("Status: Room open!")
+		print(lobby_message)
 		
 func _on_connect_timer_timeout(): 
 	print("connect timer timed out")
