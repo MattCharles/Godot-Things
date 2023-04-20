@@ -32,7 +32,7 @@ func set_active(value:bool) -> void:
 @rpc("call_local", "reliable")
 func set_sprite(value:int) -> void:
 	$Sprite2D.texture = load(default_sprite if value == DEFAULT_SPRITE else damaged_sprite)
-	var modified_alpha := 1.0 if value == DEFAULT_SPRITE else float(health) / float(max_health)
+	var modified_alpha := 1.0 if value == DEFAULT_SPRITE else (1 + float(health) / float(max_health)) / 2
 	$Sprite2D.modulate = Color(1, 1, 1, modified_alpha)
 
 @rpc("call_local", "reliable")

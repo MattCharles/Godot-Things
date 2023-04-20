@@ -119,14 +119,14 @@ colors = PackedColorArray(0, 0.278431, 0.486275, 1, 0, 0.576471, 1, 1)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_4qojy"]
 gradient = SubResource("Gradient_cb7u1")
 
-[sub_resource type="Gradient" id="Gradient_7upyk"]
+[sub_resource type="Gradient" id="Gradient_qm6cy"]
+colors = PackedColorArray(0, 0, 0, 1, 0.298774, 0.158868, 4.81308e-08, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_fuipu"]
-gradient = SubResource("Gradient_7upyk")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_rpji4"]
+gradient = SubResource("Gradient_qm6cy")
 
 [sub_resource type="Gradient" id="Gradient_gexyl"]
-offsets = PackedFloat32Array(0, 0.87987, 1)
-colors = PackedColorArray(0.811765, 0, 0, 1, 0.584416, 0.584416, 0.584416, 1, 1, 1, 1, 1)
+colors = PackedColorArray(0.811765, 0.407843, 0, 1, 0.584416, 0.584416, 0.584416, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_rrmcs"]
 gradient = SubResource("Gradient_gexyl")
@@ -256,11 +256,11 @@ horizontal_alignment = 1
 layout_mode = 0
 offset_left = 84.0
 offset_top = -11.0
-offset_right = 124.0
+offset_right = 100.0
 offset_bottom = 29.0
-fill_mode = 4
+fill_mode = 3
 nine_patch_stretch = true
-texture_under = SubResource("GradientTexture1D_fuipu")
+texture_under = SubResource("GradientTexture1D_rpji4")
 texture_progress = SubResource("GradientTexture1D_rrmcs")
 
 [node name="Networking" type="Node" parent="."]
