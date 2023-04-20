@@ -203,7 +203,7 @@ func _get_spawn_position(i: int, num_playing:int) -> Vector2:
 
 @rpc("reliable", "call_local")
 func enter_picking_time(picker_id:int, cards:Array) -> void:
-	remove_all_bullets()
+	remove_spawnables()
 	if multiplayer.is_server():
 		$Networking.sync_game_state = PlayState.State.PICKING
 	hide_all_players()
@@ -267,13 +267,13 @@ func modify_player_visibility(value) -> void:
 		player_nodes[player].set_process(value)
 		
 func reset_players() -> void:
-	remove_all_bullets()
+	remove_spawnables()
 	for player in alive.keys():
 		alive[player] = true
 		print("Resetting " + str(player))
 		player_nodes[player].reset()
 
-func remove_all_bullets() -> void:
+func remove_spawnables() -> void:
 	for node in $SpawnRoot.get_children():
 		if not node is MultiplayerSpawner:
 			node.call_deferred("free")
