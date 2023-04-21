@@ -50,7 +50,7 @@ const DEFAULT_IS_HAYROLLER := false
 const DEFAULT_IS_SHIELDDROPPER := false
 const PANIC_MAX_BONUS_SPEED := 200.0
 const DEFAULT_HAS_BOOMERANG := false
-const BOOMERANG_STRENGTH := 10.0
+const BOOMERANG_STRENGTH := 5000.0
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -560,7 +560,7 @@ func process_shot(bname, look_target, distant_target):
 	instance.num_bounces = bullet_bounces
 	instance.speed = bullet_speed
 	if has_boomerang:
-		instance.add_constant_central_force((distant_target - instance.global_position).normalized() * BOOMERANG_STRENGTH)
+		instance.add_constant_central_force((instance.global_position - distant_target).normalized() * BOOMERANG_STRENGTH)
 	instance.fire()
 
 @rpc("call_local", "reliable")

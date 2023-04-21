@@ -70,7 +70,7 @@ float noise(vec2 uv) {
 void fragment()
 {
 	vec4 tex = hit_flash ? 
-		vec4(1.0, 1.0, 1.0, 1.0) :
+		vec4(1.0, 1.0, 1.0, texture(TEXTURE, UV).a) :
 			(heal_flash ? heal_color : 
 			(evil ? 
 				swap_color(texture(TEXTURE, UV)) : 
