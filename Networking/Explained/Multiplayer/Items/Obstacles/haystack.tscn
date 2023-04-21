@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://du57h1qo0d42p"]
 
 [ext_resource type="Script" path="res://Items/Obstacles/haystack.gd" id="1_6xmcy"]
-[ext_resource type="Texture2D" uid="uid://vhlnrd2xerr6" path="res://Items/Obstacles/hay.png" id="1_b7f83"]
+[ext_resource type="Texture2D" uid="uid://dn5nyqd2maub2" path="res://Items/Obstacles/hay.png" id="1_b7f83"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_u8nxo"]
 properties/0/path = NodePath(".:position")
@@ -15,7 +15,7 @@ scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_b7f83")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
-collision_layer = 2
+collision_layer = 18
 collision_mask = 2
 script = ExtResource("1_6xmcy")
 

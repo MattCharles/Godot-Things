@@ -87,6 +87,7 @@ replication_config = SubResource("SceneReplicationConfig_dooqw")
 [node name="Walls" type="Node" parent="."]
 
 [node name="North" type="StaticBody2D" parent="Walls"]
+collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/North"]
 position = Vector2(100, 0)
@@ -94,6 +95,7 @@ shape = SubResource("WorldBoundaryShape2D_dq1op")
 
 [node name="North2" type="StaticBody2D" parent="Walls"]
 position = Vector2(-1, 1079)
+collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/North2"]
 position = Vector2(100, 0)
@@ -102,6 +104,7 @@ shape = SubResource("WorldBoundaryShape2D_enxqc")
 [node name="North3" type="StaticBody2D" parent="Walls"]
 position = Vector2(0, 400)
 rotation = 4.71239
+collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/North3"]
 position = Vector2(100, 0)
@@ -110,6 +113,7 @@ shape = SubResource("WorldBoundaryShape2D_dq1op")
 [node name="North4" type="StaticBody2D" parent="Walls"]
 position = Vector2(2998, 360)
 rotation = 1.5708
+collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/North4"]
 position = Vector2(99, 1079)

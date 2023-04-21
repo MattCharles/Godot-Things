@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://cipeo5kk86d0o"]
 
 [ext_resource type="Script" path="res://Items/default_bullet.gd" id="1_2tldu"]
-[ext_resource type="Texture2D" uid="uid://cmr57l8n8lgci" path="res://Levels/shoot.png" id="2_7cd5r"]
+[ext_resource type="Texture2D" uid="uid://du4jp1saajp58" path="res://Levels/shoot.png" id="2_7cd5r"]
 [ext_resource type="Script" path="res://Items/Networking.gd" id="3_5h0hf"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_oda4u"]
@@ -20,13 +20,13 @@ properties/2/spawn = true
 properties/2/sync = true
 properties/3/path = NodePath("../Sprite2D:modulate")
 properties/3/spawn = true
-properties/3/sync = true
+properties/3/sync = false
 properties/4/path = NodePath(".:sync_damage")
 properties/4/spawn = true
-properties/4/sync = true
+properties/4/sync = false
 properties/5/path = NodePath(".:sync_scale")
 properties/5/spawn = true
-properties/5/sync = true
+properties/5/sync = false
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8jah0"]
 radius = 6.0

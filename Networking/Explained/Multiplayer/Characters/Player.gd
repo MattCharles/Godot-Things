@@ -50,7 +50,7 @@ const DEFAULT_IS_HAYROLLER := false
 const DEFAULT_IS_SHIELDDROPPER := false
 const PANIC_MAX_BONUS_SPEED := 200.0
 const DEFAULT_HAS_BOOMERANG := false
-const BOOMERANG_STRENGTH := 5000.0
+const BOOMERANG_STRENGTH := 3000.0
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -138,6 +138,7 @@ var is_pizza_chef := false
 var roll_off_cooldown := true
 var is_poochzilla := DEFAULT_IS_POOCHZILLA
 var is_hayroller := DEFAULT_IS_HAYROLLER
+var hayed_this_roll := false
 var is_shielddropper := DEFAULT_IS_SHIELDDROPPER
 var is_panicker := DEFAULT_IS_PANICKER
 var has_boomerang := DEFAULT_HAS_BOOMERANG
@@ -428,14 +429,16 @@ func process_move(_delta) -> void:
 	
 
 func process_roll(_delta) -> void:
-	if is_hayroller:
-		rpc("create_hay")
+	if multiplayer.is_server():
+		if is_hayroller: #and not hayed_this_roll:
+			#hayed_this_roll = true
+			rpc("create_hay")
 	time_until_can_roll = roll_cooldown
 	_animated_sprite.play(roll)
 	if !is_local_authority(): # this is somebody else's player character
 		set_collision_mask_value(OBSTACLE_COLLISION_LABEL, $Networking.sync_collidable)
 		if has_ninja_roll:
-			set_collision_mask_value(BULLET_COLLISION_LABEL, $Networking.sync_collidable)
+			set_collision_layer_value(BULLET_COLLISION_LABEL, $Networking.sync_collidable)
 		if not $Networking.processed_position:
 			position = $Networking.sync_position
 			$Networking.processed_position = true
@@ -444,7 +447,7 @@ func process_roll(_delta) -> void:
 		return
 	$Networking.sync_collidable = false
 	set_collision_mask_value(OBSTACLE_COLLISION_LABEL, $Networking.sync_collidable)
-	set_collision_mask_value(BULLET_COLLISION_LABEL, $Networking.sync_collidable)
+	set_collision_layer_value(BULLET_COLLISION_LABEL, $Networking.sync_collidable)
 	
 	velocity = roll_vector * roll_speed
 	move_and_slide()
