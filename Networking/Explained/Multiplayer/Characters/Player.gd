@@ -51,6 +51,8 @@ const DEFAULT_IS_SHIELDDROPPER := false
 const PANIC_MAX_BONUS_SPEED := 200.0
 const DEFAULT_HAS_BOOMERANG := false
 const BOOMERANG_STRENGTH := 3000.0
+const DEFAULT_HAS_MACHINE_GUN := false
+const MACHINE_GUN_GAP := .1
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -142,6 +144,9 @@ var hayed_this_roll := false
 var is_shielddropper := DEFAULT_IS_SHIELDDROPPER
 var is_panicker := DEFAULT_IS_PANICKER
 var has_boomerang := DEFAULT_HAS_BOOMERANG
+var has_machine_gun := DEFAULT_HAS_MACHINE_GUN
+# We want to start this at max so there's no delay when user first pulls trigger
+var time_since_last_machine_gun_round := MACHINE_GUN_GAP + .1
 
 # swap var so we can restore a user's original speed when they are done sprinting
 var speed_temp := sprint_speed
@@ -155,7 +160,7 @@ func is_local_authority():
 
 func _ready():
 	if has_sword:
-		hand = preload("res://Items/sword.tscn")
+		hand = preload("res://Items/sword.tscn").instantiate()
 		hand_sprite = hand.get_node("Sprite2D")
 		shoot_point = hand.get_node("ShootPoint")
 	
@@ -263,8 +268,15 @@ func _process(delta):
 				rpc("create_shield")
 				can_power = false
 				
-		if not is_stunned and bullets_left_in_clip > 0 and Input.is_action_just_pressed("shoot"):
-			if not is_shooting: shoot()
+		if not is_stunned and bullets_left_in_clip > 0:
+			if has_machine_gun:
+				if Input.is_action_pressed("shoot"):
+					if time_since_last_machine_gun_round >= MACHINE_GUN_GAP:
+						shoot()
+						time_since_last_machine_gun_round = 0.0
+				time_since_last_machine_gun_round += delta
+			elif Input.is_action_just_pressed("shoot"):
+				if not is_shooting: shoot()
 		elif not is_stunned and reload_timer.is_stopped() and (Input.is_action_just_pressed("shoot") or Input.is_action_just_pressed("reload")):
 			print("started reload timer")
 			reload_timer.start()
@@ -543,28 +555,29 @@ func create_shield():
 
 @rpc("reliable", "call_local", "any_peer")
 func process_shot(bname, look_target, distant_target):
-	print("shooting, crit count:" + str(crits_stored))
-	var instance =  SWORD_BULLET.instantiate() if has_sword else player_bullet.instantiate()
-	instance.name = bname
-	get_node("/root/Level/SpawnRoot").add_child(instance, true)
-	instance.set_scale_for_all_clients(instance.scale * bullet_scale) # scale is a vector 2
-	instance.target = distant_target
-	var crit_damage = bullet_damage
-	if crits_stored > 0:
-		print("firing crit")
-		rpc("set_crits_stored", crits_stored - 1)
-		if crits_stored < 1:
-			rpc("set_sprite_modulate", DEFAULT_COLOR_INDEX)
-		crit_damage = bullet_damage * crit_multiplier
-		instance.modulate = Color(.8, 0, 0, 1)
-	instance.set_damage(crit_damage)
-	instance.look_at(look_target)
-	instance.global_position = shoot_point.global_position
-	instance.num_bounces = bullet_bounces
-	instance.speed = bullet_speed
-	if has_boomerang:
-		instance.add_constant_central_force((instance.global_position - distant_target).normalized() * BOOMERANG_STRENGTH)
-	instance.fire()
+	if multiplayer.is_server():
+		print("shooting, crit count:" + str(crits_stored))
+		var instance =  SWORD_BULLET.instantiate() if has_sword else player_bullet.instantiate()
+		instance.name = bname
+		get_node("/root/Level/SpawnRoot").add_child(instance, true)
+		instance.set_scale_for_all_clients(instance.scale * bullet_scale) # scale is a vector 2
+		instance.target = distant_target
+		var crit_damage = bullet_damage
+		if crits_stored > 0:
+			print("firing crit")
+			rpc("set_crits_stored", crits_stored - 1)
+			if crits_stored < 1:
+				rpc("set_sprite_modulate", DEFAULT_COLOR_INDEX)
+			crit_damage = bullet_damage * crit_multiplier
+			instance.modulate = Color(.8, 0, 0, 1)
+		instance.set_damage(crit_damage)
+		instance.look_at(look_target)
+		instance.global_position = shoot_point.global_position
+		instance.num_bounces = bullet_bounces
+		instance.speed = bullet_speed
+		if has_boomerang:
+			instance.add_constant_central_force((instance.global_position - distant_target).normalized() * BOOMERANG_STRENGTH)
+		instance.fire()
 
 @rpc("call_local", "reliable")
 func take_damage(amount):
@@ -650,6 +663,7 @@ func reset():
 	$Networking.sync_bullets_left_in_clip = bullets_left_in_clip
 	$Networking.sync_bullet_damage = bullet_damage
 	reload_spinner.max_value = clip_size
+	reload_spinner.value = clip_size
 	dead = false
 	$Networking.sync_dead = false
 	if has_shield: $Shield.reset()

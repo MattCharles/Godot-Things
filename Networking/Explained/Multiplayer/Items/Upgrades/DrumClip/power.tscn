@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bfsnl6oci7u36"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/DrumClip/power.gd" id="1_kklux"]
+
+[node name="DrumClip" type="Node"]
+script = ExtResource("1_kklux")

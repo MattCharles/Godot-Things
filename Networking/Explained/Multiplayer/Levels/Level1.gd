@@ -39,7 +39,9 @@ var buttons = [preload("res://Items/Upgrades/Tank/choice.tscn"),
 				preload("res://Items/Upgrades/Hayroller/choice.tscn"),
 				preload("res://Items/Upgrades/Shielddropper/choice.tscn"),
 				preload("res://Items/Upgrades/Panicker/choice.tscn"),
-				preload("res://Items/Upgrades/Boomerang/choice.tscn")]
+				preload("res://Items/Upgrades/Boomerang/choice.tscn"),
+				preload("res://Items/Upgrades/MachineGun/choice.tscn"),
+				preload("res://Items/Upgrades/DrumClip/choice.tscn")]
 
 var powers = [load("res://Items/Upgrades/Tank/power.tscn"), 
 				load("res://Items/Upgrades/Shotgun/power.tscn"),
@@ -63,7 +65,9 @@ var powers = [load("res://Items/Upgrades/Tank/power.tscn"),
 				load("res://Items/Upgrades/Hayroller/power.tscn"),
 				load("res://Items/Upgrades/Shielddropper/power.tscn"),
 				load("res://Items/Upgrades/Panicker/power.tscn"),
-				load("res://Items/Upgrades/Boomerang/power.tscn")] #TODO - load the power node when choice is displayed
+				load("res://Items/Upgrades/Boomerang/power.tscn"),
+				load("res://Items/Upgrades/MachineGun/power.tscn"),
+				load("res://Items/Upgrades/DrumClip/power.tscn")] #TODO - load the power node when choice is displayed
 
 var obstacles = [preload("res://Items/Obstacles/haystack.tscn")]
 
@@ -71,7 +75,7 @@ const AVOID_AFTER := {
 	0: [],
 	1: [1],
 	2: [],
-	3: [3],
+	3: [3, 23],
 	4: [4],
 	5: [],
 	6: [6],
@@ -90,7 +94,8 @@ const AVOID_AFTER := {
 	19: [18],
 	20: [20],
 	21: [],
-	22: [22]
+	22: [22],
+	23: [3, 23]
 }
 
 func _ready():
