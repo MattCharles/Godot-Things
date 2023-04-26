@@ -53,6 +53,9 @@ const DEFAULT_HAS_BOOMERANG := false
 const BOOMERANG_STRENGTH := 3000.0
 const DEFAULT_HAS_MACHINE_GUN := false
 const MACHINE_GUN_GAP := .1
+const DEFAULT_PASSIVE_REGEN := false
+const PASSIVE_REGEN_GAP := 1.0
+const PASSIVE_REGEN_AMOUNT := 2
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -152,6 +155,8 @@ var poison_damage := DEFAULT_POISON_DAMAGE
 var poison_duration := DEFAULT_POISON_DURATION
 var incoming_poison_damage := 0.0
 var incoming_poison_duration := 0.0
+var has_passive_regen := DEFAULT_PASSIVE_REGEN
+var time_since_regen := 0.0
 
 # swap var so we can restore a user's original speed when they are done sprinting
 var speed_temp := sprint_speed
@@ -400,7 +405,13 @@ func _physics_process(delta):
 			# TODO: maybe hit flash? green hit flash?
 			rpc("damage", incoming_poison_damage)
 	else:
-		rpc("set_poison", 0.0, 0.0)
+		rpc("set_poison", 0, 0.0)
+	if has_passive_regen and health < max_health:
+		if time_since_regen < PASSIVE_REGEN_GAP:
+			time_since_regen += PASSIVE_REGEN_GAP
+			return
+		else:
+			heal(PASSIVE_REGEN_AMOUNT)
 			
 func process_stunned(delta) -> void:
 	remaining_stun_time -= delta
@@ -531,6 +542,8 @@ func damage(amount):
 		
 func heal(amount):
 	if multiplayer.is_server():
+		if health + amount > max_health:
+			amount = max_health - health
 		rpc("take_damage", - amount)
 		rpc("set_sprite_modulate", HEAL_FLASH_INDEX)
 		# reusing damage flash timer here - should be fine for this case
