@@ -1,8 +1,8 @@
 [gd_scene load_steps=13 format=3 uid="uid://dok1w4tfkwpq5"]
 
 [ext_resource type="Script" path="res://Items/Upgrades/Berserker/choice.gd" id="1_tag54"]
-[ext_resource type="Texture2D" uid="uid://b6m5amcx22cae" path="res://Characters/Poochys/Poochy-Stander.png" id="2_ern73"]
-[ext_resource type="Texture2D" uid="uid://b2plvhpikqu56" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_8vkt0"]
+[ext_resource type="Texture2D" uid="uid://c64y6e0oytoqn" path="res://Characters/Poochys/Poochy-Stander.png" id="2_ern73"]
+[ext_resource type="Texture2D" uid="uid://ifr1qwx36o52" path="res://Characters/Poochys/Poochy-Walker-Sheet.png" id="3_8vkt0"]
 [ext_resource type="PackedScene" uid="uid://bgm5r4ut6sgp5" path="res://Items/Upgrades/Berserker/power.tscn" id="4_hmk0f"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_i0ycd"]

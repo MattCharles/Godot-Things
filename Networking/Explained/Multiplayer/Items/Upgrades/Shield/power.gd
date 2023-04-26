@@ -3,7 +3,7 @@ extends Node
 const card_id := 9
 
 const modifiers := {
-	"is_berserker": {
+	"has_shield": {
 		"set": true
 	}
 }

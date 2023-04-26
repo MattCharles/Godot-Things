@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bgm5r4ut6sgp5"]
 
-[ext_resource type="Script" path="res://Items/Upgrades/Shield/power.gd" id="1_5yau6"]
+[ext_resource type="Script" path="res://Items/Upgrades/Berserker/power.gd" id="1_8wawp"]
 
 [node name="Berserker" type="Node"]
-script = ExtResource("1_5yau6")
+script = ExtResource("1_8wawp")

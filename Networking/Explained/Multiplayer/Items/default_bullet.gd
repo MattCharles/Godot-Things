@@ -75,6 +75,8 @@ func _on_body_entered(body):
 	
 	if body is Player or body is Shield or body is Haystack:
 		body.damage(damage)
+		if body is Player and poison_damage > 0 and poison_duration > .01:
+			body.poison(poison_damage, poison_duration)
 		if not body is Shield:
 			body.poison(poison_damage, poison_duration)
 		if body is Player and vampire_ratio > .01:

@@ -48,14 +48,14 @@ const DEFAULT_ROLL_COOLDOWN := 1.0
 const DEFAULT_IS_POOCHZILLA := false
 const DEFAULT_IS_HAYROLLER := false
 const DEFAULT_IS_SHIELDDROPPER := false
-const PANIC_MAX_BONUS_SPEED := 200.0
+const PANIC_MAX_BONUS_SPEED := 1000.0
 const DEFAULT_HAS_BOOMERANG := false
 const BOOMERANG_STRENGTH := 3000.0
 const DEFAULT_HAS_MACHINE_GUN := false
 const MACHINE_GUN_GAP := .1
 const DEFAULT_PASSIVE_REGEN := false
-const PASSIVE_REGEN_GAP := 1.0
-const PASSIVE_REGEN_AMOUNT := 2
+const PASSIVE_REGEN_GAP := 10.0
+const PASSIVE_REGEN_AMOUNT := 1
 const TASTY_CLIP_HEAL_AMOUNT := 15
 const DEFAULT_IS_BUBBLE_SHIELDER := false
 
@@ -345,6 +345,7 @@ func is_mouse_outside_player_hitbox() -> bool:
 	return (self.get_global_mouse_position() - self.global_position).length_squared() >= SQUARE_DISTANCE_FROM_CENTER_TO_HAND
 
 func reset_ammo():
+	reload_timer.stop()
 	bullets_left_in_clip = clip_size
 	reload_spinner.value = bullets_left_in_clip
 	if has_tasty_clips:
@@ -401,23 +402,21 @@ func _physics_process(delta):
 			process_roll(delta)
 		Movement.states.STUNNED:
 			process_stunned(delta)
-	if poison_duration > .01:
+	if incoming_poison_duration > .01:
 		# poison will be applied every second.
 		# first, truncate duration.
-		var boundary:int = int(poison_duration)
+		var boundary:int = int(incoming_poison_duration)
 		# then, apply countdown
-		poison_duration -= delta
+		incoming_poison_duration -= delta
 		# if we have crossed a barrier: i.e., 10.0, 9.0, etc.,
-		var new_trunc:int = int(poison_duration)
+		var new_trunc:int = int(incoming_poison_duration)
 		if new_trunc == boundary - 1:
 			# apply poison damage.
 			# TODO: maybe hit flash? green hit flash?
 			damage(incoming_poison_damage)
-	else:
-		rpc("set_poison", 0, 0.0)
 	if has_passive_regen and health < max_health:
 		if time_since_regen < PASSIVE_REGEN_GAP:
-			time_since_regen += PASSIVE_REGEN_GAP
+			time_since_regen += delta
 			return
 		else:
 			heal(PASSIVE_REGEN_AMOUNT)
@@ -557,6 +556,7 @@ func heal(amount):
 	if multiplayer.is_server():
 		if health + amount > max_health:
 			amount = max_health - health
+			if amount == 0: return
 		rpc("take_damage", - amount)
 		rpc("set_sprite_modulate", HEAL_FLASH_INDEX)
 		# reusing damage flash timer here - should be fine for this case
@@ -569,7 +569,7 @@ func stun(milliseconds:float) -> void:
 	if multiplayer.is_server():
 		rpc("stun_player", milliseconds)
 
-@rpc("reliable", "call_local")
+@rpc("reliable", "call_local", "any_peer")
 func go_berserk():
 	rpc("set_crits_stored", crits_stored + 1)
 
@@ -636,12 +636,13 @@ func take_damage(amount):
 func stun_player(milliseconds):
 	remaining_stun_time = max(remaining_stun_time, milliseconds)
 
-func poison(damage:float, duration:float):
+func poison(damage:int, duration:float):
 	if multiplayer.is_server():
 		rpc("set_poison", damage, duration)
 		
 @rpc("call_local", "reliable", "any_peer")
 func set_poison(taken_poison_damage:int, taken_poison_duration:float) -> void:
+	print("Getting poisoned " + str(taken_poison_damage) + " will be taken over " + str(taken_poison_duration) + " seconds" )
 	incoming_poison_damage = taken_poison_damage
 	incoming_poison_duration = taken_poison_duration
 
