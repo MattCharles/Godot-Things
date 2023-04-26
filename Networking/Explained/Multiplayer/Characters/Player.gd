@@ -67,6 +67,7 @@ const HEAL_FLASH_INDEX := 4
 const END_HEAL_FLASH_INDEX := 5
 const DEFAULT_POISON_DAMAGE := 0
 const DEFAULT_POISON_DURATION := 0.0
+const DEFAULT_VAMPIRE_RATIO := 0.0
 
 # TODO: implement these?
 const DEFAULT_BULLET_SLOW := 0
@@ -160,6 +161,8 @@ var incoming_poison_duration := 0.0
 var has_passive_regen := DEFAULT_PASSIVE_REGEN
 var time_since_regen := 0.0
 var has_tasty_clips := false
+var vampire_ratio := DEFAULT_VAMPIRE_RATIO
+
 var is_bubble_shielder := DEFAULT_IS_BUBBLE_SHIELDER
 var has_bubble_shield := is_bubble_shielder
 
@@ -602,6 +605,8 @@ func process_shot(bname, look_target, distant_target):
 		print("shooting, crit count:" + str(crits_stored))
 		var instance =  SWORD_BULLET.instantiate() if has_sword else player_bullet.instantiate()
 		instance.name = bname
+		instance.set_shooter(name)
+		instance.set_vampire_ratio(vampire_ratio)
 		get_node("/root/Level/SpawnRoot").add_child(instance, true)
 		instance.set_scale_for_all_clients(instance.scale * bullet_scale) # scale is a vector 2
 		instance.target = distant_target
@@ -676,6 +681,7 @@ func reset():
 	is_poochzilla = DEFAULT_IS_POOCHZILLA
 	poison_damage = DEFAULT_POISON_DAMAGE
 	poison_duration = DEFAULT_POISON_DURATION
+	vampire_ratio = DEFAULT_VAMPIRE_RATIO
 	if current_teleporter != null:
 		rpc("free_teleporter")
 	
@@ -717,6 +723,7 @@ func reset():
 		rpc("remote_set", "has_tasty_clips", has_tasty_clips)
 		rpc("remote_set", "is_bubble_shielder", is_bubble_shielder)
 		rpc("remote_set", "has_bubble_shield", is_bubble_shielder)
+		rpc("remote_set", "vampire_ratio", vampire_ratio)
 	if multiplayer.is_server():
 		rpc("remote_dictate_position", initial_position)
 	$Networking.sync_bullet_scale = bullet_scale

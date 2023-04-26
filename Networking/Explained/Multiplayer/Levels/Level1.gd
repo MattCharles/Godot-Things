@@ -352,3 +352,7 @@ func get_player_power_ids(player_id) -> Array:
 		result.append(child.card_id)
 
 	return result
+
+func heal_player(player_id:int, amount:int):
+	var patient = player_nodes[player_id]
+	patient.heal(amount)
