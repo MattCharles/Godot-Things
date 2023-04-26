@@ -290,7 +290,8 @@ func inform_peers(card_id, player_id):
 func exit_picking_time() -> void:
 	for choice in $PickingTime/HBoxContainer.get_children():
 		$PickingTime/HBoxContainer.remove_child(choice)
-		choice.queue_free()
+		if multiplayer.is_server():
+			choice.queue_free()
 	$PickingTime.visible = false
 	for i in round_wins.keys():
 		round_wins[i] = 0
@@ -319,7 +320,8 @@ func reset_players() -> void:
 func remove_spawnables() -> void:
 	for node in $SpawnRoot.get_children():
 		if not node is MultiplayerSpawner:
-			node.call_deferred("free")
+			if multiplayer.is_server():
+				node.call("queue_free")
 
 func generate_level() -> void:
 	var num_obstacles_on_each_side := 3
@@ -355,6 +357,6 @@ func get_player_power_ids(player_id) -> Array:
 
 	return result
 
-func heal_player(player_id:int, amount:int):
-	var patient = player_nodes[player_id]
+func heal_player(player_id, amount:int):
+	var patient = player_nodes[int(player_id)]
 	patient.heal(amount)

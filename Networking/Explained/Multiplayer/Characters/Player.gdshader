@@ -71,7 +71,7 @@ void fragment()
 {
 	vec4 tex = hit_flash ? 
 		vec4(1.0, 1.0, 1.0, texture(TEXTURE, UV).a) :
-			(heal_flash ? heal_color : 
+			(heal_flash ? vec4(heal_color.r, heal_color.g, heal_color.b, texture(TEXTURE, UV).a) : 
 			(evil ? 
 				swap_color(texture(TEXTURE, UV)) : 
 				texture(TEXTURE, UV)));

@@ -8,13 +8,14 @@ var num_bounces = 0
 var poison_damage := 0
 var poison_duration := 0.0
 var shooter = -1
-var vampire_ratio := .3
+var vampire_ratio := 0.0
 var heal_on_poison := false
 
 # TODO: maybe pass this from player if its causing lag
-@onready var level = get_node("/root/").find_child("Level")
+@onready var level = get_node("/root/Level")
 
 func set_shooter(value):
+	print(str(multiplayer.get_unique_id()) + " is setting shooter to " + str(value))
 	rpc("remote_set_shooter", value)
 	
 @rpc("reliable", "call_local", "any_peer")
@@ -74,19 +75,21 @@ func _on_body_entered(body):
 	
 	if body is Player or body is Shield or body is Haystack:
 		body.damage(damage)
-		if vampire_ratio > .01:
-			assert(shooter != -1, "Shooter wasn't assigned")
-			var amount_to_heal = max(1, int(damage * vampire_ratio))
-			level.heal_player(shooter, amount_to_heal)
 		if not body is Shield:
 			body.poison(poison_damage, poison_duration)
-		rpc("free")
+		if body is Player and vampire_ratio > .01:
+			assert(shooter != "-1", "Shooter wasn't assigned")
+			var amount_to_heal = max(1, int(damage * vampire_ratio))
+			level.heal_player(shooter, amount_to_heal)
+		#rpc("queue_free")
+		queue_free()
 		
 	if body is Bullet:
 		return
 		
 	elif num_bounces <= 0:
-		rpc("free")
+		#rpc("free")
+		queue_free()
 	
 	num_bounces = num_bounces - 1
 	$Networking.sync_num_bounces = num_bounces

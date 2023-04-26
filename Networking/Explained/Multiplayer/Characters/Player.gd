@@ -209,7 +209,6 @@ func _process(delta):
 		if time_until_can_roll > .01:
 			time_until_can_roll -= delta
 		roll_off_cooldown = time_until_can_roll < .01
-			
 		if not can_power:
 			power_cooldown -= delta
 			if power_cooldown < .01: # .01 buffer for float comparison
@@ -605,9 +604,9 @@ func process_shot(bname, look_target, distant_target):
 		print("shooting, crit count:" + str(crits_stored))
 		var instance =  SWORD_BULLET.instantiate() if has_sword else player_bullet.instantiate()
 		instance.name = bname
-		instance.set_shooter(name)
-		instance.set_vampire_ratio(vampire_ratio)
 		get_node("/root/Level/SpawnRoot").add_child(instance, true)
+		instance.set_shooter(String(self.name))
+		instance.set_vampire_ratio(vampire_ratio)
 		instance.set_scale_for_all_clients(instance.scale * bullet_scale) # scale is a vector 2
 		instance.target = distant_target
 		var crit_damage = bullet_damage

@@ -4,12 +4,9 @@
 [ext_resource type="Script" path="res://Levels/Networking.gd" id="2_2ei3q"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_dooqw"]
-properties/0/path = NodePath(".:sync_num_connected")
+properties/0/path = NodePath(".:sync_game_state")
 properties/0/spawn = true
 properties/0/sync = true
-properties/1/path = NodePath(".:sync_game_state")
-properties/1/spawn = true
-properties/1/sync = true
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_dq1op"]
 normal = Vector2(0, 1)
