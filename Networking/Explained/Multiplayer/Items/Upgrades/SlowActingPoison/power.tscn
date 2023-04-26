@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://5l2esq456oxn"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/SlowActingPoison/power.gd" id="1_mq430"]
+
+[node name="SlowActingPoison" type="Node"]
+script = ExtResource("1_mq430")

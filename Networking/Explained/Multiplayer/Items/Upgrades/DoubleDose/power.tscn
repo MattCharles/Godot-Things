@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://gj7bbq8wmkec"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/DoubleDose/power.gd" id="1_5q43q"]
+
+[node name="DoubleDose" type="Node"]
+script = ExtResource("1_5q43q")

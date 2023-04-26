@@ -42,7 +42,9 @@ var buttons = [preload("res://Items/Upgrades/Tank/choice.tscn"),
 				preload("res://Items/Upgrades/Boomerang/choice.tscn"),
 				preload("res://Items/Upgrades/MachineGun/choice.tscn"),
 				preload("res://Items/Upgrades/DrumClip/choice.tscn"),
-				preload("res://Items/Upgrades/PoisonBullets/choice.tscn")]
+				preload("res://Items/Upgrades/PoisonBullets/choice.tscn"),
+				preload("res://Items/Upgrades/DoubleDose/choice.tscn"),
+				preload("res://Items/Upgrades/SlowActingPoison/choice.tscn")]
 
 var powers = [load("res://Items/Upgrades/Tank/power.tscn"), 
 				load("res://Items/Upgrades/Shotgun/power.tscn"),
@@ -69,7 +71,9 @@ var powers = [load("res://Items/Upgrades/Tank/power.tscn"),
 				load("res://Items/Upgrades/Boomerang/power.tscn"),
 				load("res://Items/Upgrades/MachineGun/power.tscn"),
 				load("res://Items/Upgrades/DrumClip/power.tscn"),
-				load("res://Items/Upgrades/PoisonBullets/power.tscn")] #TODO - load the power node when choice is displayed
+				load("res://Items/Upgrades/PoisonBullets/power.tscn"),
+				load("res://Items/Upgrades/DoubleDose/power.tscn"),
+				load("res://Items/Upgrades/SlowActingPoison/power.tscn")] #TODO - load the power node when choice is displayed
 
 var obstacles = [preload("res://Items/Obstacles/haystack.tscn")]
 
@@ -97,7 +101,11 @@ const AVOID_AFTER := {
 	20: [20],
 	21: [],
 	22: [22],
-	23: [3, 23]
+	23: [3, 23],
+	24: [],
+	25: [],
+	26: [],
+	27: []
 }
 
 func _ready():
@@ -302,8 +310,6 @@ func remove_spawnables() -> void:
 			node.call_deferred("free")
 
 func generate_level() -> void:
-	print("this is where i would generate a level")
-	print("I might put them in these places:")
 	var num_obstacles_on_each_side := 3
 	var indices := choose_random_indices(num_obstacles_on_each_side, obstacles.size())
 	for i in range(num_obstacles_on_each_side):
