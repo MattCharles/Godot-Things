@@ -5,6 +5,8 @@ var target = Vector2(0, 0)
 var speed := 1000
 var damage := 35
 var num_bounces = 0
+var poison_damage := 0
+var poison_duration := 0.0
 
 func _ready():
 	$Networking.sync_num_bounces = num_bounces
@@ -14,6 +16,17 @@ func set_damage(value):
 		return
 	print("setting damage to " + str(value))
 	rpc("sync_set_damage", value)
+	
+func set_poison(damage: float, duration: float) -> void:
+	if !multiplayer.is_server():
+		return
+	rpc("sync_set_poison", damage, duration)
+
+@rpc("reliable", "call_local")
+func sync_set_poison(damage:float, duration:float):
+	print("synching poison to " + str(damage) + " for " + str(duration) + " seconds")
+	poison_damage = damage
+	poison_duration = duration
 	
 func set_scale_for_all_clients(value):
 	if !multiplayer.is_server():
@@ -44,6 +57,8 @@ func _on_body_entered(body):
 	
 	if body is Player or body is Shield or body is Haystack:
 		body.damage(damage)
+		if not body is Shield:
+			body.poison(poison_damage, poison_duration)
 		rpc("free")
 		
 	if body is Bullet:

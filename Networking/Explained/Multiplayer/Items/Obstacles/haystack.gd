@@ -6,10 +6,31 @@ var health := max_health
 var default_sprite := "res://Items/Obstacles/hay.png"
 var damaged_sprite := "res://Items/Obstacles/sad_hay.png"
 var healed_sprite := "res://Items/Obstacles/glad_hay.png"
+var incoming_poison_damage := 0
+var poison_duration := 0.0
 
 var DEFAULT_SPRITE_INDEX := 0
 var DAMAGED_SPRITE_INDEX := 1
 var HEALED_SPRITE_INDEX := 2
+
+func _physics_process(delta):
+	if !multiplayer.is_server():
+		return
+	if poison_duration > .01:
+		# poison will be applied every second.
+		# first, truncate duration.
+		var boundary:int = int(poison_duration)
+		# then, apply countdown
+		poison_duration -= delta
+		# if we have crossed a barrier: i.e., 10.0, 9.0, etc.,
+		var new_trunc:int = int(poison_duration)
+		if new_trunc == boundary - 1:
+			# apply poison damage.
+			# TODO: maybe hit flash? green hit flash?
+			rpc("damage", incoming_poison_damage)
+	else:
+		rpc("set_poison", 0.0, 0.0)
+		
 
 func damage(amount:int) -> void:
 	print("damaging haystack")
@@ -19,6 +40,16 @@ func damage(amount:int) -> void:
 			rpc("set_active", false)
 			return
 		rpc("set_sprite", DAMAGED_SPRITE_INDEX)
+		
+func poison(damage:int, duration:float) -> void:
+	print("haystack poisoned :(")
+	if multiplayer.is_server():
+		rpc("set_poison", max(damage, incoming_poison_damage), max(poison_duration, duration))
+
+@rpc("call_local", "reliable")
+func set_poison(damage:int, duration:float) -> void:
+	incoming_poison_damage = damage
+	poison_duration = duration
 
 @rpc("call_local", "reliable")
 func set_active(value:bool) -> void:
@@ -37,8 +68,5 @@ func set_health(value:int) -> void:
 
 func heal(amount:int) -> void:
 	if multiplayer.is_server():
-		rpc("set_health", health - amount)
-		if health <= 0:
-			rpc("set_active", false)
-			return
+		rpc("set_health", health + amount)
 		rpc("set_sprite", HEALED_SPRITE_INDEX)

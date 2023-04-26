@@ -60,11 +60,12 @@ const DAMAGE_FLASH_INDEX := 2
 const END_DAMAGE_FLASH_INDEX := 3
 const HEAL_FLASH_INDEX := 4
 const END_HEAL_FLASH_INDEX := 5
+const DEFAULT_POISON_DAMAGE := 0
+const DEFAULT_POISON_DURATION := 0.0
 
 # TODO: implement these?
 const DEFAULT_BULLET_SLOW := 0
 const DEFAULT_CHARGE_TIME := 0
-const DEFAULT_POISON_DAMAGE := 0
 
 func instant_reload(): pass
 
@@ -147,6 +148,10 @@ var has_boomerang := DEFAULT_HAS_BOOMERANG
 var has_machine_gun := DEFAULT_HAS_MACHINE_GUN
 # We want to start this at max so there's no delay when user first pulls trigger
 var time_since_last_machine_gun_round := MACHINE_GUN_GAP + .1
+var poison_damage := DEFAULT_POISON_DAMAGE
+var poison_duration := DEFAULT_POISON_DURATION
+var incoming_poison_damage := 0.0
+var incoming_poison_duration := 0.0
 
 # swap var so we can restore a user's original speed when they are done sprinting
 var speed_temp := sprint_speed
@@ -382,6 +387,20 @@ func _physics_process(delta):
 			process_roll(delta)
 		Movement.states.STUNNED:
 			process_stunned(delta)
+	if poison_duration > .01:
+		# poison will be applied every second.
+		# first, truncate duration.
+		var boundary:int = int(poison_duration)
+		# then, apply countdown
+		poison_duration -= delta
+		# if we have crossed a barrier: i.e., 10.0, 9.0, etc.,
+		var new_trunc:int = int(poison_duration)
+		if new_trunc == boundary - 1:
+			# apply poison damage.
+			# TODO: maybe hit flash? green hit flash?
+			rpc("damage", incoming_poison_damage)
+	else:
+		rpc("set_poison", 0.0, 0.0)
 			
 func process_stunned(delta) -> void:
 	remaining_stun_time -= delta
@@ -571,6 +590,7 @@ func process_shot(bname, look_target, distant_target):
 			crit_damage = bullet_damage * crit_multiplier
 			instance.modulate = Color(.8, 0, 0, 1)
 		instance.set_damage(crit_damage)
+		instance.set_poison(poison_damage, poison_duration)
 		instance.look_at(look_target)
 		instance.global_position = shoot_point.global_position
 		instance.num_bounces = bullet_bounces
@@ -587,6 +607,15 @@ func take_damage(amount):
 @rpc("call_local", "reliable")
 func stun_player(milliseconds):
 	remaining_stun_time = max(remaining_stun_time, milliseconds)
+
+func poison(damage:float, duration:float):
+	if multiplayer.is_server():
+		rpc("set_poison", damage, duration)
+		
+@rpc("call_local", "reliable", "any_peer")
+func set_poison(taken_poison_damage:int, taken_poison_duration:float) -> void:
+	incoming_poison_damage = taken_poison_damage
+	incoming_poison_duration = taken_poison_duration
 
 func die():
 	if !multiplayer.is_server():
@@ -621,6 +650,8 @@ func reset():
 	roll_cooldown = DEFAULT_ROLL_COOLDOWN
 	time_until_can_roll = 0.0
 	is_poochzilla = DEFAULT_IS_POOCHZILLA
+	poison_damage = DEFAULT_POISON_DAMAGE
+	poison_duration = DEFAULT_POISON_DURATION
 	if current_teleporter != null:
 		rpc("free_teleporter")
 	
@@ -652,6 +683,10 @@ func reset():
 		rpc("set_angry_turtle", angry_turtle)
 		rpc("set_is_hayroller", is_hayroller)
 		rpc("set_is_panicker", is_panicker)
+		rpc("remote_set", "poison_damage", poison_damage)
+		rpc("remote_set", "poison_duration", poison_duration)
+		rpc("remote_set", "incoming_poison_damage", 0)
+		rpc("remote_set", "incoming_poison_duration", 0.0)
 	if multiplayer.is_server():
 		rpc("remote_dictate_position", initial_position)
 	$Networking.sync_bullet_scale = bullet_scale
@@ -720,7 +755,7 @@ func modify():
 		set(stat, result)
 
 @rpc("call_local", "reliable", "any_peer")
-func remote_set(variable, value) -> void:
+func remote_set(variable:String, value) -> void:
 	set(variable, value)
 
 @rpc("call_local", "reliable", "any_peer")

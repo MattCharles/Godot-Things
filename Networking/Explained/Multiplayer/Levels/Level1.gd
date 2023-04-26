@@ -41,7 +41,8 @@ var buttons = [preload("res://Items/Upgrades/Tank/choice.tscn"),
 				preload("res://Items/Upgrades/Panicker/choice.tscn"),
 				preload("res://Items/Upgrades/Boomerang/choice.tscn"),
 				preload("res://Items/Upgrades/MachineGun/choice.tscn"),
-				preload("res://Items/Upgrades/DrumClip/choice.tscn")]
+				preload("res://Items/Upgrades/DrumClip/choice.tscn"),
+				preload("res://Items/Upgrades/PoisonBullets/choice.tscn")]
 
 var powers = [load("res://Items/Upgrades/Tank/power.tscn"), 
 				load("res://Items/Upgrades/Shotgun/power.tscn"),
@@ -67,7 +68,8 @@ var powers = [load("res://Items/Upgrades/Tank/power.tscn"),
 				load("res://Items/Upgrades/Panicker/power.tscn"),
 				load("res://Items/Upgrades/Boomerang/power.tscn"),
 				load("res://Items/Upgrades/MachineGun/power.tscn"),
-				load("res://Items/Upgrades/DrumClip/power.tscn")] #TODO - load the power node when choice is displayed
+				load("res://Items/Upgrades/DrumClip/power.tscn"),
+				load("res://Items/Upgrades/PoisonBullets/power.tscn")] #TODO - load the power node when choice is displayed
 
 var obstacles = [preload("res://Items/Obstacles/haystack.tscn")]
 
@@ -329,8 +331,8 @@ func get_exclusions_for(id) -> Array:
 func get_player_power_ids(player_id) -> Array:
 	var result := []
 	var player = player_nodes[player_id]
-	var powers = player.get_node("Powers").get_children()
-	for child in powers:
+	var power_node_children = player.get_node("Powers").get_children()
+	for child in power_node_children:
 		result.append(child.card_id)
 
 	return result
