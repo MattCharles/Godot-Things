@@ -57,6 +57,7 @@ const DEFAULT_PASSIVE_REGEN := false
 const PASSIVE_REGEN_GAP := 1.0
 const PASSIVE_REGEN_AMOUNT := 2
 const TASTY_CLIP_HEAL_AMOUNT := 15
+const DEFAULT_IS_BUBBLE_SHIELDER := false
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -159,6 +160,8 @@ var incoming_poison_duration := 0.0
 var has_passive_regen := DEFAULT_PASSIVE_REGEN
 var time_since_regen := 0.0
 var has_tasty_clips := false
+var is_bubble_shielder := DEFAULT_IS_BUBBLE_SHIELDER
+var has_bubble_shield := is_bubble_shielder
 
 # swap var so we can restore a user's original speed when they are done sprinting
 var speed_temp := sprint_speed
@@ -407,7 +410,7 @@ func _physics_process(delta):
 		if new_trunc == boundary - 1:
 			# apply poison damage.
 			# TODO: maybe hit flash? green hit flash?
-			rpc("damage", incoming_poison_damage)
+			damage(incoming_poison_damage)
 	else:
 		rpc("set_poison", 0, 0.0)
 	if has_passive_regen and health < max_health:
@@ -530,6 +533,10 @@ func change_name(_new_name):
 func damage(amount):
 	print("damaging player by " + str(amount))
 	if multiplayer.is_server():
+		if has_bubble_shield:
+			has_bubble_shield = false
+			# TODO: visual portion
+			return
 		var crossed_turtle_threshold = health >= ANGRY_TURTLE_THRESHOLD and health - amount <= ANGRY_TURTLE_THRESHOLD
 		rpc("take_damage", amount)
 		rpc("set_sprite_modulate", DAMAGE_FLASH_INDEX)
@@ -680,6 +687,7 @@ func reset():
 	shots_left_to_burst = shots_per_burst
 	# Finally, some stuff will want to go over the network explicitly.
 	if is_local_authority():
+		# TODO: for each of these, only send message if needed?
 		rpc("set_is_poochzilla", is_poochzilla)
 		rpc("set_sprite_modulate", 0)
 		rpc("set_bullets_per_shot", bullets_per_shot)
@@ -707,6 +715,8 @@ func reset():
 		rpc("remote_set", "has_passive_regen", has_passive_regen)
 		rpc("remote_set", "time_since_regen", 0.0)
 		rpc("remote_set", "has_tasty_clips", has_tasty_clips)
+		rpc("remote_set", "is_bubble_shielder", is_bubble_shielder)
+		rpc("remote_set", "has_bubble_shield", is_bubble_shielder)
 	if multiplayer.is_server():
 		rpc("remote_dictate_position", initial_position)
 	$Networking.sync_bullet_scale = bullet_scale

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c7rka1gsb4w73"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/BubbleShield/power.gd" id="1_vt763"]
+
+[node name="BubbleShielder" type="Node"]
+script = ExtResource("1_vt763")
