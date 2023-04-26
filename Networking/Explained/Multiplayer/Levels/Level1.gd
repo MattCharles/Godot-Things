@@ -45,7 +45,8 @@ var buttons = [preload("res://Items/Upgrades/Tank/choice.tscn"),
 				preload("res://Items/Upgrades/PoisonBullets/choice.tscn"),
 				preload("res://Items/Upgrades/DoubleDose/choice.tscn"),
 				preload("res://Items/Upgrades/SlowActingPoison/choice.tscn"),
-				preload("res://Items/Upgrades/PassiveRegen/choice.tscn")]
+				preload("res://Items/Upgrades/PassiveRegen/choice.tscn"),
+				preload("res://Items/Upgrades/TastyClips/choice.tscn")]
 
 var powers = [load("res://Items/Upgrades/Tank/power.tscn"), 
 				load("res://Items/Upgrades/Shotgun/power.tscn"),
@@ -75,7 +76,8 @@ var powers = [load("res://Items/Upgrades/Tank/power.tscn"),
 				load("res://Items/Upgrades/PoisonBullets/power.tscn"),
 				load("res://Items/Upgrades/DoubleDose/power.tscn"),
 				load("res://Items/Upgrades/SlowActingPoison/power.tscn"),
-				load("res://Items/Upgrades/PassiveRegen/power.tscn")] #TODO - load the power node when choice is displayed
+				load("res://Items/Upgrades/PassiveRegen/power.tscn"),
+				load("res://Items/Upgrades/TastyClips/power.tscn")] #TODO - load the power node when choice is displayed
 
 var obstacles = [preload("res://Items/Obstacles/haystack.tscn")]
 
@@ -108,7 +110,8 @@ const AVOID_AFTER := {
 	25: [],
 	26: [],
 	27: [],
-	28: []
+	28: [],
+	29: [29]
 }
 
 func _ready():

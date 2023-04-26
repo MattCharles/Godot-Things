@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cuf3b4le1uqcq"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/TastyClips/power.gd" id="1_52k0v"]
+
+[node name="TastyClips" type="Node"]
+script = ExtResource("1_52k0v")

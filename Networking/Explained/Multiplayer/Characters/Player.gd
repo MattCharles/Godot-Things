@@ -56,6 +56,7 @@ const MACHINE_GUN_GAP := .1
 const DEFAULT_PASSIVE_REGEN := false
 const PASSIVE_REGEN_GAP := 1.0
 const PASSIVE_REGEN_AMOUNT := 2
+const TASTY_CLIP_HEAL_AMOUNT := 15
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -157,6 +158,7 @@ var incoming_poison_damage := 0.0
 var incoming_poison_duration := 0.0
 var has_passive_regen := DEFAULT_PASSIVE_REGEN
 var time_since_regen := 0.0
+var has_tasty_clips := false
 
 # swap var so we can restore a user's original speed when they are done sprinting
 var speed_temp := sprint_speed
@@ -340,6 +342,8 @@ func is_mouse_outside_player_hitbox() -> bool:
 func reset_ammo():
 	bullets_left_in_clip = clip_size
 	reload_spinner.value = bullets_left_in_clip
+	if has_tasty_clips:
+		heal(TASTY_CLIP_HEAL_AMOUNT)
 
 func zone_push_pop():
 	previous_zones.push_front(current_zone)
@@ -700,6 +704,9 @@ func reset():
 		rpc("remote_set", "poison_duration", poison_duration)
 		rpc("remote_set", "incoming_poison_damage", 0)
 		rpc("remote_set", "incoming_poison_duration", 0.0)
+		rpc("remote_set", "has_passive_regen", has_passive_regen)
+		rpc("remote_set", "time_since_regen", 0.0)
+		rpc("remote_set", "has_tasty_clips", has_tasty_clips)
 	if multiplayer.is_server():
 		rpc("remote_dictate_position", initial_position)
 	$Networking.sync_bullet_scale = bullet_scale
