@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://cipeo5kk86d0o"]
+[gd_scene load_steps=9 format=3 uid="uid://cipeo5kk86d0o"]
 
 [ext_resource type="Script" path="res://Items/default_bullet.gd" id="1_2tldu"]
 [ext_resource type="Texture2D" uid="uid://du4jp1saajp58" path="res://Levels/shoot.png" id="2_7cd5r"]
 [ext_resource type="Script" path="res://Items/Networking.gd" id="3_5h0hf"]
+[ext_resource type="Script" path="res://Items/trail.gd" id="4_gy08o"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_oda4u"]
 friction = 0.0
@@ -31,6 +32,10 @@ properties/5/sync = false
 [sub_resource type="CircleShape2D" id="CircleShape2D_8jah0"]
 radius = 6.0
 
+[sub_resource type="Curve" id="Curve_1t16c"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
 [node name="default_bullet" type="RigidBody2D"]
 collision_layer = 11
 collision_mask = 11
@@ -54,5 +59,10 @@ replication_config = SubResource("SceneReplicationConfig_4ybvv")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_8jah0")
+
+[node name="Trail2D" type="Line2D" parent="."]
+show_behind_parent = true
+width_curve = SubResource("Curve_1t16c")
+script = ExtResource("4_gy08o")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
