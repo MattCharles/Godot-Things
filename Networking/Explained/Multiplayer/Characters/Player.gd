@@ -58,6 +58,7 @@ const PASSIVE_REGEN_GAP := 10.0
 const PASSIVE_REGEN_AMOUNT := 1
 const TASTY_CLIP_HEAL_AMOUNT := 15
 const DEFAULT_IS_BUBBLE_SHIELDER := false
+const DEFAULT_RELOAD_ON_IMPACT := false
 
 const DEFAULT_COLOR_INDEX := 0
 const CRIT_COLOR_INDEX := 1
@@ -73,7 +74,9 @@ const DEFAULT_VAMPIRE_RATIO := 0.0
 const DEFAULT_BULLET_SLOW := 0
 const DEFAULT_CHARGE_TIME := 0
 
-func instant_reload(): pass
+func instant_reload():
+	if is_local_authority():
+		reset_ammo()
 
 signal i_die(id: int)
 
@@ -94,6 +97,7 @@ const shield_scene := preload("res://Items/shield.tscn")
 const pizza_scene := preload("res://Items/pizza.tscn")
 var current_teleporter = null
 
+var reload_on_impact := DEFAULT_RELOAD_ON_IMPACT
 var dizzy_turtle := DEFAULT_DIZZY_TURTLE
 var angry_turtle := DEFAULT_ANGRY_TURTLE
 var shot_cooldown
@@ -554,7 +558,8 @@ func damage(amount):
 			rpc("set_speed", speed + panic_speed_bonus())
 		
 func heal(amount):
-	if multiplayer.is_server():
+	#if multiplayer.is_server():
+	if is_local_authority():
 		if health + amount > max_health:
 			amount = max_health - health
 			if amount == 0: return
@@ -628,6 +633,7 @@ func process_shot(bname, look_target, distant_target):
 		instance.global_position = shoot_point.global_position
 		instance.num_bounces = bullet_bounces
 		instance.speed = bullet_speed
+		instance.reload_on_impact = reload_on_impact
 		if has_boomerang:
 			instance.add_constant_central_force((instance.global_position - distant_target).normalized() * BOOMERANG_STRENGTH)
 		instance.fire()
@@ -726,7 +732,9 @@ func reset():
 		rpc("remote_set", "has_passive_regen", has_passive_regen)
 		rpc("remote_set", "time_since_regen", 0.0)
 		rpc("remote_set", "has_tasty_clips", has_tasty_clips)
-		if is_bubble_shielder:
+		if reload_on_impact != DEFAULT_RELOAD_ON_IMPACT:
+			rpc("remote_set", "reload_on_impact", reload_on_impact)
+		if is_bubble_shielder != DEFAULT_IS_BUBBLE_SHIELDER:
 			rpc("remote_set", "is_bubble_shielder", is_bubble_shielder)
 			rpc("remote_set", "has_bubble_shield", is_bubble_shielder)
 			rpc("set_bubble_shield_active", is_bubble_shielder)

@@ -10,6 +10,7 @@ var poison_duration := 0.0
 var shooter = -1
 var vampire_ratio := 0.0
 var heal_on_poison := false
+var reload_on_impact := false
 
 # TODO: maybe pass this from player if its causing lag
 @onready var level = get_node("/root/Level")
@@ -24,6 +25,13 @@ func remote_set_shooter(value):
 
 func set_vampire_ratio(ratio:float):
 	rpc("remote_set_vampire_ratio", ratio)
+	
+func set_reload_on_impact(value:bool):
+	rpc("remote_set_reload_on_impact", value)
+	
+@rpc("reliable", "call_local", "any_peer")
+func remote_set_reload_on_impact(value:bool):
+	reload_on_impact = value
 
 @rpc("reliable", "call_local", "any_peer")
 func remote_set_vampire_ratio(value):
@@ -79,10 +87,15 @@ func _on_body_entered(body):
 			body.poison(poison_damage, poison_duration)
 		if not body is Shield:
 			body.poison(poison_damage, poison_duration)
-		if body is Player and vampire_ratio > .01:
-			assert(shooter != "-1", "Shooter wasn't assigned")
-			var amount_to_heal = max(1, int(damage * vampire_ratio))
-			level.heal_player(shooter, amount_to_heal)
+		if body is Player:
+			if vampire_ratio > .01:
+				assert(shooter != "-1", "Shooter wasn't assigned")
+				var amount_to_heal = max(1, int(damage * vampire_ratio))
+				level.heal_player(shooter, amount_to_heal)
+				
+			if reload_on_impact:
+				assert(shooter != "-1", "Shooter wasn't assigned")
+				level.reload_player(shooter)
 		#rpc("queue_free")
 		queue_free()
 		
