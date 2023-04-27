@@ -69,6 +69,7 @@ const END_HEAL_FLASH_INDEX := 5
 const DEFAULT_POISON_DAMAGE := 0
 const DEFAULT_POISON_DURATION := 0.0
 const DEFAULT_VAMPIRE_RATIO := 0.0
+const DEFAULT_PAINFUL_RELOAD := false
 
 # TODO: implement these?
 const DEFAULT_BULLET_SLOW := 0
@@ -169,6 +170,7 @@ var vampire_ratio := DEFAULT_VAMPIRE_RATIO
 
 var is_bubble_shielder := DEFAULT_IS_BUBBLE_SHIELDER
 var has_bubble_shield := is_bubble_shielder
+var painful_reload := DEFAULT_PAINFUL_RELOAD
 
 # swap var so we can restore a user's original speed when they are done sprinting
 var speed_temp := sprint_speed
@@ -556,7 +558,14 @@ func damage(amount):
 			$Shield.reset()
 		if is_panicker:
 			rpc("set_speed", speed + panic_speed_bonus())
-		
+		if painful_reload:
+			rpc("instant_reload")
+
+@rpc("any_peer", "reliable")
+func rpc_instant_reload():
+	if is_local_authority():
+		instant_reload()
+
 func heal(amount):
 	#if multiplayer.is_server():
 	if is_local_authority():

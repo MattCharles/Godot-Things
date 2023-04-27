@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cyawc8uy7ddqa"]
+
+[ext_resource type="Script" path="res://Items/Upgrades/PainfulReload/power.gd" id="1_5vaka"]
+
+[node name="PainfulReload" type="Node"]
+script = ExtResource("1_5vaka")

@@ -1,10 +1,10 @@
 
 extends Node
 
-const card_id := 32
+const card_id := 34
 
 const modifiers := {
-	"is_bubble_shielder": {
+	"reload_when_damaged": {
 		"set": true
 	}
 }
