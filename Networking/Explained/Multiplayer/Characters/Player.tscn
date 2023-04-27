@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://ds41tvyxujn2h"]
+[gd_scene load_steps=28 format=3 uid="uid://ds41tvyxujn2h"]
 
 [ext_resource type="Script" path="res://Characters/Player.gd" id="1_uheab"]
 [ext_resource type="Shader" path="res://Characters/Player.gdshader" id="2_jas3l"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://Characters/player_networking.gd" id="4_4qpvw"]
 [ext_resource type="Texture2D" uid="uid://btbd2dp3tv8k0" path="res://Characters/Poochys/Shooter-hand.png" id="5_c0gyg"]
 [ext_resource type="PackedScene" uid="uid://016nhtdjrkty" path="res://Items/shield.tscn" id="7_oku80"]
+[ext_resource type="Texture2D" uid="uid://c2o3og5v46ifn" path="res://Items/BubbleShield.png" id="8_3ktvx"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wwopo"]
 resource_local_to_scene = true
@@ -285,3 +286,10 @@ wait_time = 0.3
 one_shot = true
 
 [node name="ReloadTimer" type="Timer" parent="."]
+
+[node name="BubbleShield" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(1, 1, 1, 0.431373)
+position = Vector2(-2.5, 13)
+scale = Vector2(4.5625, 3.1875)
+texture = ExtResource("8_3ktvx")

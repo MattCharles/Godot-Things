@@ -536,6 +536,7 @@ func damage(amount):
 	if multiplayer.is_server():
 		if has_bubble_shield:
 			has_bubble_shield = false
+			rpc("set_bubble_shield_active", false)
 			# TODO: visual portion
 			return
 		var crossed_turtle_threshold = health >= ANGRY_TURTLE_THRESHOLD and health - amount <= ANGRY_TURTLE_THRESHOLD
@@ -568,6 +569,10 @@ func heal(amount):
 func stun(milliseconds:float) -> void:
 	if multiplayer.is_server():
 		rpc("stun_player", milliseconds)
+
+@rpc("reliable", "call_local")
+func set_bubble_shield_active(value:bool) -> void:
+	$BubbleShield.set_visible(value)
 
 @rpc("reliable", "call_local", "any_peer")
 func go_berserk():
@@ -721,8 +726,10 @@ func reset():
 		rpc("remote_set", "has_passive_regen", has_passive_regen)
 		rpc("remote_set", "time_since_regen", 0.0)
 		rpc("remote_set", "has_tasty_clips", has_tasty_clips)
-		rpc("remote_set", "is_bubble_shielder", is_bubble_shielder)
-		rpc("remote_set", "has_bubble_shield", is_bubble_shielder)
+		if is_bubble_shielder:
+			rpc("remote_set", "is_bubble_shielder", is_bubble_shielder)
+			rpc("remote_set", "has_bubble_shield", is_bubble_shielder)
+			rpc("set_bubble_shield_active", is_bubble_shielder)
 		rpc("remote_set", "vampire_ratio", vampire_ratio)
 	if multiplayer.is_server():
 		rpc("remote_dictate_position", initial_position)

@@ -29,8 +29,7 @@ func _physics_process(delta):
 			# TODO: maybe hit flash? green hit flash?
 			damage(incoming_poison_damage)
 	else:
-		rpc("set_poison", 0.0, 0.0)
-		
+		rpc("set_poison", 0, 0.0)
 
 func damage(amount:int) -> void:
 	print("damaging haystack")
