@@ -35,15 +35,15 @@ func set_damage(value):
 	print("setting damage to " + str(value))
 	rpc("sync_set_damage", value)
 	
-func set_poison(damage: float, duration: float) -> void:
+func set_poison(new_damage: float, duration: float) -> void:
 	if !multiplayer.is_server():
 		return
-	rpc("sync_set_poison", damage, duration)
+	rpc("sync_set_poison", new_damage, duration)
 
 @rpc("reliable", "call_local")
-func sync_set_poison(damage:float, duration:float):
-	print("synching poison to " + str(damage) + " for " + str(duration) + " seconds")
-	poison_damage = damage
+func sync_set_poison(new_damage:int, duration:float):
+	print("synching poison to " + str(new_damage) + " for " + str(duration) + " seconds")
+	poison_damage = new_damage
 	poison_duration = duration
 	
 func set_scale_for_all_clients(value):

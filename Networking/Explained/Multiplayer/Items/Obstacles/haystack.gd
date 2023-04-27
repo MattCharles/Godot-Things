@@ -27,7 +27,7 @@ func _physics_process(delta):
 		if new_trunc == boundary - 1:
 			# apply poison damage.
 			# TODO: maybe hit flash? green hit flash?
-			rpc("damage", incoming_poison_damage)
+			damage(incoming_poison_damage)
 	else:
 		rpc("set_poison", 0.0, 0.0)
 		
@@ -41,14 +41,14 @@ func damage(amount:int) -> void:
 			return
 		rpc("set_sprite", DAMAGED_SPRITE_INDEX)
 		
-func poison(damage:int, duration:float) -> void:
+func poison(new_damage:int, duration:float) -> void:
 	print("haystack poisoned :(")
 	if multiplayer.is_server():
-		rpc("set_poison", max(damage, incoming_poison_damage), max(poison_duration, duration))
+		rpc("set_poison", max(new_damage, incoming_poison_damage), max(poison_duration, duration))
 
 @rpc("call_local", "reliable")
-func set_poison(damage:int, duration:float) -> void:
-	incoming_poison_damage = damage
+func set_poison(new_damage:int, duration:float) -> void:
+	incoming_poison_damage = new_damage
 	poison_duration = duration
 
 @rpc("call_local", "reliable")

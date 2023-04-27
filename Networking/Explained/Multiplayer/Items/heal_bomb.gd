@@ -5,7 +5,7 @@ extends Node2D
 @onready var progress := $TextureProgressBar
 const HEAL_AMOUNT := 30
 
-func _process(delta):
+func _process(_delta):
 	progress.value = timer.wait_time
 
 func _on_timer_timeout():
